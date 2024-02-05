@@ -1,0 +1,47 @@
+
+.functionalPanel{
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 20px 5px 20px;
+    background-color:rgb(23, 23, 31);
+}
+
+.leftContentBlock{
+    display: flex;
+}
+
+.rightContentBlock{
+    display: flex;
+}
+
+.startButton{
+    color: aliceblue;
+    margin-right: 10px;
+}
+
+.stopButton{
+    color: aliceblue;
+    margin-right: 10px;
+}
+
+.startBtn{
+    font-size: 20px;
+    color:rgb(99, 231, 73)
+}
+
+.stopBtn{
+    font-size: 15px;
+    color:rgb(202, 74, 57)
+}
+
+.startBtn:hover{
+    color:rgb(55, 134, 39)
+}
+
+.stopBtn:hover{
+    color:rgb(131, 47, 36)
+}
