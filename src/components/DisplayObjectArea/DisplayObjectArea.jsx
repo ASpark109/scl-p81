@@ -1,9 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
-import Rocket from '../../mpce/testRect';
+// import Rocket from '../../mpce/testRect';
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
+import { EnvironmentBase } from "../../mpce/environmentbase.js"
 
 const DisplayObjectArea = () => {
+
+  let testEnv = new EnvironmentBase()
+  testEnv.init()
+
   const pixiContainer = useRef();
 
    useEffect(() => {
@@ -19,7 +24,7 @@ const DisplayObjectArea = () => {
 
     // Додайте ваш код Pixi.js тут, наприклад, створення спрайту
 
-    const rocket = new Rocket(app)
+    // const rocket = new Rocket(app)
 
     const square = new PIXI.Graphics();
     square.beginFill(0x0000ff);
@@ -39,24 +44,6 @@ const DisplayObjectArea = () => {
       //console.log(square.x);
     });
     
-    window.addEventListener("keydown", keydownHendler)
-
-    function keydownHendler(e)
-    {
-      console.log(e)
-      rocket.sayHi();
-    }
-
-    
-    // Змінюйте розмір сцени при зміні розмірів вікна
-    // const handleResize = () => {
-    //   app.renderer.resize(window.innerWidth, window.innerHeight);
-    // };
-
-    // Додаємо слухач розміру вікна
-    // window.addEventListener('resize', handleResize);
-
-    // Завершуємо роботу при видаленні компонента
     return () => {
     //   window.removeEventListener('resize', handleResize);
       app.destroy(true);

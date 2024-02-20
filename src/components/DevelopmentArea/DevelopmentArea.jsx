@@ -6,7 +6,7 @@ import CodeEditorWindow from '../CodeEditor/CodeEditor';
 import FunctionalEditorPanel from '../FunctionalEditorPanel/FunctionalEditorPanel';
 import OutputWindow from '../OutputWindow/OutputWindow'
 import DisplayObjectArea from '../DisplayObjectArea/DisplayObjectArea'
-import MatterJSComponent from '../../pixiTest/pixiT';
+// import MatterJSComponent from '../../pixiTest/pixiT';
 
 class DevelopmentArea extends React.Component {
 
