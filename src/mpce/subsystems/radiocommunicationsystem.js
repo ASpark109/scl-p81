@@ -1,17 +1,14 @@
 import { Message } from "../message"
-import { CommunicationOperator } from "../communicationoperator";
 
-export class RadioCommunicationSystem{
+export class RadioCommunicationSystem{ 
 
-    #communicationOperator;
-
-    constructor(MainControlUnit)
+    constructor(MainControlUnit, communicationOperator) 
     {
-        this.#communicationOperator = new CommunicationOperator();
+        this.communicationOperator = communicationOperator;
         this.mainControlUnit = MainControlUnit;
 
-        this.messagesSend = [];
-        this.messagesReceived = [];
+        // this.messagesSend = [];
+        this.messagesReceived = []; 
 
         this.messageData = null;
     }
@@ -20,8 +17,8 @@ export class RadioCommunicationSystem{
         this.messageData = msg;//new Message(msg);
     }
 
-    sendMessage(){
-
+    sendMessage(){ 
+        console.log(this.messageData + " -------- ")
         if(this.messageData == null){
             return false;
         }
@@ -31,13 +28,17 @@ export class RadioCommunicationSystem{
                         this.mainControlUnit.getCoordinates(),
                         this.mainControlUnit.unitId);
 
-        this.#communicationOperator.addMessage(messageToSend);
+        console.log(messageToSend)
+
+        this.communicationOperator.addMessage(messageToSend);
 
         return true;
     }
 
-    receivedMessages(message)
+    receivedMessages(message) 
     {
+        console.log("RECEIVED AAAAAAAAAAAAA " + Date.now())
+        console.log(message)
         this.messagesReceived.push(message);
     }
     // setStatus() {

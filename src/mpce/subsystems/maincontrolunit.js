@@ -1,12 +1,13 @@
 export class MainControlUnit
 {
-    constructor(id)
+    constructor(id, cord)
     {
+        this.cord = cord;
         this.unitId = id;
     }
 
     getCoordinates()
     {
-        return {x:100, y:200}
+        return {x: this.cord.x, y: this.cord.y}
     }
 }

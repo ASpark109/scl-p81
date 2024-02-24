@@ -2,12 +2,25 @@ import React, { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
 // import Rocket from '../../mpce/testRect';
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
-import { EnvironmentBase } from "../../mpce/environmentbase.js"
+// import { EnvironmentBase } from "../../mpce/environmentbase.js"
+import { userData } from '../../userData/userCode';
 
 const DisplayObjectArea = () => {
 
-  let testEnv = new EnvironmentBase()
-  testEnv.init()
+  // let testEnv = new EnvironmentBase()
+  
+
+  // setTimeout(() => {
+  //   testEnv.init()
+  //   console.log("Info:")
+    
+
+  //   testEnv.spaceCrafts[0].RadioCommunicationModule.createMessage("Hello, world")
+  //   testEnv.spaceCrafts[0].RadioCommunicationModule.sendMessage()
+  //   console.log(testEnv.spaceCrafts)
+  // }, 3000);
+
+  userData();
 
   const pixiContainer = useRef();
 
@@ -43,7 +56,7 @@ const DisplayObjectArea = () => {
       square.x += 1; // Змініть це для зміни швидкості руху
       //console.log(square.x);
     });
-    
+
     return () => {
     //   window.removeEventListener('resize', handleResize);
       app.destroy(true);

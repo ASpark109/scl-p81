@@ -1,20 +1,20 @@
 import { CommunicationOperator } from "./communicationoperator.js"
-import { RadioCommunicationSystem } from "./subsystems/radiocommunicationsystem.js"
+// import { RadioCommunicationSystem } from "./subsystems/radiocommunicationsystem.js"
 import { SpaceCraftBuilder } from "./spacecraftbuilder.js"
 var Matter = require('matter-js');
 
 let Engine = Matter.Engine,
 Render = Matter.Render,
 Runner = Matter.Runner,
-Composites = Matter.Composites,
-Common = Matter.Common,
+// Composites = Matter.Composites,
+// Common = Matter.Common,
 Events = Matter.Events,
-Constraint = Matter.Constraint,
-MouseConstraint = Matter.MouseConstraint,
-Mouse = Matter.Mouse,
-Composite = Matter.Composite,
-Bodies = Matter.Bodies,
-Body = Matter.Body;
+// Constraint = Matter.Constraint,
+// MouseConstraint = Matter.MouseConstraint,
+// Mouse = Matter.Mouse,
+// Composite = Matter.Composite,
+Bodies = Matter.Bodies
+// Body = Matter.Body;
 
 
 
@@ -24,10 +24,7 @@ export class EnvironmentBase
 {
     constructor()
     {
-        console.log("AAAAAAAAAAAAAAAA")
-        let testBody1 = Bodies.rectangle(400, 400, 40, 300, {isStatic: true});
-        console.log(testBody1.position.x)
-
+        this.spaceCrafts = [];
     }
 
     init()
@@ -50,24 +47,23 @@ export class EnvironmentBase
         // // Render.run(render);
         
         var runner = Runner.create();
-        Runner.run(runner, engine);
 
-        radioModul1.createMessage("Hello world");
-        radioModul1.sendMessage(1);
+        let communicationOperator = new CommunicationOperator();
+
+        console.log("communication operator")
+        console.log(communicationOperator)
 
         let builder = new SpaceCraftBuilder();
-        let spaceCrafts = builder.buildSpaceCrafts();
+        this.spaceCrafts = builder.buildSpaceCrafts(communicationOperator);
 
-        let communicationOperator = new CommunicationOperator(spaceCrafts);
+        communicationOperator.setSpaceCrafts(this.spaceCrafts);
+        
 
-        let radioModul1 = new RadioCommunicationSystem(10, 10, communicationOperator);
-        let radioModul2 = new RadioCommunicationSystem(1000, 1000, communicationOperator);
-
-        // let testBody = Bodies.rectangle(400, 400, 40, 300, {isStatic: true});
-        // Composite.add(world, testBody);
+        Runner.run(runner, engine);
 
         Events.on(engine, 'afterUpdate', function(event) {
             // console.log(testBody.position.x)
+            communicationOperator.update(0.01)
         });
     }
 }
