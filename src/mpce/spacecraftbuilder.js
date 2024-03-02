@@ -22,19 +22,19 @@ export class SpaceCraftBuilder{
 
     buildSpaceCrafts(communicationOperator){
 
-        console.log("communicationOperator")
-        console.log(communicationOperator)
+        // console.log("communicationOperator")
+        // console.log(communicationOperator)
 
         let f1_c = {x: 0, y: 0};
         let f2_c = {x: 0, y: 1000000000};
 
         let falcon9_1 = new st1_falcon9(1,communicationOperator, f1_c)
-        let falcon9_2 = new st1_falcon9(2,communicationOperator, f2_c)
+        // let falcon9_2 = new st1_falcon9(2,communicationOperator, f2_c)
 
-        this.spaceCrafts.push(falcon9_1);
-        this.spaceCrafts.push(falcon9_2);
+        this.spaceCrafts.push(falcon9_1.build());
+        // this.spaceCrafts.push(falcon9_2.build());
 
-        console.log("FALCON9 1");
+        // console.log("FALCON9 1");
 
 
 

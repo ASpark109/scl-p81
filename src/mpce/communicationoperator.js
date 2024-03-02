@@ -6,15 +6,15 @@ export class CommunicationOperator{
     
     constructor(){
         this.messages = [];
-        console.log("OPERATOOOOOOOR");
+        // console.log("OPERATOOOOOOOR");
         this.t = 0
     }
 
     addMessage(message){
         this.messages.push(message, new Array(this.spaceCrafts.length).fill(false))
 
-        console.log("MESSAAAAAAAGE")
-        console.log(message)
+        // console.log("MESSAAAAAAAGE")
+        // console.log(message)
     }
 
     update(time){

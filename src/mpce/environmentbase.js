@@ -6,7 +6,8 @@ var Matter = require('matter-js');
 let Engine = Matter.Engine,
 Render = Matter.Render,
 Runner = Matter.Runner,
-// Composites = Matter.Composites,
+Composites = Matter.Composites,
+Composite = Matter.Composite,
 // Common = Matter.Common,
 Events = Matter.Events,
 // Constraint = Matter.Constraint,
@@ -17,7 +18,7 @@ Bodies = Matter.Bodies
 // Body = Matter.Body;
 
 
-
+export let a = 5;
 
 
 export class EnvironmentBase
@@ -25,45 +26,60 @@ export class EnvironmentBase
     constructor()
     {
         this.spaceCrafts = [];
+        this.ambient = [];
     }
 
     init()
     {    
-        console.log("INIT method")
-        let engine = Engine.create(),
-            world = engine.world;
+        // console.log("INIT method")
+        let engine = Engine.create();
+        this.world = engine.world;
         
         let render = Render.create({
             element: document.body,
             engine: engine,
             options: {
                 width: 2000,
-                height: 1000,
+                height: 1300,
                 showAngleIndicator: true,
                 showInternalEdges: true
             }
         });
         
-        // // Render.run(render);
-        
+        // Render.run(render);
         var runner = Runner.create();
 
         let communicationOperator = new CommunicationOperator();
-
-        console.log("communication operator")
-        console.log(communicationOperator)
 
         let builder = new SpaceCraftBuilder();
         this.spaceCrafts = builder.buildSpaceCrafts(communicationOperator);
 
         communicationOperator.setSpaceCrafts(this.spaceCrafts);
-        
+
+        //floor
+        let wall = Bodies.rectangle(1000, 900, 1900, 50, { isStatic: true, width: 1900, height: 50, label:"wall"});
+
+        this.ambient.push(wall);
+
+        Composite.add(this.world, this.spaceCrafts);
+        Composite.add(this.world, this.ambient);
 
         Runner.run(runner, engine);
 
+        // engine.world.gravity.x = 0
+        // engine.world.gravity.y = 0
+
+        let self = this;
+        //console.log(Composite.allBodies(world))
+        //console.log(this.spaceCrafts);
         Events.on(engine, 'afterUpdate', function(event) {
-            // console.log(testBody.position.x)
-            communicationOperator.update(0.01)
+            // console.log(self.spaceCrafts[0][0].position)
+            communicationOperator.update(0.01);
         });
+    }
+
+    testConfiguration()
+    {
+
     }
 }
