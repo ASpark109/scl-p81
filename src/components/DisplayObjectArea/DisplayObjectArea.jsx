@@ -16,12 +16,15 @@ const DisplayObjectArea = () => {
         let displayOperator = new ComponentDisplayOperator()
 
         //Запускаємо середовище matter pixi
-        displayOperator.init(pixiContainer);
+        if (!displayOperator.init(pixiContainer))
+        {
+            console.log("displayOperator - error");
+        }
 
-        displayOperator.run();
+        displayOperator.runRendering()
 
     return () => {
-        displayOperator.app.destroy(true);
+        displayOperator.displayApp.destroy(true);
     };
   }, []);
 

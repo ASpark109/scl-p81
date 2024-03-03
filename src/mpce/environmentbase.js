@@ -25,6 +25,7 @@ export class EnvironmentBase
 {
     constructor()
     {
+        this.world = null;
         this.spaceCrafts = [];
         this.ambient = [];
     }
@@ -81,5 +82,10 @@ export class EnvironmentBase
     testConfiguration()
     {
 
+    }
+
+    getAllComponents()
+    {
+        return Composite.allBodies(this.world);
     }
 }
