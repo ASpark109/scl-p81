@@ -36,6 +36,11 @@ export class ComponentDisplayOperator
 
     runRendering()
     {
-        this.displayApp.run();
+        this.displayApp.start();
+    }
+
+    stopRendering()
+    {
+        this.displayApp.stop();
     }
 }

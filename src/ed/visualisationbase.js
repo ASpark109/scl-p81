@@ -21,6 +21,8 @@ export class VisualisationBase
             });
 
         container.current.appendChild(this.application.view);
+
+        this.application.ticker.stop();
     }
 
     createRenderingModel(objects)
@@ -52,9 +54,11 @@ export class VisualisationBase
             }
         }
 
+        this.updateFunction();
+
     }
 
-    run()
+    updateFunction()
     {
         if(this.environmentComponents.length == 0)
         {
@@ -70,5 +74,15 @@ export class VisualisationBase
                 this.displayedComponents[i].rotation = this.environmentComponents[i].angle;
             }
         });
+    }
+
+    stop()
+    {
+        this.application.ticker.stop();
+    }
+
+    start()
+    {
+        this.application.ticker.start();
     }
 }

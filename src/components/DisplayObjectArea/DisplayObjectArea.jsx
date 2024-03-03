@@ -23,6 +23,7 @@ const DisplayObjectArea = () => {
 
         displayOperator.runRendering()
 
+
     return () => {
         displayOperator.displayApp.destroy(true);
     };
