@@ -10,6 +10,7 @@ export class VisualisationBase
         this.application = null;
         this.displayedComponents = [];
         this.environmentComponents = [];
+        this.test = null;
     }
 
     init(container)
@@ -20,7 +21,18 @@ export class VisualisationBase
             backgroundColor: 0x020D19,
             });
 
+        this.test = new PIXI.Container();
+        this.application.stage.addChild(this.test);
+
+        this.test.scale.x = 0.6;
+        this.test.scale.y = 0.6;
+
         container.current.appendChild(this.application.view);
+
+        this.test.x = 0
+        // container.scale.x = 2;
+        // container.scale.y = 2;
+
 
         this.application.ticker.stop();
     }
@@ -39,7 +51,7 @@ export class VisualisationBase
                 rectangle.anchor.set(0.5, 0.5);
 
                 this.displayedComponents.push(rectangle);
-                this.application.stage.addChild(rectangle)
+                this.test.addChild(rectangle)
                 
                 break;
 
@@ -48,7 +60,7 @@ export class VisualisationBase
                 wall.anchor.set(0.5, 0.5);
 
                 this.displayedComponents.push(wall);
-                this.application.stage.addChild(wall)
+                this.test.addChild(wall)
                 
                 break;
             }
@@ -60,7 +72,7 @@ export class VisualisationBase
 
     updateFunction()
     {
-        if(this.environmentComponents.length == 0)
+        if(this.environmentComponents.length === 0)
         {
             return false;
         }

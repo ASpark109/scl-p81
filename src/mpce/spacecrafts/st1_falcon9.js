@@ -1,77 +1,55 @@
 import { RadioCommunicationSystem } from "../subsystems/radiocommunicationsystem"
 import { MainControlUnit } from "../subsystems/maincontrolunit";
+import { constants } from "../constants";
 
 var Matter = require('matter-js');
 
-// var Engine = Matter.Engine,
-//     Render = Matter.Render,
-//     Runner = Matter.Runner,
-//     Composites = Matter.Composites,
-//     Common = Matter.Common,
-//     Events = Matter.Events,
-//     Constraint = Matter.Constraint,
-//     MouseConstraint = Matter.MouseConstraint,
-//     Mouse = Matter.Mouse,
-//     Composite = Matter.Composite,
-    let Bodies = Matter.Bodies
-    let Body = Matter.Body;
+let Bodies = Matter.Bodies
+let Body = Matter.Body;
 
 export class st1_falcon9{
-    constructor(id, communicationOperator, cord){
+    constructor(id, communicationOperator, globalCoordinates){
         this.id = id;
         this.communicationOperator = communicationOperator;
-        this.cord = cord;
+        this.globalCoordinates = globalCoordinates;
+        this.sectorCoordinates = {x: null, y: null};
+        this.collisionGroup = null;
+
         this.subsystemsinitialisation();
     }
 
     subsystemsinitialisation()
     {
         
-        this.MainControlUnit = new MainControlUnit(this.id, this.cord);
+        this.MainControlUnit = new MainControlUnit(this.id, this.globalCoordinates);
         this.RadioCommunicationModule = new RadioCommunicationSystem(this.MainControlUnit, 
                                                         this.communicationOperator);
     }
 
     build()
     {
-        console.log("AAAAAAAAAAA")
-        this.serviceModul = Bodies.rectangle(500, 200, 50, 100, {width: 50, height: 100, label: "falcon"});
+        this.sectorCoordinates.x = this.globalCoordinates.x - (Math.floor(this.globalCoordinates.x / constants.SECTOR_WIDTH) * constants.SECTOR_WIDTH);
+        this.sectorCoordinates.y = this.globalCoordinates.y - (Math.floor(this.globalCoordinates.y / constants.SECTOR_HEIGHT) * constants.SECTOR_HEIGHT);
+
+        this.collisionGroup = (Math.floor(this.globalCoordinates.x / constants.SECTOR_WIDTH).toString(16) << 8) | 
+                               Math.floor(this.globalCoordinates.y / constants.SECTOR_HEIGHT).toString(16);
+
+        this.serviceModul = Bodies.rectangle(   this.sectorCoordinates.x,
+                                                this.sectorCoordinates.y,
+                                                50,
+                                                100,
+                                                {
+                                                    width: 50,
+                                                    height: 100,
+                                                    label: "falcon",
+                                                    collisionFilter: 
+                                                    {
+                                                        category: this.collisionGroup
+                                                    },
+                                                });
+
         Body.setAngle(this.serviceModul, 47 * Math.PI / 180)
-        // this.leftLeg = Bodies.rectangle(975, 805, 8, 75);
-        // this.rigthtLeg = Bodies.rectangle(1025, 805, 8, 75);
-
-        // this.leftLegConstraint = Constraint.create({
-        //     bodyA: serviceModul,
-        //     pointA: {x: -24, y: 140 },
-        //     bodyB: leftLeg,
-        //     pointB: {x:0, y:35},
-        //     length:0
-        // });
-
-        // this.rightLegConstraint = Constraint.create({
-        //     bodyA: serviceModul,
-        //     pointA: {x: 24, y: 140 },
-        //     bodyB: rigthtLeg,
-        //     pointB: {x:0, y:35},
-        //     length:0
-        // });
-
-        // this.leftLegConstraintS = Constraint.create({
-        //     bodyA: serviceModul,
-        //     pointA: {x: -20, y: 97 },
-        //     bodyB: leftLeg,
-        //     pointB: {x:0, y:-10},
-        //     length:5
-            
-        // });
-
-        // this.rightLegConstraintS = Constraint.create({
-        //     bodyA: serviceModul,
-        //     pointA: {x: 20, y: 97 },
-        //     bodyB: rigthtLeg,
-        //     pointB: {x:0, y:-10},
-        //     length:5
-        // });
+        
 
         return this.serviceModul;
     }

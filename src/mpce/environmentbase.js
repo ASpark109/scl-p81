@@ -17,9 +17,7 @@ Events = Matter.Events,
 Bodies = Matter.Bodies
 // Body = Matter.Body;
 
-
 export let a = 5;
-
 
 export class EnvironmentBase
 {
@@ -47,7 +45,7 @@ export class EnvironmentBase
             }
         });
         
-        // Render.run(render);
+        // Render.run(render);7 668,049
         var runner = Runner.create();
 
         let communicationOperator = new CommunicationOperator();
@@ -59,7 +57,6 @@ export class EnvironmentBase
 
         //floor
         let wall = Bodies.rectangle(1000, 900, 1900, 50, { isStatic: true, width: 1900, height: 50, label:"wall"});
-
         this.ambient.push(wall);
 
         Composite.add(this.world, this.spaceCrafts);
@@ -75,6 +72,8 @@ export class EnvironmentBase
         //console.log(this.spaceCrafts);
         Events.on(engine, 'afterUpdate', function(event) {
             // console.log(self.spaceCrafts[0][0].position)
+
+            //Часову змінну константу потрібно потім змінити
             communicationOperator.update(0.01);
         });
     }

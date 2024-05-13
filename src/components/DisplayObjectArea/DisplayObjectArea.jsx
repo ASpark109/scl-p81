@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 // import Rocket from '../../mpce/testRect';
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
 // import { EnvironmentBase } from "../../mpce/environmentbase.js"
-import { userData } from '../../userData/userCode';
+// import { userData } from '../../userData/userCode';
 import { ComponentDisplayOperator } from '../../ed/componentdisplayoperator';
 
 const DisplayObjectArea = () => {
@@ -12,7 +12,7 @@ const DisplayObjectArea = () => {
 
     useEffect(() => {
 
-        userData();
+        // userData();
         let displayOperator = new ComponentDisplayOperator()
 
         //Запускаємо середовище matter pixi
