@@ -56,7 +56,11 @@ export class EnvironmentBase
         communicationOperator.setSpaceCrafts(this.spaceCrafts);
 
         //floor
-        let wall = Bodies.rectangle(1000, 900, 1900, 50, { isStatic: true, width: 1900, height: 50, label:"wall"});
+        let wall = Bodies.rectangle(1000, 900, 1900, 50, { isStatic: true, width: 1900, height: 50, label:"wall",
+            collisionFilter: 
+            {
+                category: 1//this.collisionGroup
+            }});
         this.ambient.push(wall);
 
         Composite.add(this.world, this.spaceCrafts);
@@ -68,11 +72,8 @@ export class EnvironmentBase
         // engine.world.gravity.y = 0
 
         let self = this;
-        //console.log(Composite.allBodies(world))
-        //console.log(this.spaceCrafts);
-        Events.on(engine, 'afterUpdate', function(event) {
-            // console.log(self.spaceCrafts[0][0].position)
 
+        Events.on(engine, 'afterUpdate', function(event) {
             //Часову змінну константу потрібно потім змінити
             communicationOperator.update(0.01);
         });

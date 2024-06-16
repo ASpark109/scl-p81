@@ -8,7 +8,7 @@ export class SpaceCraftBuilder{
 
     buildSpaceCrafts(communicationOperator){
 
-        let f1_c = {x: 0, y: 0};
+        let f1_c = {x: 500, y: 0};
         //let f2_c = {x: 0, y: 1000000000};
 
         let falcon9_1 = new st1_falcon9(1,communicationOperator, f1_c)

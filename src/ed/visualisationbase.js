@@ -24,14 +24,15 @@ export class VisualisationBase
         this.test = new PIXI.Container();
         this.application.stage.addChild(this.test);
 
-        this.test.scale.x = 0.6;
-        this.test.scale.y = 0.6;
+        this.test.scale.x = 0.5;
+        this.test.scale.y = 0.5;
 
         container.current.appendChild(this.application.view);
 
-        this.test.x = 0
-        // container.scale.x = 2;
-        // container.scale.y = 2;
+        this.test.x = 100
+        this.test.y = 300
+        
+        console.log(this.test.width)
 
 
         this.application.ticker.stop();
@@ -60,8 +61,7 @@ export class VisualisationBase
                 wall.anchor.set(0.5, 0.5);
 
                 this.displayedComponents.push(wall);
-                this.test.addChild(wall)
-                
+                this.test.addChild(wall)                
                 break;
             }
         }

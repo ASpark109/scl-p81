@@ -44,8 +44,8 @@ export class st1_falcon9{
                                                     label: "falcon",
                                                     collisionFilter: 
                                                     {
-                                                        category: this.collisionGroup
-                                                    },
+                                                        category: 1//this.collisionGroup
+                                                    }
                                                 });
 
         Body.setAngle(this.serviceModul, 47 * Math.PI / 180)

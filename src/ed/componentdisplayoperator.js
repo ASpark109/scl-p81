@@ -27,8 +27,6 @@ export class ComponentDisplayOperator
         this.testEnv.init()
         this.displayApp.init(container)
 
-        console.log("Wow")
-
         this.displayApp.createRenderingModel(this.testEnv.getAllComponents())
 
         return true;
