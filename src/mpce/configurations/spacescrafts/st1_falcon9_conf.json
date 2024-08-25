@@ -1,0 +1,190 @@
+{
+    "parts":
+    [
+        {
+            "name": "stage",
+            "master": true,
+            "objectType": "rectangle",
+            "image_dev": "falcon9fs",
+            "image_main": "",
+
+            "mass": 1,
+
+            "dimensions":
+            {
+                "width": 40,
+                "height": 480
+            },
+
+            "initPos":
+            {
+                "x": 0,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 1,
+    
+            "engines":
+            {
+                "marching_engines":
+                {
+                    "count": 4,
+                    "thrust": 100,
+                    "inclination": 5
+                },
+
+                "correction_engines":
+                {
+                    "count": 2,
+                    "thrust": 5,
+                    "inclination": 0
+                }
+            },
+
+            "batteries":
+            {
+                "count": 4,
+                "capacity": 100
+            },
+
+            "tanks_capacity":
+            {
+                "fuel": 10,
+                "oxidiser": 10
+            }
+        },
+
+        {
+            "name": "leftLeg",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "falcon9leg",
+            "image_main": "",
+
+            "mass": 10,
+
+            "dimensions":
+            {
+                "width": 10,
+                "height": 90
+            },
+
+            "initPos":
+            {
+                "x": -30,
+                "y": 190
+            },
+
+            "isStatic": false,
+            "friction": 1
+        },
+
+        {
+            "name": "rightLeg",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "falcon9leg",
+            "image_main": "",
+
+            "mass": 10,
+
+            "dimensions":
+            {
+                "width": 10,
+                "height": 90
+            },
+
+            "initPos":
+            {
+                "x": 30,
+                "y": 190
+            },
+
+            "isStatic": false,
+            "friction": 1
+        },
+
+        {
+            "name": "constraint_Stage_LeftLeg",
+            "objectType": "constraint",
+            "image_dev": "falcon9leg",
+            "image_main": "",
+
+            "bodyA": "stage",
+            "bodyB": "leftLeg",
+
+            "pointA": {"x": -25, "y": 235},
+            "pointB": {"x": 5, "y": 45},
+
+            "lenght": 0,
+            "ranges": {"min": 0, "max": 0},
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_Stage_LeftLeg_support",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "leftLeg",
+
+            "pointA": {"x": -20, "y": 190},
+            "pointB": {"x": 5, "y": -35},
+
+            "lenght": 35,
+            "ranges": {"min": 35, "max": 110},
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_Stage_RightLeg",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "rightLeg",
+
+            "pointA": {"x": 25, "y": 235},
+            "pointB": {"x": -5, "y": 45},
+
+            "lenght": 0,
+            "ranges": {"min": 0, "max": 0},
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_Stage_RightLeg_support",
+            "objectType": "constraint",
+            
+            "bodyA": "stage",
+            "bodyB": "rightLeg",
+
+            "pointA": {"x": 20, "y": 190},
+            "pointB": {"x": -5, "y": -35},
+
+            "lenght": 35,
+            "ranges": {"min": 35, "max": 110},
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        }
+    ]
+}

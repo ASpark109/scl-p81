@@ -1,0 +1,31 @@
+{
+    "EnvironmentWidth": 10000,
+    "EnvironmentHeight": 10000,
+
+    "spaceCrafts": 
+    [
+        {
+            "Name": "FALCON9_ST1",
+
+            "Position": {"x": 2125, "y": 8890},
+            "Velocity": {"x": 0, "y": 0},
+
+            "RotationAngle": 0
+        }
+    ],
+
+    "initEnvironmentParam":
+    [       
+        {
+            "Name": "Earth",
+
+            "Position": {"x": 0, "y": 0},
+            "Velocity": {"x": 0, "y": 0},
+
+            "Radius": 6000000,
+            "Mass": 1,
+            "RotationSpeed": 5,
+            "RotationAngle": 0
+        }
+    ]
+}
