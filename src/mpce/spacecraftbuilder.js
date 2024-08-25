@@ -1,22 +1,150 @@
-import { st1_falcon9 } from './spacecrafts/st1_falcon9';
+import { Configurationsfactory } from "./configurationsfactory.js";
+import { Logger } from "../logger.js"
+
+var Matter = require('matter-js');
+// SPACECRAFTS
+// import { st1_falcon9 } from './spacecrafts/st1_falcon9';
 
 export class SpaceCraftBuilder{
 
-    constructor(){
-        this.spaceCrafts = [];
+    constructor(){}
+
+    #currentId = 0;
+
+    buildSpaceCraft(confName){
+
+        if (!confName)
+        {
+            Logger.error("Конфігурація не встановлена", SpaceCraftBuilder);
+            return;
+        }
+
+        let conf = Configurationsfactory.getConfiguration(confName);
+
+        let builder = new ConfigurableBuilder(this.#getNewId, conf);
+
+        return builder.build();
     }
 
-    buildSpaceCrafts(communicationOperator){
+    #getNewId()
+    {
+        return this.#currentId++;
+    }
+}
 
-        let f1_c = {x: 500, y: 0};
-        //let f2_c = {x: 0, y: 1000000000};
+// --------------------------------------------------------------------
 
-        let falcon9_1 = new st1_falcon9(1,communicationOperator, f1_c)
-        // let falcon9_2 = new st1_falcon9(2,communicationOperator, f2_c)
+class ConfigurableBuilder
+{
+    constructor(id, conf)
+    {
+        this.#id = id;
+        this.#conf = conf
+    }
 
-        this.spaceCrafts.push(falcon9_1.build());
-        // this.spaceCrafts.push(falcon9_2.build());
+    #id = null;
+    #conf = null;
+    #bodies = [];
+    #constraints = [];
 
-        return this.spaceCrafts;
+    build()
+    {
+        if (!this.#conf)
+        {
+            return null;
+        }
+
+        for (const item of this.#conf.parts)
+        {
+            //! First, all objects must be handled, then constraints
+            switch (item.objectType)
+            {
+            case "rectangle":
+                this.#bodies.push(this.#getRectangleObj(item));
+                break;
+            case "constraint":
+                this.#constraints.push(this.#getConstraintObj(item));
+                break;
+            default:
+                return null;
+            }
+        }
+
+        return Matter.Composite.create({
+            bodies: this.#bodies,
+            constraints: this.#constraints,
+            label: this.#id,
+            sector:
+            {
+                x: null,
+                y: null
+            }
+        });
+    }
+     
+    #getRectangleObj(conf)
+    {
+        if (!conf)
+            return null;
+
+        let part = Matter.Bodies.rectangle(conf.initPos.x,
+                                           conf.initPos.y,
+                                           conf.dimensions.width,
+                                           conf.dimensions.height,
+                                           {
+                                                isStatic: conf.isStatic,
+                                                friction: conf.friction,
+                                                mass: conf.mass,
+
+                                                name:conf.name,
+                                                master: conf.master,
+                                                imageDev: conf.image_dev,
+                                                imageMain: conf.image_main,
+                                            });
+        
+        return part;
+    }
+
+    #getConstraintObj(conf)
+    {
+        const findObjectByName = (name) =>
+        {
+            const part = this.#bodies.find(part => part.name === name);
+            if (part === undefined)
+            {
+                console.log("Failed to configure spacecraft");
+                return null
+            }
+            return part !== undefined ? part : null; 
+        }
+
+        if (!conf)
+        {
+            return null;
+        }
+
+        let part = Matter.Constraint.create(
+        {
+            bodyA: findObjectByName(conf.bodyA),
+            pointA: conf.pointA,
+            bodyB: findObjectByName(conf.bodyB),
+            pointB: conf.pointB,
+
+            lenght: conf.lenght,
+
+            stiffness: conf.stiffness,
+            damping: conf.damping,
+            angularStiffness: conf.angularStiffness,
+            angularDamping: conf.angularDamping,
+
+            render:
+            {
+                visible: conf.visible
+            },
+
+            name: conf.name
+        });
+
+        return part
     }
 }
