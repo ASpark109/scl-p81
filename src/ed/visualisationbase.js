@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 
-import image_url from '../assets/images/rectangle.png';
+import falcon9fs from '../assets/images/rectangle.png';
+import falcon9leg from '../assets/images/falcon9leg.png';
 import wall_url from '../assets/images/wall.png';
 
 export class VisualisationBase
@@ -11,6 +12,12 @@ export class VisualisationBase
         this.displayedComponents = [];
         this.environmentComponents = [];
         this.test = null;
+    }
+
+    images = 
+    {
+        falcon9fs: falcon9fs,
+        falcon9leg: falcon9leg
     }
 
     init(container)
@@ -24,50 +31,38 @@ export class VisualisationBase
         this.test = new PIXI.Container();
         this.application.stage.addChild(this.test);
 
-        this.test.scale.x = 0.5;
-        this.test.scale.y = 0.5;
+        // this.test.scale.x = 0.5;
+        // this.test.scale.y = 0.5;
 
         container.current.appendChild(this.application.view);
 
         this.test.x = 100
-        this.test.y = 300
+        this.test.y = -200
         
         console.log(this.test.width)
-
 
         this.application.ticker.stop();
     }
 
-    createRenderingModel(objects)
+    createRenderingObjects(components)
     {
-
-        this.environmentComponents = objects;
-
-        for(let item of objects)
-        {
-            switch (item.label)
+        for (const item of components)
+        {   
+            for (const obj of item.bodies)
             {
-            case "falcon":
-                let rectangle = PIXI.Sprite.from(image_url);
-                rectangle.anchor.set(0.5, 0.5);
+                if(obj.imageDev)
+                {
+                    let rectangle = PIXI.Sprite.from(this.images[obj.imageDev]);
+                    rectangle.anchor.set(0.5, 0.5);
 
-                this.displayedComponents.push(rectangle);
-                this.test.addChild(rectangle)
-                
-                break;
-
-            case "wall":
-                let wall = PIXI.Sprite.from(wall_url);
-                wall.anchor.set(0.5, 0.5);
-
-                this.displayedComponents.push(wall);
-                this.test.addChild(wall)                
-                break;
+                    this.displayedComponents.push(rectangle);
+                    this.environmentComponents.push(obj);
+                    this.test.addChild(rectangle)
+                }
             }
         }
 
         this.updateFunction();
-
     }
 
     updateFunction()
