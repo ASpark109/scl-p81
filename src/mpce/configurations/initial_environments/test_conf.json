@@ -7,7 +7,15 @@
         {
             "Name": "FALCON9_ST1",
 
-            "Position": {"x": 2125, "y": 8890},
+            "Position": {"x": 2800, "y": 8500},
+            "Velocity": {"x": 0, "y": 0},
+
+            "RotationAngle": 40
+        },
+        {
+            "Name": "FALCON9_ST1",
+
+            "Position": {"x": 2400, "y": 8500},
             "Velocity": {"x": 0, "y": 0},
 
             "RotationAngle": 0

@@ -1,5 +1,6 @@
 import { EnvironmentBase } from "../mpce/environmentbase"
 import { VisualisationBase } from "./visualisationbase";
+import { Logger } from "../logger.js"
 
 export class ComponentDisplayOperator
 {
@@ -10,6 +11,9 @@ export class ComponentDisplayOperator
 
     init(container)
     {
+        // Пізніще init повинен приймати стартову конфігурацію оточення
+        // Потрібно навести порядок в цьому класі
+        
         this.testEnv = new EnvironmentBase();
 
         if (!(this.testEnv instanceof EnvironmentBase))
@@ -27,7 +31,7 @@ export class ComponentDisplayOperator
         this.testEnv.init()
         this.displayApp.init(container)
 
-        this.displayApp.createRenderingModel(this.testEnv.getAllComponents())
+        this.displayApp.createRenderingObjects(this.testEnv.getAllComponents())
 
         return true;
     }

@@ -90,14 +90,12 @@ export class EnvironmentBase
 
             let localParam = this.#globalToLocalCoordinates(item.Position);
 
-            Matter.Composite.translate(composite, localParam.localCoordinates);
-            //Matter.Composite.translate(composite, {x: 125, y: 900});
-            
             composite.sector.x = localParam.sectors.x;
             composite.sector.y = localParam.sectors.y;
 
+            Matter.Composite.translate(composite, localParam.localCoordinates);
+            Matter.Composite.rotate(composite, item.RotationAngle * (Math.PI / 180), master.position);
             Body.setVelocity(master, item.Velocity);
-            Body.setAngle(master, item.RotationAngle * (Math.PI / 180));
 
             Composite.add(this.#world, composite);
         }
@@ -145,37 +143,37 @@ export class EnvironmentBase
     #checkingForBorderCrossings()
     {
         for (const item of Matter.Composite.allComposites(this.#world))
+        {
+            let master = item.bodies.find(body => body.master === true) || null;
+
+            if (master.position.x >= this.#simulationWindowDimensions.width)
             {
-                let master = item.bodies.find(body => body.master === true) || null;
-
-                if (master.position.x >= this.#simulationWindowDimensions.width)
-                {
-                    Matter.Composite.translate(item, {x: -this.#simulationWindowDimensions.width, y: 0});
-                    ++item.sector.x
-                    break;
-                }
-
-                if (master.position.x <= 0)
-                {
-                    Matter.Composite.translate(item, {x: this.#simulationWindowDimensions.width, y: 0});
-                    --item.sector.x
-                    break;
-                }
-
-                if (master.position.y >= this.#simulationWindowDimensions.height)
-                {
-                    Matter.Composite.translate(item, {x: 0, y: -this.#simulationWindowDimensions.height});
-                    ++item.sector.y
-                    break;
-                }
-
-                if (master.position.y <= 0)
-                {
-                    Matter.Composite.translate(item, {x: 0, y: this.#simulationWindowDimensions.height});
-                    --item.sector.y
-                    break;
-                }
+                Matter.Composite.translate(item, {x: -this.#simulationWindowDimensions.width, y: 0});
+                ++item.sector.x
+                break;
             }
+
+            if (master.position.x <= 0)
+            {
+                Matter.Composite.translate(item, {x: this.#simulationWindowDimensions.width, y: 0});
+                --item.sector.x
+                break;
+            }
+
+            if (master.position.y >= this.#simulationWindowDimensions.height)
+            {
+                Matter.Composite.translate(item, {x: 0, y: -this.#simulationWindowDimensions.height});
+                ++item.sector.y
+                break;
+            }
+
+            if (master.position.y <= 0)
+            {
+                Matter.Composite.translate(item, {x: 0, y: this.#simulationWindowDimensions.height});
+                --item.sector.y
+                break;
+            }
+        }
     }
 
     #creatRender(engine)

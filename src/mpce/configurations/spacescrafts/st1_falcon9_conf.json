@@ -8,7 +8,7 @@
             "image_dev": "falcon9fs",
             "image_main": "",
 
-            "mass": 1,
+            "mass": 10,
 
             "dimensions":
             {
@@ -62,7 +62,7 @@
             "image_dev": "falcon9leg",
             "image_main": "",
 
-            "mass": 10,
+            "mass": 1,
 
             "dimensions":
             {
@@ -87,7 +87,7 @@
             "image_dev": "falcon9leg",
             "image_main": "",
 
-            "mass": 10,
+            "mass": 1,
 
             "dimensions":
             {
