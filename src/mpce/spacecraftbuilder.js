@@ -126,16 +126,19 @@ class ConfigurableBuilder
         let part = Matter.Constraint.create(
         {
             bodyA: findObjectByName(conf.bodyA),
-            pointA: conf.pointA,
+            pointA: {x: conf.pointA.x, y: conf.pointA.y},
             bodyB: findObjectByName(conf.bodyB),
-            pointB: conf.pointB,
+            pointB: {x: conf.pointB.x, y: conf.pointB.y},
 
             lenght: conf.lenght,
 
             stiffness: conf.stiffness,
-            damping: conf.damping,
-            angularStiffness: conf.angularStiffness,
-            angularDamping: conf.angularDamping,
+
+            //! Поки залишиться задокументованим
+            
+            //damping: conf.damping,
+            //angularStiffness: conf.angularStiffness,
+            //angularDamping: conf.angularDamping,
 
             render:
             {
