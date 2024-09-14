@@ -1,38 +1,40 @@
 {
-    "EnvironmentWidth": 10000,
-    "EnvironmentHeight": 10000,
+    "_comment": "1m in physical engine equal to 10px",
+
+    "EnvironmentWidth": 150000000,
+    "EnvironmentHeight": 150000000,
 
     "spaceCrafts": 
     [
         {
             "Name": "FALCON9_ST1",
 
-            "Position": {"x": 2800, "y": 8500},
+            "Position": {"x": 75000000, "y": 11299000},
             "Velocity": {"x": 0, "y": 0},
 
-            "RotationAngle": 40
+            "RotationAngle": 0
         },
         {
             "Name": "FALCON9_ST1",
 
-            "Position": {"x": 2400, "y": 8500},
+            "Position": {"x": 75001000, "y": 11299000},
             "Velocity": {"x": 0, "y": 0},
 
             "RotationAngle": 0
         }
     ],
 
-    "initEnvironmentParam":
+    "spaceObjectsParameters":
     [       
         {
             "Name": "Earth",
 
-            "Position": {"x": 0, "y": 0},
+            "Position": {"x": 75000000, "y": 75000000},
             "Velocity": {"x": 0, "y": 0},
 
-            "Radius": 6000000,
+            "Radius": 63700000,
             "Mass": 1,
-            "RotationSpeed": 5,
+            "RotationSpeed": 0,
             "RotationAngle": 0
         }
     ]

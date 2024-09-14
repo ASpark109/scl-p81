@@ -7,9 +7,16 @@ var Matter = require('matter-js');
 
 export class SpaceCraftBuilder{
 
-    constructor(){}
-
     #currentId = 0;
+    #numberOfObjects = 0;
+
+    //#configurableBuilder = null
+
+    constructor(numberOfObjects)
+    {
+        this.#numberOfObjects = numberOfObjects
+
+    }
 
     buildSpaceCraft(confName){
 
@@ -21,7 +28,7 @@ export class SpaceCraftBuilder{
 
         let conf = Configurationsfactory.getConfiguration(confName);
 
-        let builder = new ConfigurableBuilder(this.#getNewId, conf);
+        let builder = new ConfigurableBuilder(this.#getNewId, conf, this.#numberOfObjects);
 
         return builder.build();
     }
@@ -36,14 +43,16 @@ export class SpaceCraftBuilder{
 
 class ConfigurableBuilder
 {
-    constructor(id, conf)
+    constructor(id, conf, numberOfObjects)
     {
         this.#id = id;
-        this.#conf = conf
+        this.#conf = conf;
+        this.#numberOfObjects = numberOfObjects;
     }
 
     #id = null;
     #conf = null;
+    #numberOfObjects = 0;
     #bodies = [];
     #constraints = [];
 
@@ -73,7 +82,7 @@ class ConfigurableBuilder
         return Matter.Composite.create({
             bodies: this.#bodies,
             constraints: this.#constraints,
-            label: this.#id,
+            id: this.#id,
             sector:
             {
                 x: null,
@@ -97,9 +106,15 @@ class ConfigurableBuilder
                                                 mass: conf.mass,
 
                                                 name:conf.name,
+                                                type: "spacecraft",
                                                 master: conf.master,
                                                 imageDev: conf.image_dev,
                                                 imageMain: conf.image_main,
+
+                                                collisionFilter: {
+                                                    category: Math.pow(2, this.#id),
+                                                    mask: (Math.pow(2, this.#numberOfObjects) - 1) ^ Math.pow(2, this.#id) | Math.pow(2, this.#numberOfObjects + this.#id)
+                                                }
                                             });
         
         return part;

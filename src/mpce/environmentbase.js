@@ -56,16 +56,16 @@ export class EnvironmentBase
         this.#globalDimensions.height = conf.EnvironmentHeight;
 
         this.#addSpaceCraftToEnvironment(conf.spaceCrafts)
-        this.#addObjectToEnvironment();
+        this.#addObjectToEnvironment(conf.spaceObjectsParameters);
 
         engine.world.gravity.x = 0;
         engine.world.gravity.y = 0;
-
+        let a = Matter.Composite.allComposites(this.#world)[0].bodies[0];
         let self = this;
         Events.on(engine, 'afterUpdate', function(event) {
             //Часову змінну константу потрібно потім змінити
             //communicationOperator.update(0.01);
-
+            console.log(a.velocity)
             self.#checkingForBorderCrossings();
         });
 
@@ -74,7 +74,7 @@ export class EnvironmentBase
 
     #addSpaceCraftToEnvironment(conf)
     {
-        let builder = new SpaceCraftBuilder();
+        let builder = new SpaceCraftBuilder(conf.length);
 
         for (const item of conf)
         {
@@ -93,26 +93,40 @@ export class EnvironmentBase
             composite.sector.x = localParam.sectors.x;
             composite.sector.y = localParam.sectors.y;
 
-            Matter.Composite.translate(composite, localParam.localCoordinates);
-            Matter.Composite.rotate(composite, item.RotationAngle * (Math.PI / 180), master.position);
+            //Matter.Composite.translate(composite, localParam.localCoordinates);
+            //Matter.Composite.rotate(composite, item.RotationAngle * (Math.PI / 180), master.position);
             Body.setVelocity(master, item.Velocity);
 
             Composite.add(this.#world, composite);
         }
     }
 
-    #addObjectToEnvironment()
+    #addObjectToEnvironment(conf)
     {
-        //floor
-        let wall = Bodies.rectangle(1000, 900, 1900, 50, { isStatic: true, width: 1900, height: 50, label:"wall",
-            collisionFilter: 
-            {
-                category: 1//this.collisionGroup
-            }});
+        let numberOfSpaceCrafts = Matter.Composite.allComposites(this.#world).length;
 
-        this.#ambient.push(wall);
+        for (const composite of Matter.Composite.allComposites(this.#world))
+        {
+            let platform = Bodies.rectangle(0, 0, 1500, 50, {
+                                            isStatic: true,
+                                            type:"platform",
+                                            collisionFilter: {
+                                                category: Math.pow(2, numberOfSpaceCrafts + 1),
+                                                mask: Math.pow(2, composite.id)
+                                            }});
+            let comp = Matter.Composite.create({
+                bodies: platform,
+                sector:
+                {
+                    x: null,
+                    y: null
+                }
+            });
+            
+            //this.#ambient.push(comp);
+        }
 
-        //Composite.add(this.#world, this.#ambient);
+        Composite.add(this.#world, this.#ambient);
     }
 
     getAllComponents()
@@ -150,6 +164,7 @@ export class EnvironmentBase
             {
                 Matter.Composite.translate(item, {x: -this.#simulationWindowDimensions.width, y: 0});
                 ++item.sector.x
+                //console.log(item.sector.x);
                 break;
             }
 
@@ -157,6 +172,7 @@ export class EnvironmentBase
             {
                 Matter.Composite.translate(item, {x: this.#simulationWindowDimensions.width, y: 0});
                 --item.sector.x
+                //console.log(item.sector.x);
                 break;
             }
 
@@ -164,6 +180,7 @@ export class EnvironmentBase
             {
                 Matter.Composite.translate(item, {x: 0, y: -this.#simulationWindowDimensions.height});
                 ++item.sector.y
+                //console.log(item.sector.y);
                 break;
             }
 
@@ -171,6 +188,7 @@ export class EnvironmentBase
             {
                 Matter.Composite.translate(item, {x: 0, y: this.#simulationWindowDimensions.height});
                 --item.sector.y
+                //console.log(item.sector.y);
                 break;
             }
         }
