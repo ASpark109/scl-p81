@@ -1,5 +1,4 @@
 import { Configurationsfactory } from "./configurationsfactory.js";
-import { Logger } from "../logger.js"
 
 var Matter = require('matter-js');
 // SPACECRAFTS
@@ -22,13 +21,13 @@ export class SpaceCraftBuilder{
 
         if (!confName)
         {
-            Logger.error("Конфігурація не встановлена", SpaceCraftBuilder);
+            console.log("Конфігурація не встановлена");
             return;
         }
 
         let conf = Configurationsfactory.getConfiguration(confName);
 
-        let builder = new ConfigurableBuilder(this.#getNewId, conf, this.#numberOfObjects);
+        let builder = new ConfigurableBuilder(this.#getNewId(), conf, this.#numberOfObjects);
 
         return builder.build();
     }
@@ -83,11 +82,6 @@ class ConfigurableBuilder
             bodies: this.#bodies,
             constraints: this.#constraints,
             id: this.#id,
-            sector:
-            {
-                x: null,
-                y: null
-            }
         });
     }
      
@@ -106,15 +100,10 @@ class ConfigurableBuilder
                                                 mass: conf.mass,
 
                                                 name:conf.name,
-                                                type: "spacecraft",
+                                                type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
                                                 imageDev: conf.image_dev,
-                                                imageMain: conf.image_main,
-
-                                                collisionFilter: {
-                                                    category: Math.pow(2, this.#id),
-                                                    mask: (Math.pow(2, this.#numberOfObjects) - 1) ^ Math.pow(2, this.#id) | Math.pow(2, this.#numberOfObjects + this.#id)
-                                                }
+                                                imageMain: conf.image_main
                                             });
         
         return part;

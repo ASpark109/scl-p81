@@ -1,9 +1,11 @@
 import * as PIXI from 'pixi.js';
-import { constants } from "../mpce/constants";
+//import { constants } from "../mpce/constants";
 
 import falcon9fs from '../assets/images/rectangle.png';
 import falcon9leg from '../assets/images/falcon9leg.png';
-import wall_url from '../assets/images/wall.png';
+
+import satellite from '../assets/images/satelliteicon.png';
+import planet from '../assets/images/planet.png';
 
 const DISPLAY_WIDTH = 2000;
 const DISPLAY_HEIGHT = 1100;
@@ -13,22 +15,27 @@ export class VisualisationBase
     constructor()
     {
         this.application = null;
-        this.displayedComponents = [];
+        this.components = [];
         this.environmentComponents = [];
         this.sector = [];
         this.test = null;
         this.focusObject = null
+        this.prevPos = {x: 0, y: 0}
+        this.shiftx = {x: 0, y: 0}
+        this.updateFunc = null;
     }
 
     images = 
     {
         falcon9fs: falcon9fs,
-        falcon9leg: falcon9leg
+        falcon9leg: falcon9leg,
+        rocketIcon: satellite,
+        planet: planet
     }
 
     #scale = 1;
 
-    init(container)
+    initialize(container)
     {
         this.application = new PIXI.Application({
             width: DISPLAY_WIDTH,
@@ -41,60 +48,223 @@ export class VisualisationBase
 
         //! scale = 1, 1m = 10px
 
-        this.test.scale.x = 0.3;
-        this.test.scale.y = 0.3;
+        //this.test.x += 100;
+        //this.test.y += 100;
 
         container.current.appendChild(this.application.view);
 
-        this.application.ticker.stop();
-    }
-
-    createRenderingObjects(composites)
-    {
-        console.log(composites)
-        for (const composite of composites)
-        {
-            for (const body of composite.bodies)
-            {
-                if(body.imageDev)
-                {
-                    let rectangle = PIXI.Sprite.from(this.images[body.imageDev]);
-                    rectangle.anchor.set(0.5, 0.5);
-
-                    this.displayedComponents.push(rectangle);
-                    this.environmentComponents.push(body);
-                    this.sector.push(composite.sector);
-                    this.test.addChild(rectangle)
-                }
-            }
-
-        }
-
-        this.focusObject = this.displayedComponents[0];
+        this.updateFunc = this.updateFunctionPhysical;
 
         this.updateFunction();
+
+        this.application.ticker.stop();
+
+        let graphics = new PIXI.Graphics();
+
+    }
+
+    addObject(item, composite, abstract)
+    {
+        if (item.type == "spacecraft")
+        {
+            let object = []
+
+            for (const body of composite.bodies)
+            {
+                let rectangle = PIXI.Sprite.from(this.images[body.imageDev]);
+                rectangle.anchor.set(0.5, 0.5);
+
+                //! Напевно треба зробити мап
+                object.push(rectangle);
+            }
+
+            let icon = PIXI.Sprite.from(this.images["rocketIcon"])
+            icon.anchor.set(0.5, 0.5);
+
+            let obj = {
+                "visual": object,
+                "visualAbstruct": icon,
+                "physical": composite.bodies,
+                "abstract": abstract,
+                "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
+                "id": composite.id
+                //mainObj?
+            }
+
+            this.test.addChild(...object);
+            this.components.push(obj);
+
+            return obj;
+        }
+        else if (item.type == "spaceobject")
+        {
+
+            // let icon1 = PIXI.Sprite.from(this.images["planet"]);
+            // icon1.anchor.set(0.5,0.5);
+
+            // icon1.scale.set(300000)
+            const circle = new PIXI.Graphics();
+            circle.beginFill(0x011591);
+            circle.drawCircle(0, 0, 318.5);
+            circle.endFill();
+
+            circle.pivot.set(0.5, 0.5)
+
+            //circle.scale.set(1/this.#scale)
+
+
+            let obj = {
+                "visual": circle,
+                "physical": null,
+                "abstract": abstract
+            }
+
+            this.test.addChild(circle);
+            this.environmentComponents.push(obj);
+        }
     }
 
     updateFunction()
     {
-        if(this.environmentComponents.length === 0)
-        {
-            return false;
-        }
-        console.log(this.test.x);
-        console.log(this.test.y);
         this.application.ticker.add(() => {
-            
-            for(let i = 0; i < this.displayedComponents.length; i++)
+            this.updateFunc();
+        });
+    }
+
+    updateFunctionPhysical()
+    {
+        //this.shiftx.x += this.components[0].abstract.position.x - this.prevPos.x
+        //this.shiftx.y += this.components[0].abstract.position.y - this.prevPos.y
+
+        this.prevPos.x = this.components[0].abstract.position.x
+        this.prevPos.y = this.components[0].abstract.position.y
+
+        for (let q = 0; q < this.components.length; ++q)
+        {
+            let item = this.components[q];
+
+            for (let i = 0; i < item.physical.length; ++i)
             {
-                this.displayedComponents[i].x = this.environmentComponents[i].position.x + this.sector[i].x * constants.SECTOR_WIDTH / 1;
-                this.displayedComponents[i].y = this.environmentComponents[i].position.y + this.sector[i].y * constants.SECTOR_HEIGHT / 1;
-                this.displayedComponents[i].rotation = this.environmentComponents[i].angle;
+                item.visual[i].x = item.physical[i].position.x - item.mountingPoint.x + (item.abstract.position.x - this.shiftx.x) * 10// * this.#scale * 10;
+                item.visual[i].y = item.physical[i].position.y - item.mountingPoint.y + (item.abstract.position.y - this.shiftx.y) * 10// * this.#scale * 10;
+                item.visual[i].rotation = item.physical[i].angle;
             }
 
-            this.test.x += (DISPLAY_WIDTH/2 - this.focusObject.x * this.test.scale.x - this.test.x) * 0.9;
-            this.test.y += (DISPLAY_HEIGHT/2 - this.focusObject.y * this.test.scale.y - this.test.y) * 0.9;
-        });
+            // if (item.visual[0].x > DISPLAY_WIDTH / this.#scale ||
+            //     item.visual[0].x < 0 ||
+            //     item.visual[0].y > DISPLAY_HEIGHT / this.#scale ||
+            //     item.visual[0].y < 0)
+            // {
+            //     this.test.removeChild(...item.visual)
+            // }
+            // else
+            // { 
+            //     this.test.addChild(...item.visual);
+            // }
+        }
+
+        // for (let i = 0; i < this.environmentComponents.length; ++i)
+        // {
+        //     this.environmentComponents[i].visual.x = (this.environmentComponents[i].abstract.position.x - this.shiftx.x) * 10;
+        //     this.environmentComponents[i].visual.y = (this.environmentComponents[i].abstract.position.y - this.shiftx.y) * 10;
+        // }
+
+        this.test.x += (DISPLAY_WIDTH/2 - 0 * this.test.scale.x - this.test.x) * 0.1;
+        this.test.y += (DISPLAY_HEIGHT/2 - 0 * this.test.scale.y - this.test.y) * 0.1;
+    }
+
+    updateFunctionAbstruct()
+    {
+        this.shiftx.x += this.components[0].abstract.position.x - this.prevPos.x
+        this.shiftx.y += this.components[0].abstract.position.y - this.prevPos.y
+
+        this.prevPos.x = this.components[0].abstract.position.x
+        this.prevPos.y = this.components[0].abstract.position.y
+
+        for (let q = 0; q < this.components.length; ++q)
+        {
+            let item = this.components[q];
+
+                item.visualAbstruct.x = (item.abstract.position.x - this.shiftx.x) * 10
+                item.visualAbstruct.y = (item.abstract.position.y - this.shiftx.y) * 10
+                item.visualAbstruct.rotation = item.physical[0].angle;
+
+            // if (item.visual[0].x > DISPLAY_WIDTH / this.#scale ||
+            //     item.visual[0].x < 0 ||
+            //     item.visual[0].y > DISPLAY_HEIGHT / this.#scale ||
+            //     item.visual[0].y < 0)
+            // {
+            //     this.test.removeChild(item.visualAbstruct)
+            // }
+            // else
+            // { 
+            //     this.test.addChild(item.visualAbstruct);
+            // }
+        }
+
+        this.environmentComponents[0].visual.position.set((0 - this.shiftx.x) * 10,
+                                                          (0 - this.shiftx.y) * 10);
+
+        this.test.x += (DISPLAY_WIDTH/2 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x) * 0.1;
+        this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visualAbstruct.y * this.test.scale.y - this.test.y) * 0.1;
+
+        //this.test.x += (DISPLAY_WIDTH/2 - 0 * this.test.scale.x - this.test.x) * 0.1;
+        //this.test.y += (DISPLAY_HEIGHT/2 - 0 * this.test.scale.y - this.test.y) * 0.1;
+    }
+
+    setFocusObject(id)
+    {
+        let index = this.components.findIndex(item => item.id === id)
+        let temp = this.components[index]
+        this.components[index] = this.components[0];
+        this.components[0] = temp;
+
+        this.prevPos.x = this.components[0].abstract.position.x;
+        this.prevPos.y = this.components[0].abstract.position.y;
+    }
+
+    setScale(scale)
+    {
+        if (this.#scale > 0.2 && scale <= 0.2)
+        {  
+            for (let item of this.components)
+            {
+                this.test.removeChild(...item.visual);
+                this.test.addChild(item.visualAbstruct);
+            }
+
+            this.updateFunc = this.updateFunctionAbstruct;
+        }
+        if (this.#scale <= 0.2 && scale > 0.2)
+        {
+            for (let item of this.components)
+            {
+                this.test.addChild(...item.visual);
+                this.test.removeChild(item.visualAbstruct);
+            }
+
+            this.updateFunc = this.updateFunctionPhysical;
+        }
+
+        if (scale <= 0.2)
+        {
+            for (let item of this.components)
+            {
+                item.visualAbstruct.scale.set(0.2/scale);
+            }
+        }
+
+        for (let item of this.environmentComponents)
+        {
+            item.visual.scale.set(1/scale)
+            //item.visual.position.set(0,0)
+        }
+        
+
+        this.#scale = scale;
+
+        this.test.scale.x = scale;
+        this.test.scale.y = scale;
     }
 
     stop()

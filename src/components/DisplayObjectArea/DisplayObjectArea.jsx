@@ -1,10 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
-// import Rocket from '../../mpce/testRect';
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
-// import { EnvironmentBase } from "../../mpce/environmentbase.js"
-// import { userData } from '../../userData/userCode';
-import { ComponentDisplayOperator } from '../../ed/componentdisplayoperator';
+import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
 
 const DisplayObjectArea = () => {
 
@@ -12,17 +9,13 @@ const DisplayObjectArea = () => {
 
     useEffect(() => {
 
-        // userData();
-        let displayOperator = new ComponentDisplayOperator()
+        let conf = "TEST_ENVIRONMENT";
+        let displayOperator = new EnvironmentSubSystem(conf)
 
-        //Запускаємо середовище matter pixi
-        if (!displayOperator.init(pixiContainer))
+        if (!displayOperator.initialize(pixiContainer))
         {
             console.log("displayOperator - error");
         }
-
-        displayOperator.runRendering()
-
 
     return () => {
         displayOperator.displayApp.destroy(true);
