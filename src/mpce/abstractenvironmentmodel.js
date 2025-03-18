@@ -1,13 +1,19 @@
+import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
+
 class Spacecraft
 {
     constructor(position, velocity, physicalObj)
     {
         this.position = position;
         this.velocity = velocity;
+        this.velocityPhys = {x: 0, y: 0};
         this.id = physicalObj.id;
+        this.force = {};
 
         //Композити не мають поки маси, якось потрібно вирішити
-        this.mass = 25//physicalObj;
+        this.mass = 12//physicalObj;
+        this.isClose = false
+        this.closeGroupIndex = -1
     }
 }
 
@@ -32,7 +38,11 @@ export class AbstractEnvironmentModel
     #mSpaceBodies = [];
     #mSpacecrafts = [];
 
-    #deltaTime = 5;
+    #deltaTime = 1;
+
+    #closeGroupCount = 0;
+
+    flag = true;
 
 //: public
     addObject(conf, physicalObj)
@@ -76,6 +86,101 @@ export class AbstractEnvironmentModel
     update()
     {
         this.#calculateNewSystemState();
+        this.calculateDistances();
+    }
+
+    calculateDistances()
+    {
+        for (let i = 0; i < this.#mSpacecrafts.length - 1; i++)
+        {
+            for (let q = i + 1; q < this.#mSpacecrafts.length; q++)
+            {
+                let x = this.#mSpacecrafts[i].position.x - this.#mSpacecrafts[q].position.x;
+                let y = this.#mSpacecrafts[i].position.y - this.#mSpacecrafts[q].position.y;
+
+                let d = Math.sqrt(x*x + y*y);
+
+                if (this.#mSpacecrafts[i].isClose && this.#mSpacecrafts[q].isClose &&
+                    this.#mSpacecrafts[i].closeGroupIndex === this.#mSpacecrafts[q].closeGroupIndex)
+                {
+                    if (d > 70)
+                    {
+                        let flag1 = false;
+                        let flag2 = false;
+                        
+                        for (let n = 0; n < this.#mSpacecrafts.length; n++)
+                        {
+                            let x = this.#mSpacecrafts[n].position.x - this.#mSpacecrafts[i].position.x;
+                            let y = this.#mSpacecrafts[n].position.y - this.#mSpacecrafts[i].position.y;
+
+                            let d = Math.sqrt(x*x + y*y);
+
+                            if (d <= 50)
+                            {
+                                flag1 = true;
+                            }
+                        }
+
+                        for (let n = 0; n < this.#mSpacecrafts.length; n++)
+                            {
+                                let x = this.#mSpacecrafts[n].position.x - this.#mSpacecrafts[q].position.x;
+                                let y = this.#mSpacecrafts[n].position.y - this.#mSpacecrafts[q].position.y;
+    
+                                let d = Math.sqrt(x*x + y*y);
+    
+                                if (d <= 50)
+                                {
+                                    flag2 = true;
+                                }
+                            }
+
+                        if (flag1)
+                        {
+                            SignalSlotDispatcher.emit("objectsDistancing", 
+                                    this.#mSpacecrafts[i]
+                                );
+                            this.#mSpacecrafts[i].isClose = false;
+                        }
+                        if (flag2)
+                        {
+                            SignalSlotDispatcher.emit("objectsDistancing", 
+                                    this.#mSpacecrafts[q]
+                                );
+                            this.#mSpacecrafts[q].isClose = false;
+                        }
+                    }
+                }
+                else if (d <= 70)
+                {
+                    let arr =
+                    [
+                        this.#mSpacecrafts[i],
+                        this.#mSpacecrafts[q]
+                    ];
+
+                    if (arr[1].isClose)
+                    {
+                        arr.reverse();
+                    }
+
+                    if (arr[0].closeGroupIndex === -1) //! Цей блок можна перемістити в if, який знаходиться вище
+                    {
+                        this.#closeGroupCount++;
+                        arr[0].closeGroupIndex = this.#closeGroupCount;
+                        arr[1].closeGroupIndex = this.#closeGroupCount;
+                    }
+                    else
+                    {
+                        arr[1].closeGroupIndex = arr[0].closeGroupIndex;
+                    }
+
+                    this.#mSpacecrafts[i].isClose = true;
+                    this.#mSpacecrafts[q].isClose = true;
+
+                    SignalSlotDispatcher.emit("objectsApproaching", arr);
+                }
+            }
+        }
     }
 
     start()
@@ -93,20 +198,19 @@ export class AbstractEnvironmentModel
     {
         for (let i = 0; i < this.#mSpacecrafts.length; i++)
         {
-            let state = [this.#mSpacecrafts[i].position.x,
-                     this.#mSpacecrafts[i].position.y,
-                     this.#mSpacecrafts[i].velocity.x,
-                     this.#mSpacecrafts[i].velocity.y];
-    
+            let state =
+                    [
+                        this.#mSpacecrafts[i].position.x,
+                        this.#mSpacecrafts[i].position.y,
+                        this.#mSpacecrafts[i].velocity.x,
+                        this.#mSpacecrafts[i].velocity.y 
+                    ];
+            
             let newState = this.#rk4Step(state, this.#mSpacecrafts[i], this.#deltaTime);
-    
-            //Body.setPosition(physicalObjects[i], {x: newState[0]/pxScale + 1000, y: newState[1]/pxScale + 500});
-    
+        
             this.#mSpacecrafts[i].position = {x: newState[0], y: newState[1]};
             this.#mSpacecrafts[i].velocity = {x: newState[2], y: newState[3]};
         }
-
-        //console.log(this.#mSpacecrafts[0].position)
     }
 
     #rk4Step(state, spacecraft, dt) {
@@ -143,6 +247,8 @@ export class AbstractEnvironmentModel
             fv = Vector.add(Vector.mult(Vector.normalise(v), f), fv);
             //}
         }
+
+        spacecraft.force = fv;
 
         //! Тут можна додавати оновлювати прискорення для обєкта, або сили
 

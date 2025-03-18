@@ -81,7 +81,7 @@ class ConfigurableBuilder
         return Matter.Composite.create({
             bodies: this.#bodies,
             constraints: this.#constraints,
-            id: this.#id,
+            id: this.#id ,
         });
     }
      
@@ -97,7 +97,11 @@ class ConfigurableBuilder
                                            {
                                                 isStatic: conf.isStatic,
                                                 friction: conf.friction,
+                                                frictionAir: 0,
                                                 mass: conf.mass,
+                                                isSensor: conf.isSensor,
+                                                dockId: conf.isSensor ? this.#id : null, // переписати потім, щоб воно не залежало від сенсора
+                                                location: conf.isSensor ? conf.location : null,
 
                                                 name:conf.name,
                                                 type: "spacecraft", // Шо це і нашо?
@@ -134,7 +138,7 @@ class ConfigurableBuilder
             bodyB: findObjectByName(conf.bodyB),
             pointB: {x: conf.pointB.x, y: conf.pointB.y},
 
-            lenght: conf.lenght,
+            //length: conf.length,
 
             stiffness: conf.stiffness,
 

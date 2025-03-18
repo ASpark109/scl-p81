@@ -2,7 +2,7 @@ import { PhysicalEnvironmentModel } from "./physicalenvironmentmodel";
 import { AbstractEnvironmentModel } from "./abstractenvironmentmodel";
 import { VisualisationBase } from "../ed/visualisationbase";
 import { Configurationsfactory } from "./configurationsfactory.js";
-//import { set } from "rsuite/esm/utils/dateUtils";
+import { SignalSlotDispatcher } from "./signalslotdispatcher.js";
 
 export class EnvironmentSubSystem
 {
@@ -10,6 +10,7 @@ export class EnvironmentSubSystem
     #mPhysicalEnvironmentModel = null;
     #mAbstractEnvironmentModel = null;
     #mVisualisationBase = null;
+    #scale = 1;
 
     constructor(configuration)
     {
@@ -17,7 +18,7 @@ export class EnvironmentSubSystem
         this.displayApp = null;
     }
 
-    initialize(container)
+    initialize(container, containerM, matterContainerPhys)
     {        
         this.#mPhysicalEnvironmentModel = new PhysicalEnvironmentModel(this.#mConfiguration);
 
@@ -43,15 +44,20 @@ export class EnvironmentSubSystem
             return false;
         }
 
+        SignalSlotDispatcher.connect("objectsApproaching", this.#mPhysicalEnvironmentModel,
+                        this.#mPhysicalEnvironmentModel.objectsApproaching);
+        SignalSlotDispatcher.connect("objectsDistancing", this.#mPhysicalEnvironmentModel,
+                        this.#mPhysicalEnvironmentModel.objectsDistancing);
+
         this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
-                                                    this.#mAbstractEnvironmentModel));
+                                                    this.#mAbstractEnvironmentModel), containerM, matterContainerPhys);
         this.#mVisualisationBase.initialize(container);
 
         this.createInitialConfiguration();
 
-        this.#mVisualisationBase.setScale(0.000005)
+        this.#mVisualisationBase.setScale(9.5);
 
-        this.start()
+        this.start();
 
         return true;
     }
@@ -68,7 +74,7 @@ export class EnvironmentSubSystem
             this.addObject(item)
         }
 
-        this.setFocusObj(0);
+        this.setFocusObj(0); // Id може починатися не з 0
     }
 
     addObject(item)
@@ -98,5 +104,23 @@ export class EnvironmentSubSystem
     stopRendering()
     {
         this.#mVisualisationBase.stop();
+    }
+
+    scaleUp()
+    {
+        if (this.#scale <= 12)
+        {
+            this.#scale += 0.5
+            this.#mVisualisationBase.setScale(this.#scale)
+        }
+    }
+
+    scaleDown()
+    {
+        if (this.#scale - 0.5 >= 0.5)
+        {
+            this.#scale -= 0.5
+            this.#mVisualisationBase.setScale(this.#scale)
+        }
     }
 }

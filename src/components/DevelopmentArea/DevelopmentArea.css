@@ -20,7 +20,7 @@
 
 
 .Pane.vertical.Pane1  {
-  min-width: 20%;
+  min-width: 80%;
   max-width: 80%;
   position: static !important;
   /* background-color: lightblue; */
@@ -39,7 +39,16 @@
 }
 
 .DisplayObjectArea{
-  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Розташовує дочірні елементи вертикально */
+  width: 100%; /* Займає всю ширину */
+  height: 100%; /* Фіксована висота контейнера */
+  overflow-y: auto; /* Вертикальна прокрутка */
+  overflow-x: hidden; /* Приховує горизонтальну прокрутку */
+  border: 1px solid #ccc; /* Опціональна рамка для візуалізації меж */
+  background-color: #f9f9f9; /* Фон для покращення вигляду */
+
+  /* overflow: hidden; */
 }
 
 
