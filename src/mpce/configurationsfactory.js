@@ -14,7 +14,7 @@ export class Configurationsfactory
         }
         else
         {
-            console.log("Конфігурації не існує");
+            console.log("Конфігурації не існує " + conf);
         }
 
         return null;

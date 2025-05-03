@@ -10,21 +10,21 @@ const EditorPanelButtonGroup = ({ onSelectChange }) => {
     const languageOptions = [
         {
             id: 1,
-            name: "JavaScript (Node.js 12.14.0)",
-            label: "C",
-            value: "javascript",
+            name: "",
+            label: "0",
+            value: 0,
         },
         {
             id: 2,
-            name: "JavaScript (Node.js 12.14.0)",
-            label: "C++",
-            value: "javascript",
+            name: "",
+            label: "1",
+            value: 1,
         },
         {
             id: 3,
-            name: "JavaScript (Node.js 12.14.0)",
-            label: "Python",
-            value: "javascript",
+            name: "",
+            label: "2",
+            value: 2,
         },
     ]
 
@@ -34,7 +34,7 @@ const EditorPanelButtonGroup = ({ onSelectChange }) => {
         options={languageOptions}
         styles={customStyles}
         defaultValue={languageOptions[0]}
-    //   onChange={(selectedOption) => onSelectChange(selectedOption)}
+        onChange={(selectedOption) => onSelectChange(selectedOption)}
     />
     );
 };

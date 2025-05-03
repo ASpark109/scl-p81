@@ -54,6 +54,14 @@
             {
                 "fuel": 10,
                 "oxidiser": 10
+            },
+
+            "landingLegPneumaticSystem":
+            {
+                "pressureTank": 30,
+                "maxPistonDisplacement": 110,
+                "throttle": 0.1
+
             }
         },
 

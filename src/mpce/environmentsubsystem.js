@@ -3,6 +3,8 @@ import { AbstractEnvironmentModel } from "./abstractenvironmentmodel";
 import { VisualisationBase } from "../ed/visualisationbase";
 import { Configurationsfactory } from "./configurationsfactory.js";
 import { SignalSlotDispatcher } from "./signalslotdispatcher.js";
+import { SystemControllModel } from "./systemcontrollmodel.js";
+import { UserInteractionInterface } from "./userinteractioninterface.js";
 
 export class EnvironmentSubSystem
 {
@@ -10,6 +12,7 @@ export class EnvironmentSubSystem
     #mPhysicalEnvironmentModel = null;
     #mAbstractEnvironmentModel = null;
     #mVisualisationBase = null;
+    #mSystemControllModel = null;
     #scale = 1;
 
     constructor(configuration)
@@ -44,6 +47,15 @@ export class EnvironmentSubSystem
             return false;
         }
 
+        this.#mSystemControllModel = new SystemControllModel();
+
+        if (this.#mSystemControllModel == null)
+        {
+            console.log("Create SystemControllModel failed");
+            return false;
+        }
+
+        
         SignalSlotDispatcher.connect("objectsApproaching", this.#mPhysicalEnvironmentModel,
                         this.#mPhysicalEnvironmentModel.objectsApproaching);
         SignalSlotDispatcher.connect("objectsDistancing", this.#mPhysicalEnvironmentModel,
@@ -82,6 +94,8 @@ export class EnvironmentSubSystem
         let physicalObj = this.#mPhysicalEnvironmentModel.addObject(item);
         let abstractObj = this.#mAbstractEnvironmentModel.addObject(item, physicalObj);
         let visualObj   = this.#mVisualisationBase.addObject(item, physicalObj, abstractObj);
+        let systemControl = this.#mSystemControllModel.addObject(physicalObj, item) // пізніше передавати візуальну модель
+
     }
 
     removeObject()

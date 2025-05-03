@@ -3,6 +3,7 @@ import { Configurationsfactory } from "./configurationsfactory.js";
 import { PhysicalEnvironmentsTransporter } from "./physicalenvironmentstransporter.js";
 import { DockingOperator } from "./dockingoperator.js";
 import { constants } from "./constants.js";
+import { ModuleBase } from "./modules/modulebase.js";
 
 var Matter = require('matter-js');
 
@@ -75,6 +76,7 @@ export class PhysicalEnvironmentModel
 
         Events.on(this.#mEngine, "afterUpdate", (event) => {
             this.#mAbstractUpdate()
+            ModuleBase.updateAll();
         })
 
 
@@ -177,7 +179,7 @@ export class PhysicalEnvironmentModel
 
     addObject(item)
     {
-        //Тимчасово
+        //Тимчасово, зараз створюються тільки космічні апарати, космічні обєкти ігноруються
         if (item.type == "spaceobject")
         {
             return null;
