@@ -7,7 +7,7 @@ export class DockingOperator
     #mDockingSpacecrafts = null;
 
     #mDemp = 0.5; // винести в константи, або конфігурацію
-    #mStif = 0.01
+    #mStif = 0.004
 
     constructor (interactionWorld, engine)
     {
@@ -22,75 +22,37 @@ export class DockingOperator
     {
         Matter.Events.on(this.#mEngine, 'collisionStart', (event) =>
         {
-
             var pairs = event.pairs;
 
-            console.log("Colision start " + pairs.length);
+            console.log("start " + pairs.length)
 
-            for (var i = 0, j = pairs.length; i != j; ++i) {
-                var pair = pairs[i];
-            
+            for (var i = 0, j = pairs.length; i != j; ++i)
+            {
+                let pair = pairs[i];
+
+                console.log(pair.bodyA.dockId + " " + pair.bodyB.dockId)
+
                 if (pair.bodyA.dockId == null || pair.bodyB.dockId == null)
                 {
-                    console.log("AAAAAAA");
-                    console.log(pair.bodyA.dockId);
-                    console.log(pair.bodyB.dockId);
+                    console.log("Not valid ids " + pair.bodyA.dockId + " " + pair.bodyB.dockId)
                     return;
                 }
-        
-                let p = [pair.bodyA.dockId, pair.bodyB.dockId];
-                console.log(p);
-        
-                p.sort((a, b) => a - b);
-        
-                console.log(this.#mDockingSpacecrafts.length)
-                console.log("hey")
 
-                let party = this.#mDockingSpacecrafts.find((item) =>
+                let pairId = [pair.bodyA.dockId, pair.bodyB.dockId];
+                pairId.sort((a, b) => a - b);
+
+                let isExist = this.#mDockingSpacecrafts.find((item) =>
                 {
-                    return item.objects[0] == p[0] && item.objects[1] == p[1]
+                    return item[0] == pairId[0] && item[1] == pairId[1]
                 });
 
-                console.log(party)
-        
-                if (!party)
+                if (!isExist)
                 {
-                    party = {
-                        objects: p,
-                    
-                        leftDock: null,
-                        rightDock: null,
-        
-                        left: false,
-                        right: false,
-        
-                        docked: false
-                    };
-                    
-                    this.#mDockingSpacecrafts.push(party);
+                    this.#mDockingSpacecrafts.push(pairId);
+                    this.doDock(pair.bodyA, pair.bodyB)
                 }
-        
-                if (pair.bodyA.location === "left" && pair.bodyB.location === "right")
-                {
-                    console.log("LEFT");
-                    party.left = true;
-                    party.leftDock = [pair.bodyA, pair.bodyB];
-                }
-                if (pair.bodyA.location === "right" && pair.bodyB.location === "left")
-                {
-                    console.log("RIGHT");
-                    party.right = true;
-                    party.rightDock = [pair.bodyA, pair.bodyB];
-                }
-        
-                if (party.left && party.right)
-                {
-                    console.log("DOCK?")
-                    party.docked = true
-                    this.doDock(party.leftDock, party.rightDock)
-                }
-        
-                console.log(this.#mDockingSpacecrafts);   
+
+                console.log("welcome!")
             }
         });
 
@@ -139,42 +101,41 @@ export class DockingOperator
 
     doDock(left, right)
     {
-        let dockConstraintLeft = Matter.Constraint.create({
-            bodyA: left[0],
-            bodyB: left[1],
-    
-            pointA: {x: 0, y: 0},
-            pointB: {x: 0, y: 0},
-    
+        let dockConstraint1 = Matter.Constraint.create({
+            bodyA: left,
+            bodyB: right,
+
+            pointA: {x: 12, y: -10},
+            pointB: {x: -12, y: -10},
+
             length: 0,
-    
+
             stiffness: this.#mStif,
             damping: this.#mDemp
         });
-    
-        let dockConstraintRight = Matter.Constraint.create({
-            bodyA: right[0],
-            bodyB: right[1],
-    
-            pointA: {x: 0, y: 0},
-            pointB: {x: 0, y: 0},
-    
+
+        let dockConstraint2 = Matter.Constraint.create({
+            bodyA: left,
+            bodyB: right,
+
+            pointA: {x: 12, y: 10},
+            pointB: {x: -12, y: 10},
+
             length: 0,
-    
+
             stiffness: this.#mStif,
             damping: this.#mDemp
         });
-    
+
         console.log("dock!");
-    
-        Matter.Composite.add(this.#mInteractionWorld, [dockConstraintLeft, dockConstraintRight]);
-    
+
+        Matter.Composite.add(this.#mInteractionWorld, [dockConstraint1, dockConstraint2]);
+
+
+
         setTimeout(() => {
-            //dockConstraintLeft.length = 0;
-            //dockConstraintRight.length = 0;
-            
-            dockConstraintLeft.stiffness = 1;
-            dockConstraintRight.stiffness = 1;
+            dockConstraint1.stiffness = 0.3;
+            dockConstraint2.stiffness = 0.3;
         }, 4000)
     }
 }
