@@ -1,17 +1,19 @@
 /* MySplitPane.css */
 
 .splitPaneContainer {
-  height: 90vh;
+  height: 94vh;
   width: 100%;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: row; */
   padding-left: 8px;
   padding-right: 8px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .SplitPane.vertical{
   position: static !important;
+  /* width: 100%; */
+  display: flex;
 }
 
 /* --------- LEFT panel --------- */
@@ -19,135 +21,114 @@
 
 .Pane.vertical.Pane1  {
   min-width: 25%;
+  max-width: 70%;
+}
+.Pane.vertical.Pane2  {
+  min-width: 25%;
   max-width: 75%;
+}
+
+.displayobjectfuncpanel {
+  width: 100%;
 }
 
 .left-panel {
   height: 100%;
+  width: 100%;
   overflow: auto;
   background-color: #1e1e1e;
   display: flex;
   flex-direction: column;
   border-radius: 12px;
+  border: 1px solid #696969;
 }
 
 .right-panel {
   height: 100%;
   width: 100%;
+  overflow: auto;
+  background-color: transparent;;
   display: flex;
-  /* lex-direction: column; */
-  /* background-color: #1e1e1e; темний фон */
-  /* overflow: hidden; */
-  /* box-sizing: border-box; */
+  flex-direction: column;
+  border-radius: 12px;
+  /* border: 1px solid #696969; */
+}
+
+.editPanel {
+    width: 100%;
+    display: flex;
 }
 
 .DisplayObjectArea{
-  flex: 1;
-  overflow-x: hidden; /* Приховує горизонтальну прокрутку */
-  background-color: #f9f9f9; /* Фон для покращення вигляду */
+  /* flex: 1; */
+  overflow-x: hidden;
+  background-color: rgb(250, 250, 250);
 }
 
-
-/* --------- Left panel --------- */
 .SplitPane.horizontal{
   position: static !important;
-} 
+    width: 100%;
+  display: flex;
+}
 
-/* --------- Right horizontal pane --------- */
+.editor {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
 
 .Pane.horizontal.Pane1{
-  width: 100%;
-  /* background-color:rgb(42, 85, 50); */
   min-height: 40%;
   max-height: 95%;
+} 
+.Pane.horizontal.Pane2{
+  min-height: 5%;
+  max-height: 95%;
 }  
-
-/* .upper-panel{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-} */
 
 .upper-panel {
   height: 100%;
   width: 100%;
   display: flex;
-  box-sizing: border-box;
+  flex-direction: column;
+  border: 1px solid #696969;
+  border-radius: 12px;
+  overflow: hidden
 }
 
-.down-panel{
-  display: flex;
-  flex-direction: column;
+.down-panel {
   height: 100%;
   width: 100%;
-  background-color: rgb(167, 142, 189);
+  border-radius: 12px;
+  overflow: auto;
+  border: 1px solid #696969;
 }
 
-.SplitPane .Resizer {
-  background: #333;
-  opacity: 0.2;
-  z-index: 1;
-  box-sizing: border-box;
-  background-clip: padding-box;
-}
-
-.Resizer.horizontal {
-  height: 6px;
-  border-top: 3px solid rgba(255, 255, 255, 0);
-  border-bottom: 3px solid rgba(255, 255, 255, 0);
-  cursor: row-resize;
-}
- 
-.Resizer.horizontal:hover {
-  border-top: 3px solid rgba(0, 0, 0, 0.5);
-  border-bottom: 3px solid rgba(0, 0, 0, 0.5);
-}
- 
 .Resizer.vertical {
-  width: 6px;
-  border-left: 3px solid rgba(255, 255, 255, 0);
-  border-right: 3px solid rgba(255, 255, 255, 0);
+  width: 2px;
+  margin: 2px;
+  height: 100%;
   cursor: grabbing;
 }
  
 .Resizer.vertical:hover {
-  border-left: 3px solid rgba(0, 0, 0, 0.5);
-  border-right: 3px solid rgba(0, 0, 0, 0.5);
-}
-.Resizer.disabled:hover {
-  border-color: transparent;
+  background-color: #418dff;
+  border-radius: 3px;
 }
 
-
-
-
-/* 
-.Pane {
-  overflow: auto;
+.Resizer.horizontal {
+  height: 2px;
+  margin: 2px;
+  cursor: grabbing;
+}
+ 
+.Resizer.horizontal:hover {
+    background-color: #418dff;
+    border-radius: 3px;
 }
 
-.SplitPane .Resizer {
-  background: #333;
-  opacity: 0.2;
-  z-index: 1;
-  box-sizing: border-box;
-  background-clip: padding-box;
-}
-
-.SplitPane .Resizer:hover {
-  transition: all 0.2s ease;
-  background: #555;
-}
-
-.SplitPane .Resizer.vertical {
-  width: 5px;
-  margin: 0 -2px;
-  cursor: col-resize;
-}
-
-.SplitPane .Resizer.horizontal {
-  height: 5px;
-  margin: -2px 0;
-  cursor: row-resize;
+/* .Editor, .Editor-container{
+  width: 100% !important;
+  height: 100% !important;
+  flex: 1 !important;
 } */

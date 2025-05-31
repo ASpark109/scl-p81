@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import FunctionalEditorPanel from '../FunctionalEditorPanel/FunctionalEditorPanel';
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
+import "./CodeEditor.css";
 
 console.log("hello")
 
@@ -141,7 +142,7 @@ const CodeEditorWindow = ({ initCode = "// hello", language = "javascript", them
 				//console.log("Отримано виклик методу:", method);
 			
 				let result;
-		
+						
 				try {
 					// розбиваємо шлях типу "LandingLegs.Leg1.PneumaticBlock.readPressure"
 					const pathParts = method.split(".");
@@ -202,10 +203,13 @@ const CodeEditorWindow = ({ initCode = "// hello", language = "javascript", them
   }, [onOutput]);
 
 	return (
-		<div className="Editor-container">
-			<FunctionalEditorPanel 
-						onRunClick={handleRunCode}
-						onSpacecraftSelected={(spacecraft)=>{UserInteractionInterface.setControlModel(spacecraft.value);}} />
+		<div className="EditorContainer">
+			{/* <div className="editPanel">
+				<FunctionalEditorPanel 
+							onRunClick={handleRunCode}
+							onSpacecraftSelected={(spacecraft)=>{UserInteractionInterface.setControlModel(spacecraft.value);}} />
+			</div> */}
+			<div className="Editor">
 				<Editor
 					width="100%"
 					height="100%"
@@ -221,7 +225,7 @@ const CodeEditorWindow = ({ initCode = "// hello", language = "javascript", them
 						automaticLayout: true,
 					}}
 				/>
-
+			</div>
 			<iframe
 				ref={iframeRef}
 				sandbox="allow-scripts"

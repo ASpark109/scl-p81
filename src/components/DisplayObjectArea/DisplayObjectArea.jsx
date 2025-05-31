@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
 import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
+import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPanel/FunctionalDisplayObjectAreaPanel"
 
 const DisplayObjectArea = () => {
 
@@ -36,10 +37,12 @@ const DisplayObjectArea = () => {
     };
   }, []);
 
-  return<div id = "renderWin">
-            <div ref={pixiContainer}></div>
-            <div ref={matterContainerPhys}></div>
-            <div ref={matterContainer}></div>
+  return<div id="hello">
+            <div id = "renderWin">
+                <div id="renWin1" ref={pixiContainer}></div>
+                <div ref={matterContainerPhys}></div>
+                <div ref={matterContainer}></div>
+            </div>
         </div>
 };
 
