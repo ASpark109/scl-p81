@@ -4,15 +4,18 @@ import { keyboard } from '@testing-library/user-event/dist/keyboard';
 import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
 import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPanel/FunctionalDisplayObjectAreaPanel"
 
-const DisplayObjectArea = () => {
+const DisplayObjectArea = ({scale, isMapViewEnabled}) => {
 
     const pixiContainer = useRef();
     const matterContainer = useRef();
     const matterContainerPhys = useRef();
 
-    useEffect(() => {
+    const displayOperatorRef = useRef(null);
 
-        let conf = "TEST_ENVIRONMENT";
+    useEffect(() => {
+        const container = pixiContainer.current;
+
+        const conf = "TEST_ENVIRONMENT";
         let displayOperator = new EnvironmentSubSystem(conf)
 
         if (!displayOperator.initialize(pixiContainer, matterContainer, matterContainerPhys))
@@ -20,22 +23,40 @@ const DisplayObjectArea = () => {
             console.log("displayOperator - error");
         }
 
-        window.addEventListener('keydown', (event)=>{
-            switch(event.key)
-            {
-            case "q":
-                displayOperator.scaleUp();
-                break;
-            case "a":
-                displayOperator.scaleDown();
-                break;
-            }
-        });
+        displayOperatorRef.current = displayOperator;
 
-    return () => {
-        displayOperator.displayApp.destroy(true);
-    };
-  }, []);
+        const handleClick = (e) => {
+            //console.log("Click at:", e.clientX, e.clientY);
+        };
+        
+        const handleWheel = (e) => {
+            //console.log("Scroll delta:", e.deltaY);
+        };
+
+        container.addEventListener("click", handleClick);
+        container.addEventListener("wheel", handleWheel);
+
+        return () => {
+            if (displayOperatorRef.current)
+            {
+                displayOperatorRef.current.displayApp.destroy(true);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (displayOperatorRef.current)
+        {
+            displayOperatorRef.current.onScaleChanged(scale);
+        }
+    }, [scale]);
+
+    useEffect(() => {
+        if (displayOperatorRef.current)
+        {
+            displayOperatorRef.current.onViewModeChanged(isMapViewEnabled);
+        }
+    }, [isMapViewEnabled]);
 
   return<div id="hello">
             <div id = "renderWin">

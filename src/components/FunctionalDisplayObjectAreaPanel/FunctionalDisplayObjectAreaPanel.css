@@ -31,3 +31,41 @@
 .panel-button:hover {
     background-color: #313131;
 }
+
+.zoom-button-group {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin-right: 0;
+}
+
+.zoom-button, .view-mode-button {
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: #222222;
+    border-radius: 5px;
+    font-size: 17px;
+    font-weight: 600;
+    height: 32px;
+    border: none;
+    padding: 5px 12px;
+    margin-right: 5px;
+}
+
+.zoom-button:hover {
+    background-color: #313131;
+}
+
+.view-mode-icon.active {
+    color: rgb(50, 196, 50);
+}
+
+.groupBorder {
+    display: flex;
+    width: 1px;
+    height: 28px;
+    border: 1px solid #4e4e4e;
+    margin-right: 10px;
+    border-radius: 1px;
+}

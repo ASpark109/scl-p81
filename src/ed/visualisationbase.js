@@ -8,6 +8,7 @@ import satellite from '../assets/images/satelliteicon.png';
 import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
+import { Configurationsfactory } from "../mpce/configurationsfactory";
 
 const DISPLAY_WIDTH = 2000;
 const DISPLAY_HEIGHT = 1100;
@@ -28,6 +29,10 @@ export class VisualisationBase
         this.abstructCameraView = false;
         this.metersPerPixelAbstruct = 1/40000;
         this.approachingComponents = [];
+        this.viewScales = {"abstract": null, "physical": null};
+        this.scaleLevel = 1;
+        this.displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
+            
     }
 
     images = 
@@ -38,10 +43,6 @@ export class VisualisationBase
         planet: planet,
         dockingPort: dockingPort
     }
-
-    #scale = 1;
-
-    trajectory = new PIXI.Container();
 
     initialize(container)
     {
@@ -55,14 +56,9 @@ export class VisualisationBase
         this.test = new PIXI.Container();
         this.application.stage.addChild(this.test);
 
-
-        this.application.stage.addChild(this.trajectory);
         //! scale = 1, 1m = 10px
 
         // 40km / 1px
-
-        //this.test.x += 100;
-        //this.test.y += 100;
 
         container.current.appendChild(this.application.view);
 
@@ -72,8 +68,8 @@ export class VisualisationBase
 
         this.application.ticker.stop();
 
-        let graphics = new PIXI.Graphics();
-
+        this.viewScales.abstract = this.displayAreaScaleConf.abstractViewScale;
+        this.viewScales.physical = this.displayAreaScaleConf.physicalViewScale;
     }
 
     addObject(item, composite, abstract)
@@ -101,7 +97,6 @@ export class VisualisationBase
                 "abstract": abstract,
                 "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
                 "id": composite.id
-                //mainObj?
             }
 
             this.test.addChild(...object);
@@ -224,73 +219,90 @@ export class VisualisationBase
         this.prevPos.y = this.components[0].abstract.position.y;
     }
 
-    setScale(scale)
+    setViewMode(isMapViewEnabled)
     {
-        //! значення переходу від абстрактного до фізичного рівня потрібно налаштовувати через конфіг
-        if (scale <= 9 && !this.abstructCameraView)
+        console.log(isMapViewEnabled)
+        if (isMapViewEnabled)
         {
             this.abstructCameraView = true;
 
             for (let item of this.components)
             {
                 this.test.removeChild(...item.visual);
+            }
+
+            this.scaleLevel = this.displayAreaScaleConf.initAbstractViewScale;
+            this.setScale({scale: 0});
+
+            for (let item of this.components)
+            {
                 this.test.addChild(item.visualAbstruct);
                 this.test.addChild(this.environmentComponents[0].visual);
             }
     
             this.updateFunc = this.updateFunctionAbstruct;
         }
-        else if (scale > 9 && this.abstructCameraView)
+        else
         {
             this.abstructCameraView = false;
 
             for (let item of this.components)
             {
-                this.test.addChild(...item.visual);
                 this.test.removeChild(item.visualAbstruct);
                 this.test.removeChild(this.environmentComponents[0].visual);
             }
 
-            this.test.scale.x = 0.05//0.0007;
-            this.test.scale.y = 0.05//0.0007;
+            this.scaleLevel = this.displayAreaScaleConf.initPhysicalViewScale;
+            this.setScale({scale: 0});
+
+            for (let item of this.components)
+            {
+                this.test.addChild(...item.visual);
+            }
 
             this.updateFunc = this.updateFunctionPhysical;
         }
 
-        // if (!this.abstructCameraView)
-        // {
-        //     if (scale > this.#scale)
-        //     {
-        //         this.test.scale.x += 0.03;
-        //         this.test.scale.y += 0.03;
-        //     }
-        //     else
-        //     {
-        //         this.test.scale.x -= 0.03;
-        //         this.test.scale.y -= 0.03;
-        //     }
-        // }
+        // this.test.x += (DISPLAY_WIDTH/2 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x);
+        // this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visualAbstruct.y * this.test.scale.y - this.test.y);
+    }
 
-        if (this.abstructCameraView)
+    setScale({scale})
+    {
+        console.log(scale)
+
+        // console.log(scale + " what the fuck")
+        if (!this.abstructCameraView)
         {
-            for (let item of this.components)
+            if (this.scaleLevel + scale !== this.displayAreaScaleConf.physicalViewScale.length && 
+                this.scaleLevel + scale !== -1)
             {
-                item.visualAbstruct.scale.set(1 / scale / 5);
+                this.scaleLevel = this.scaleLevel + scale;
+
+                this.test.scale.x = this.displayAreaScaleConf.physicalViewScale[this.scaleLevel];
+                this.test.scale.y = this.displayAreaScaleConf.physicalViewScale[this.scaleLevel];
             }
-
-            this.#scale = scale;
-
-            this.test.scale.x = scale;
-            this.test.scale.y = scale;
         }
+        else if (this.abstructCameraView)
+        {
+            if (this.scaleLevel + scale !== this.displayAreaScaleConf.abstractViewScale.length && 
+                this.scaleLevel + scale !== -1)
+            {
+                this.scaleLevel = this.scaleLevel + scale;
+                let newScale = this.displayAreaScaleConf.abstractViewScale[this.scaleLevel];
 
-        this.#scale = scale;
+                for (let item of this.components)
+                {
+                    item.visualAbstruct.scale.set(1 / newScale / 5);
+                }
 
-        console.log(this.test.scale.x)
+                this.test.scale.x = newScale;
+                this.test.scale.y = newScale;
+            }
+        }
 
         this.test.x += (DISPLAY_WIDTH/2 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x);
         this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visualAbstruct.y * this.test.scale.y - this.test.y);
-
     }
 
     stop()

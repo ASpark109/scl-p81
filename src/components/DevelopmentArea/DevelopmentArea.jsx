@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import SplitPane from 'react18-split-pane';
 import "./DevelopmentArea.css";
@@ -8,12 +8,39 @@ import DisplayObjectArea from '../DisplayObjectArea/DisplayObjectArea'
 import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPanel/FunctionalDisplayObjectAreaPanel"
 import FunctionalEditorPanel from '../FunctionalEditorPanel/FunctionalEditorPanel';
 // import MatterJSComponent from '../../pixiTest/pixiT';
+import { Configurationsfactory } from "../../mpce/configurationsfactory";
 
 const DevelopmentArea = () => {
+	const [scale, setScale] = useState({scale: 1});
+	const [isMapViewEnabled, setViewMode] = useState(false);
 
-const handleOutput = (msg) => {
-	OutputWindow.receiveLog(msg);
-};
+	const displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
+	let currentScale = isMapViewEnabled ? displayAreaScaleConf.abstractViewScale : displayAreaScaleConf.physicalViewScale;
+
+	const handleOutput = (msg) => {
+		OutputWindow.receiveLog(msg);
+	};
+
+	const handleClick = (buttonType) => {
+		switch (buttonType)
+		{
+		case "scalePlus":
+			// if ((scale.scale + 1) !== currentScale.length)
+			{
+				setScale({scale: 1});
+			}
+			break;
+		case "scaleMinus":
+			// if ((scale.scale - 1) !== -1)
+			{
+				setScale({scale: -1});
+			}
+			break;
+		case "viewMode":
+			setViewMode(!isMapViewEnabled);
+			break;
+		}
+	}
 
 return (
 	<div className='splitPaneContainer'>
@@ -24,10 +51,15 @@ return (
 		>
 			<div className="left-panel">
 				<div className="displayobjectfuncpanel">
-					<FunctionalDisplayObjectAreaPanel></FunctionalDisplayObjectAreaPanel>
+					<FunctionalDisplayObjectAreaPanel onClick = {handleClick}
+													  scale = {scale.scale}
+													  isMapViewEnabled = {isMapViewEnabled}>
+					</FunctionalDisplayObjectAreaPanel>
  				</div>
 				<div className="DisplayObjectArea">
-					<DisplayObjectArea></DisplayObjectArea>
+					<DisplayObjectArea scale = {scale}
+									   isMapViewEnabled = {isMapViewEnabled}>
+					</DisplayObjectArea>
 				</div>
 			</div>
 			<div className="right-panel">
