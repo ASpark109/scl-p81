@@ -6,7 +6,6 @@ export function userData()
 
     // setTimeout(() => {
     //     testEnv.init()
-    //     // console.log("Info:")
         
 
     //     testEnv.spaceCrafts[0].RadioCommunicationModule.createMessage("Hello, world")
@@ -15,6 +14,5 @@ export function userData()
     //     testEnv.spaceCrafts[0].RadioCommunicationModule.createMessage("Hello, world too")
     //     testEnv.spaceCrafts[0].RadioCommunicationModule.sendMessage()
 
-    //     // console.log(testEnv.spaceCrafts)
     // }, 3000);
 }

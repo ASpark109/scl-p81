@@ -17,7 +17,8 @@ export class SpaceCraftBuilder{
 
     }
 
-    buildSpaceCraft(confName){
+    buildSpaceCraft(confName)
+    {
 
         if (!confName)
         {
@@ -101,6 +102,7 @@ class ConfigurableBuilder
                                                 mass: conf.mass,
                                                 isSensor: conf.isSensor,
                                                 dockId: conf.isSensor ? this.#id : null, // переписати потім, щоб воно не залежало від сенсора
+                                                // dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 location: conf.isSensor ? conf.location : null,
 
                                                 name:conf.name,

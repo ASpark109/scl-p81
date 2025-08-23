@@ -75,8 +75,6 @@ return (
 							<CodeEditorWindow
 								initCode={
 	`// start your project here
-	
-	console.log('hello')
 
 	let openValve = Interface.System.LandingLegs.Leg1.PneumaticBlock.setValveState(true);
 	let result = Interface.System.LandingLegs.Leg1.PneumaticBlock.readPressure()

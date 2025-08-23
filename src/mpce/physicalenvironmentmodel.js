@@ -187,8 +187,6 @@ export class PhysicalEnvironmentModel
         
         let spacecraft = this.#mBuilder.buildSpaceCraft(item.Name);
 
-        console.log(spacecraft)
-
         if (spacecraft.bodies.length > 0)
         {
             let master = spacecraft.bodies.find(body => body.master === true) || null;
@@ -256,6 +254,8 @@ export class PhysicalEnvironmentModel
             const relativeVelocity = this.#mObjectsTransporter.
                     transportObjectToPhysicalInteractionEnvironment(objects[0], objects[1]);
 
+            // тут треба підтягувати всі ініші апарати, якщо вони стиковані
+            
             let newItem0 = {
                 "abs": objects[0],
                 "phys": physObj1,
@@ -289,12 +289,12 @@ export class PhysicalEnvironmentModel
 
     objectsDistancing(object)
     {
+        // Тут теж потрібно враховувати стикування апаратів
+        
         const groupIndex = this.#nearbyObjects.findIndex(subArray => 
             subArray.some(obj => obj.abs.id === object.id));
 
         let position = this.#nearbyObjects[groupIndex].findIndex(item => item.abs.id === object.id);
-
-        console.log(position)
 
         if (position !== -1)
         {

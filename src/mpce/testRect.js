@@ -26,7 +26,6 @@ class Rocket {
 
   sayHi()
   {
-    console.log("Rocket here");
     this.r.x += 4;
   }
 

@@ -121,9 +121,6 @@ export class PhysicalEnvironmentsTransporter
         relVel.x = (object.velocity.x - object0.velocity.x) * 10;
         relVel.y = (object.velocity.y - object0.velocity.y) * 10;
 
-        console.log(relVel)
-        console.log(physicalObject)
-
         Matter.Composite.translate(physicalObject, relativePosition);
         for (let i = 0; i < physicalObject.bodies.length; i++)
         {

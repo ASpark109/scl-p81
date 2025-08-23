@@ -17,8 +17,8 @@ export class RadioCommunicationSystem{
         this.messageData = msg;//new Message(msg);
     }
 
-    sendMessage(){ 
-        // console.log(this.messageData + " -------- ")
+    sendMessage()
+    {
         if(this.messageData == null){
             return false;
         }
@@ -28,8 +28,6 @@ export class RadioCommunicationSystem{
                         this.mainControlUnit.getCoordinates(),
                         this.mainControlUnit.unitId);
 
-        // console.log(messageToSend)
-
         this.communicationOperator.addMessage(messageToSend);
 
         return true;
@@ -37,8 +35,6 @@ export class RadioCommunicationSystem{
 
     receivedMessages(message) 
     {
-        // console.log("RECEIVED AAAAAAAAAAAAA " + Date.now())
-        // console.log(message)
         this.messagesReceived.push(message);
     }
     // setStatus() {

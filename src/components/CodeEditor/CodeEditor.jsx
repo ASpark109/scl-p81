@@ -4,8 +4,6 @@ import FunctionalEditorPanel from '../FunctionalEditorPanel/FunctionalEditorPane
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 import "./CodeEditor.css";
 
-console.log("hello")
-
 const CodeEditorWindow = ({ initCode = "// hello", language = "javascript", theme = "vs-dark", onOutput }) => {
   	const [code, setCode] = useState(initCode);
   	const [outputDoc, setOutputDoc] = useState("");
@@ -139,15 +137,11 @@ const CodeEditorWindow = ({ initCode = "// hello", language = "javascript", them
 		
 			if (type === "call-interface-method" && id && typeof method === "string")
 			{
-				//console.log("Отримано виклик методу:", method);
-			
 				let result;
 						
 				try {
 					// розбиваємо шлях типу "LandingLegs.Leg1.PneumaticBlock.readPressure"
 					const pathParts = method.split(".");
-
-					//console.log(pathParts)
 
 					const methodName = pathParts.pop(); // останній елемент — метод
 					let context = UserInteractionInterface.controlModel;
@@ -161,8 +155,6 @@ const CodeEditorWindow = ({ initCode = "// hello", language = "javascript", them
 					}
 		
 					const func = context?.[methodName];
-
-					//console.log(context)
 				
 					if (typeof func === "function")
 					{

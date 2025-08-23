@@ -81,8 +81,6 @@ export class SystemControllModel
 
         let conf = Configurationsfactory.getConfiguration(spacecraftName);
 
-        console.log(conf)
-
         // Цей код повинен бути автозгенерованим (в ідеалі)
         switch(spacecraftName)
         {
