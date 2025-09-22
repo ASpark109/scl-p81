@@ -1,3 +1,6 @@
+import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
+import { DockingTree, DockingNode } from "../mpce/dockingtree";
+
 let Matter = require('matter-js');
 
 export class DockingOperator
@@ -24,13 +27,9 @@ export class DockingOperator
         {
             var pairs = event.pairs;
 
-            console.log("start " + pairs.length)
-
             for (var i = 0, j = pairs.length; i != j; ++i)
             {
                 let pair = pairs[i];
-
-                console.log(pair.bodyA.dockId + " " + pair.bodyB.dockId)
 
                 if (pair.bodyA.dockId == null || pair.bodyB.dockId == null)
                 {
@@ -58,14 +57,12 @@ export class DockingOperator
 
         Matter.Events.on(this.#mEngine, 'collisionEnd', (event) =>
         {
-            console.log("Colision end");
             var pairs = event.pairs;
 
             for (var i = 0, j = pairs.length; i != j; ++i) {
                 var pair = pairs[i];
         
                 let p = [pair.bodyA.dockId, pair.bodyB.dockId];
-                //console.log(p);
         
                 p.sort((a, b) => a - b);
         
@@ -93,8 +90,6 @@ export class DockingOperator
                         this.#mDockingSpacecrafts.splice(index, 1);
                     }
                 }
-        
-                console.log(this.#mDockingSpacecrafts);   
             }
         });
     }
@@ -131,11 +126,62 @@ export class DockingOperator
 
         Matter.Composite.add(this.#mInteractionWorld, [dockConstraint1, dockConstraint2]);
 
+        let physicalObject1 = Matter.Composite.allComposites(this.#mInteractionWorld)
+                        .find(item => item.id === left.dockId);
+        
+        let physicalObject2 = Matter.Composite.allComposites(this.#mInteractionWorld)
+                .find(item => item.id === right.dockId);
 
+        Matter.Composite.add(physicalObject1, [dockConstraint1, dockConstraint2]);
+
+        const obj1Childs = DockingTree.getAllChildIds(physicalObject1.id);
+        const obj2Childs = DockingTree.getAllChildIds(physicalObject2.id);
+
+        let idToRemoveFromAbst = undefined;
+
+        // в метод переносу потрібно додати перевірку
+        if (obj1Childs.length !== 0 && obj2Childs.length === 0)
+        {
+            //TODO
+        }
+        else if (obj1Childs.length === 0 && obj2Childs.length !== 0)
+        {
+            //TODO
+        }
+        else if (obj1Childs.length === 0 && obj2Childs.length === 0)
+        {
+            // left moved to right
+            DockingTree.moveNode(physicalObject1.id, physicalObject2.id);
+            idToRemoveFromAbst = physicalObject1.id
+        }
+        else
+        {
+            //TODO
+        }
+
+        SignalSlotDispatcher.emit("updateNearbyObjects", null);
 
         setTimeout(() => {
             dockConstraint1.stiffness = 0.3;
             dockConstraint2.stiffness = 0.3;
-        }, 4000)
+
+            this.updateMassCenter(idToRemoveFromAbst);
+        }, 3000)
+    }
+
+    updateMassCenter(idToRemoveFromAbst)
+    {
+        setTimeout(() => {
+            const positions = new Map(
+                this.#mInteractionWorld.composites.map(composite => [
+                    composite.id, 
+                    composite.bodies[0].position
+                ])
+            );
+
+            DockingTree.updateAllMassCenters(positions);
+
+            SignalSlotDispatcher.emit("objectsDocked" , idToRemoveFromAbst);
+        }, 10)
     }
 }

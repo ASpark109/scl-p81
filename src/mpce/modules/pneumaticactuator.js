@@ -17,10 +17,10 @@ export class PneumaticActuator extends ModuleBase
         this.#maxPistonDisplacement = config.maxPistonDisplacement;
         this.#throttle = config.throttle;
 
-        ModuleBase.updateList.push(this.update.bind(this));
+        ModuleBase.updateList.push(this.#update.bind(this));
     }
 
-    update()
+    #update()
     {
         if (this.#isValveOpen &&
             this.#actuator.length <= this.#maxPistonDisplacement &&

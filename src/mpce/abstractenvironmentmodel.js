@@ -1,8 +1,9 @@
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
+import { DockingTree } from "../mpce/dockingtree";
 
 class Spacecraft
 {
-    constructor(position, velocity, physicalObj)
+    constructor(position, velocity, physicalObj = null)
     {
         this.position = position;
         this.velocity = velocity;
@@ -14,6 +15,9 @@ class Spacecraft
         this.mass = 12//physicalObj;
         this.isClose = false
         this.closeGroupIndex = -1
+        this.composit = false
+        this.compositRef = -1;
+        this.dockedSpacecrafts = [];
     }
 }
 
@@ -37,6 +41,7 @@ export class AbstractEnvironmentModel
 
     #mSpaceBodies = [];
     #mSpacecrafts = [];
+    #mDockedSpaceCrafts = [];
 
     #deltaTime = 1;
 
@@ -44,10 +49,11 @@ export class AbstractEnvironmentModel
 
     flag = true;
 
+    count = 0
+
 //: public
     addObject(conf, physicalObj)
     {
-
         if (conf.type == "spacecraft")
         {
             let newSpacecraft = new Spacecraft(conf.Position, conf.Velocity, physicalObj);
@@ -86,12 +92,25 @@ export class AbstractEnvironmentModel
     update()
     {
         this.#calculateNewSystemState();
-        this.calculateDistances();
+
+        if (this.count === 100)
+        {
+            this.calculateDistances();
+            this.count = 0
+        }
+
+        this.count++
+
+    }
+
+    objectsDocked(objectId)
+    {
+        //TODO
     }
 
     calculateDistances()
     {
-        for (let i = 0; i < this.#mSpacecrafts.length - 1; i++)
+        for (let i = 0; i < this.#mSpacecrafts.length - 1; i++) 
         {
             for (let q = i + 1; q < this.#mSpacecrafts.length; q++)
             {
@@ -241,8 +260,6 @@ export class AbstractEnvironmentModel
             //{
             let v = Vector.sub(this.#mSpaceBodies[i].position, {x: x, y: y});
             let f = this.G_CONST * spacecraft.mass * this.#mSpaceBodies[i].mass / Math.pow(Vector.magnitude(v), 2);
-            
-            //console.log(f)
 
             fv = Vector.add(Vector.mult(Vector.normalise(v), f), fv);
             //}

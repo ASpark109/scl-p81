@@ -1,12 +1,13 @@
 class DockingNode {
-    constructor(id, massCenter = null) {
+    constructor(id, weight = 5, isRoot = false) {
         this.id = id;
         this.next = [];
-        this.massCenter = massCenter; // тільки для кореня
+        this.weight = weight;
+        this.massCenter = isRoot ? { x: 0, y: 0 } : null; // тільки для коренів
     }
 }
 
-class DockingTree {
+export class DockingTree {
     static tree = [];
 
     // ======== ПОШУК ========
@@ -20,10 +21,11 @@ class DockingTree {
     }
 
     // ======== ДОДАТИ ========
-    static addNode(id, parentId = null, massCenter = null) {
-        const newNode = new DockingNode(id, parentId === null ? massCenter : null);
+    static addNode(id, parentId = null, weight = 5) {
+        const isRoot = parentId === null;
+        const newNode = new DockingNode(id, weight, isRoot);
 
-        if (parentId === null) {
+        if (isRoot) {
             DockingTree.tree.push(newNode);
             return newNode;
         }
@@ -55,12 +57,12 @@ class DockingTree {
         if (!node) throw new Error(`Вузол з id=${id} не знайдений`);
 
         if (newParentId === null) {
-            node.massCenter = node.massCenter ?? { x: 0, y: 0 };
+            node.massCenter = { x: 0, y: 0 }; // при переносі в root знову має massCenter
             DockingTree.tree.push(node);
             return;
         }
 
-        node.massCenter = null;
+        node.massCenter = null; // якщо вже не root
         const newParent = DockingTree.findNode(newParentId);
         if (!newParent) throw new Error(`Новий батько з id=${newParentId} не знайдений`);
 
@@ -85,50 +87,59 @@ class DockingTree {
         return result;
     }
 
+    getOffsetFromRoot(rootPos, childPos)
+    {
+        //
+    }
+
     // ======== ЦЕНТР МАСИ ПІДДЕРЕВА ========
-    /**
-     * @param {string} rootId - id вузла
-     * @param {Object} positions - словник {id: {x,y}}
-     * @param {Object} weights - словник {id: число}
-     * @returns {{x:number,y:number}}
-     */
-    static getMassCenter(rootId, positions, weights) {
+    static getMassCenter(rootId, positions) {
         const root = DockingTree.findNode(rootId);
         if (!root) throw new Error(`Вузол з id=${rootId} не знайдений`);
 
-        let totalMass = 0;
-        let sumX = 0;
-        let sumY = 0;
+        const ids = [root.id, ...DockingTree.getAllChildIds(rootId)];
 
-        function dfs(node, offsetX, offsetY) {
-            const localPos = positions[node.id] ?? { x: 0, y: 0 };
-            const m = weights[node.id] ?? 1;
+        // глобальна позиція кореня
+        const rootPos = positions.get(rootId);
 
-            const globalX = offsetX + localPos.x;
-            const globalY = offsetY + localPos.y;
+        let sumX = 0, sumY = 0, totalMass = 0;
 
-            sumX += globalX * m;
-            sumY += globalY * m;
+        for (let id of ids) {
+            const node = DockingTree.findNode(id);
+            const childPos = positions.get(id); // глобальна позиція вузла
+
+            const m = node.weight;
+            sumX += childPos.x * m;
+            sumY += childPos.y * m;
             totalMass += m;
-
-            for (let child of node.next) {
-                dfs(child, globalX, globalY);
-            }
         }
 
-        dfs(root, 0, 0);
+        // глобальна позиція центру маси
+        const globalCenter = { x: sumX / totalMass, y: sumY / totalMass };
 
-        return {
-            x: sumX / totalMass,
-            y: sumY / totalMass
+        // відносно кореня
+        const centerRelativeToRoot = {
+            x: globalCenter.x - rootPos.x,
+            y: globalCenter.y - rootPos.y
         };
+
+        if (root.massCenter !== null) root.massCenter = centerRelativeToRoot;
+
+        return centerRelativeToRoot;
+    }
+
+    static updateAllMassCenters(positions) {
+        for (let node of DockingTree.tree) {
+            const mc = DockingTree.getMassCenter(node.id, positions);
+            node.massCenter = mc;   // збереження обчисленого центру маси
+        }
     }
 
     // ======== ВИВІД ДЕРЕВА ========
     static printTree(nodes = DockingTree.tree, level = 0) {
         for (let node of nodes) {
-            let info = `- ${node.id}`;
-            if (level === 0 && node.massCenter) {
+            let info = `- ${node.id} (w=${node.weight})`;
+            if (node.massCenter) {
                 info += ` (massCenter: ${JSON.stringify(node.massCenter)})`;
             }
             console.log("  ".repeat(level) + info);

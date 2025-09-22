@@ -26,8 +26,9 @@ export class SpaceCraftBuilder{
             return;
         }
 
-        let conf = Configurationsfactory.getConfiguration(confName);
+        let conf = Configurationsfactory.getConfiguration(confName, "spaceCraftData");
 
+        // нащо для кожного апарату створювати новий ConfigurableBuilder? Який смисл?
         let builder = new ConfigurableBuilder(this.#getNewId(), conf, this.#numberOfObjects);
 
         return builder.build();

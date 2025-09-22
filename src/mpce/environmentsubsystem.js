@@ -1,10 +1,10 @@
-import { PhysicalEnvironmentModel } from "./physicalenvironmentmodel";
 import { AbstractEnvironmentModel } from "./abstractenvironmentmodel";
-import { VisualisationBase } from "../ed/visualisationbase";
 import { Configurationsfactory } from "./configurationsfactory.js";
+import { PhysicalEnvironmentModel } from "./physicalenvironmentmodel";
 import { SignalSlotDispatcher } from "./signalslotdispatcher.js";
 import { SystemControllModel } from "./systemcontrollmodel.js";
 import { UserInteractionInterface } from "./userinteractioninterface.js";
+import { VisualisationBase } from "../ed/visualisationbase";
 
 export class EnvironmentSubSystem
 {
@@ -21,7 +21,7 @@ export class EnvironmentSubSystem
         this.displayApp = null;
     }
 
-    initialize(container, containerM, matterContainerPhys)
+    initialize(container, pixiSpaceCraftsSystemStateContainer, containerM, matterContainerPhys)
     {        
         this.#mPhysicalEnvironmentModel = new PhysicalEnvironmentModel(this.#mConfiguration);
 
@@ -60,14 +60,14 @@ export class EnvironmentSubSystem
                         this.#mPhysicalEnvironmentModel.objectsApproaching);
         SignalSlotDispatcher.connect("objectsDistancing", this.#mPhysicalEnvironmentModel,
                         this.#mPhysicalEnvironmentModel.objectsDistancing);
+        SignalSlotDispatcher.connect("objectsDocked", this.#mAbstractEnvironmentModel,
+                        this.#mAbstractEnvironmentModel.objectsDocked);
 
         this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
                                                     this.#mAbstractEnvironmentModel), containerM, matterContainerPhys);
-        this.#mVisualisationBase.initialize(container);
+        this.#mVisualisationBase.initialize(container, pixiSpaceCraftsSystemStateContainer);
 
         this.createInitialConfiguration();
-
-        this.#mVisualisationBase.setScale(9.5);
 
         this.start();
 
@@ -86,7 +86,7 @@ export class EnvironmentSubSystem
             this.addObject(item)
         }
 
-        this.setFocusObj(0); // Id може починатися не з 0
+        this.onSetFocusObj(0); // Id може починатися не з 0
     }
 
     addObject(item)
@@ -95,7 +95,6 @@ export class EnvironmentSubSystem
         let abstractObj = this.#mAbstractEnvironmentModel.addObject(item, physicalObj);
         let visualObj   = this.#mVisualisationBase.addObject(item, physicalObj, abstractObj);
         let systemControl = this.#mSystemControllModel.addObject(physicalObj, item) // пізніше передавати візуальну модель
-
     }
 
     removeObject()
@@ -103,7 +102,7 @@ export class EnvironmentSubSystem
         //TODO
     }
 
-    setFocusObj(id)
+    onSetFocusObj(id)
     {
         this.#mVisualisationBase.setFocusObject(id)
     }
@@ -120,21 +119,13 @@ export class EnvironmentSubSystem
         this.#mVisualisationBase.stop();
     }
 
-    scaleUp()
+    onScaleChanged(scale)
     {
-        if (this.#scale <= 12)
-        {
-            this.#scale += 0.5
-            this.#mVisualisationBase.setScale(this.#scale)
-        }
+        this.#mVisualisationBase.setScale(scale)
     }
 
-    scaleDown()
+    onViewModeChanged(isMapViewEnabled)
     {
-        if (this.#scale - 0.5 >= 0.5)
-        {
-            this.#scale -= 0.5
-            this.#mVisualisationBase.setScale(this.#scale)
-        }
+        this.#mVisualisationBase.setViewMode(isMapViewEnabled)
     }
 }

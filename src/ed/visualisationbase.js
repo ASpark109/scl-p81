@@ -9,6 +9,8 @@ import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { Configurationsfactory } from "../mpce/configurationsfactory";
+import { UserInteractionInterface } from "../mpce/userinteractioninterface"
+import { SystemStateMonitor } from './systemstatemonitor';
 
 const DISPLAY_WIDTH = 2000;
 const DISPLAY_HEIGHT = 1100;
@@ -32,6 +34,11 @@ export class VisualisationBase
         this.viewScales = {"abstract": null, "physical": null};
         this.scaleLevel = 1;
         this.displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
+        this.currentScale = 0;
+        this.counter = 1;
+        this.adder = 0.01;
+
+        this.SystemStateMonitor = null;
             
     }
 
@@ -44,7 +51,7 @@ export class VisualisationBase
         dockingPort: dockingPort
     }
 
-    initialize(container)
+    initialize(container, pixiSpaceCraftsSystemStateContainer)
     {
         this.application = new PIXI.Application({
             width: DISPLAY_WIDTH,
@@ -57,12 +64,9 @@ export class VisualisationBase
         this.application.stage.addChild(this.test);
 
         //! scale = 1, 1m = 10px
-
         // 40km / 1px
 
         container.current.appendChild(this.application.view);
-
-        this.updateFunc = this.updateFunctionPhysical;
 
         this.updateFunction();
 
@@ -70,6 +74,11 @@ export class VisualisationBase
 
         this.viewScales.abstract = this.displayAreaScaleConf.abstractViewScale;
         this.viewScales.physical = this.displayAreaScaleConf.physicalViewScale;
+
+
+        // systemStateMonitor
+
+        this.SystemStateMonitor = new SystemStateMonitor(pixiSpaceCraftsSystemStateContainer);
     }
 
     addObject(item, composite, abstract)
@@ -102,6 +111,8 @@ export class VisualisationBase
             this.test.addChild(...object);
             this.components.push(obj);
 
+            this.SystemStateMonitor.addObject(item.Name, composite.id)
+
             return obj;
         }
         else if (item.type == "spaceobject")
@@ -132,6 +143,8 @@ export class VisualisationBase
         }
     }
 
+    
+
     updateFunction()
     {
         this.application.ticker.add(() => {
@@ -141,10 +154,6 @@ export class VisualisationBase
 
     updateFunctionPhysical()
     {
-        
-
-        //console.log((this.components[0].abstract.position.x - this.components[1].abstract.position.x) + " - " + (this.components[0].abstract.position.y - this.components[1].abstract.position.y));
-
         //this.shiftx.x += this.components[0].abstract.position.x - this.prevPos.x
         //this.shiftx.y += this.components[0].abstract.position.y - this.prevPos.y
 
@@ -157,12 +166,14 @@ export class VisualisationBase
 
             for (let i = 0; i < item.physical.length; ++i)
             {
-                item.visual[i].x = item.physical[i].position.x - item.mountingPoint.x + (item.abstract.position.x - this.shiftx.x) * 10// * this.#scale * 10;
-                item.visual[i].y = item.physical[i].position.y - item.mountingPoint.y + (item.abstract.position.y - this.shiftx.y) * 10// * this.#scale * 10;
+                item.visual[i].x = item.physical[i].position.x - item.mountingPoint.x + (item.abstract.position.x - this.shiftx.x) * 10;
+                item.visual[i].y = item.physical[i].position.y - item.mountingPoint.y + (item.abstract.position.y - this.shiftx.y) * 10;
                 item.visual[i].rotation = item.physical[i].angle;
             }
         }
-        //console.log(this.components[1].visual[0].x + " - V")
+
+        
+
         // for (let i = 0; i < this.environmentComponents.length; ++i)
         // {
         //     this.environmentComponents[i].visual.x = (this.environmentComponents[i].abstract.position.x - this.shiftx.x) * 10;
@@ -175,21 +186,18 @@ export class VisualisationBase
 
     updateFunctionAbstruct()
     {
-        //console.log(this.components[0].abstract.position.x);
-        //console.log((this.components[0].abstract.position.x - this.components[1].abstract.position.x) + " - " + (this.components[0].abstract.position.y - this.components[1].abstract.position.y));
-        
-        this.shiftx.x += this.components[0].abstract.position.x - this.prevPos.x
-        this.shiftx.y += this.components[0].abstract.position.y - this.prevPos.y
+        //this.shiftx.x += this.components[0].abstract.position.x - this.prevPos.x
+        //this.shiftx.y += this.components[0].abstract.position.y - this.prevPos.y
 
-        this.prevPos.x = this.components[0].abstract.position.x
-        this.prevPos.y = this.components[0].abstract.position.y
+        //this.prevPos.x = this.components[0].abstract.position.x
+        //this.prevPos.y = this.components[0].abstract.position.y
 
         for (let q = 0; q < this.components.length; ++q)
         {
             let item = this.components[q];
 
-                item.visualAbstruct.x = (item.abstract.position.x - this.shiftx.x) * this.metersPerPixelAbstruct
-                item.visualAbstruct.y = (item.abstract.position.y - this.shiftx.y) * this.metersPerPixelAbstruct
+                item.visualAbstruct.x = (item.abstract.position.x) * this.metersPerPixelAbstruct
+                item.visualAbstruct.y = (item.abstract.position.y) * this.metersPerPixelAbstruct
                 item.visualAbstruct.rotation = item.physical[0].angle;
         }
 
@@ -198,14 +206,18 @@ export class VisualisationBase
 
         for (let i = 0; i < this.environmentComponents.length; ++i)
         {
-            this.environmentComponents[i].visual.x = (this.environmentComponents[i].abstract.position.x - this.shiftx.x) * this.metersPerPixelAbstruct;
-            this.environmentComponents[i].visual.y = (this.environmentComponents[i].abstract.position.y - this.shiftx.y) * this.metersPerPixelAbstruct;
+            this.environmentComponents[i].visual.x = (this.environmentComponents[i].abstract.position.x) * this.metersPerPixelAbstruct;
+            this.environmentComponents[i].visual.y = (this.environmentComponents[i].abstract.position.y) * this.metersPerPixelAbstruct;
         }
 
 
+        this.test.x += (DISPLAY_WIDTH/3 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x);
+        this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visualAbstruct.y * this.test.scale.y - this.test.y);
+        //this.test.x += (DISPLAY_WIDTH/2 - 0 * this.test.scale.x - this.test.x) * 1;
+        //this.test.y += (DISPLAY_HEIGHT/2 - 0 * this.test.scale.y - this.test.y) * 1;
 
-        //this.test.x += (DISPLAY_WIDTH/2 - 0 * this.test.scale.x - this.test.x) * 0.1;
-        //this.test.y += (DISPLAY_HEIGHT/2 - 0 * this.test.scale.y - this.test.y) * 0.1;
+        this.test.scale.x += (this.currentScale - this.test.scale.x) * 0.02;
+        this.test.scale.y += (this.currentScale - this.test.scale.y) * 0.02;
     }
 
     setFocusObject(id)
@@ -221,7 +233,6 @@ export class VisualisationBase
 
     setViewMode(isMapViewEnabled)
     {
-        console.log(isMapViewEnabled)
         if (isMapViewEnabled)
         {
             this.abstructCameraView = true;
@@ -269,9 +280,6 @@ export class VisualisationBase
 
     setScale({scale})
     {
-        console.log(scale)
-
-        // console.log(scale + " what the fuck")
         if (!this.abstructCameraView)
         {
             if (this.scaleLevel + scale !== this.displayAreaScaleConf.physicalViewScale.length && 
@@ -289,20 +297,17 @@ export class VisualisationBase
                 this.scaleLevel + scale !== -1)
             {
                 this.scaleLevel = this.scaleLevel + scale;
-                let newScale = this.displayAreaScaleConf.abstractViewScale[this.scaleLevel];
+                this.currentScale = this.displayAreaScaleConf.abstractViewScale[this.scaleLevel];
 
                 for (let item of this.components)
                 {
-                    item.visualAbstruct.scale.set(1 / newScale / 5);
+                    item.visualAbstruct.scale.set(1 / this.currentScale / 5);
                 }
 
-                this.test.scale.x = newScale;
-                this.test.scale.y = newScale;
+                // this.test.scale.x = newScale;
+                // this.test.scale.y = newScale;
             }
         }
-
-        this.test.x += (DISPLAY_WIDTH/2 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x);
-        this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visualAbstruct.y * this.test.scale.y - this.test.y);
     }
 
     stop()
@@ -314,8 +319,4 @@ export class VisualisationBase
     {
         this.application.ticker.start();
     }
-}
-
-function onKeyDown(event) {
-    console.log("HELLO");
 }

@@ -1,9 +1,10 @@
-import { SpaceCraftBuilder } from "./spacecraftbuilder.js"
 import { Configurationsfactory } from "./configurationsfactory.js";
-import { PhysicalEnvironmentsTransporter } from "./physicalenvironmentstransporter.js";
-import { DockingOperator } from "./dockingoperator.js";
 import { constants } from "./constants.js";
+import { DockingOperator } from "./dockingoperator.js";
+import { DockingTree } from "../mpce/dockingtree";
 import { ModuleBase } from "./modules/modulebase.js";
+import { PhysicalEnvironmentsTransporter } from "./physicalenvironmentstransporter.js";
+import { SpaceCraftBuilder } from "./spacecraftbuilder.js"
 
 var Matter = require('matter-js');
 
@@ -42,7 +43,7 @@ export class PhysicalEnvironmentModel
     {
         if (configuration != null)
         {
-            this.#mConfiguration = Configurationsfactory.getConfiguration(configuration);
+            //this.#mConfiguration = Configurationsfactory.getConfiguration(configuration);
         }
         else
         {
@@ -219,6 +220,8 @@ export class PhysicalEnvironmentModel
             Composite.add(this.#mWorld, centreOfMassConstraint);
             Composite.add(this.#mWorld, spacecraft);
 
+            DockingTree.addNode(spacecraft.id, null, spacecraft.id === 1 ? 1 : 1); // weight поки 1, потім змінити
+
             return spacecraft
         }
         else
@@ -295,6 +298,9 @@ export class PhysicalEnvironmentModel
             subArray.some(obj => obj.abs.id === object.id));
 
         let position = this.#nearbyObjects[groupIndex].findIndex(item => item.abs.id === object.id);
+
+        let ch = DockingTree.getAllChildIds(object.id);
+        console.log(ch);
 
         if (position !== -1)
         {
