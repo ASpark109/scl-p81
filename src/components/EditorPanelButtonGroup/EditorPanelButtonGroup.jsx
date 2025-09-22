@@ -1,47 +1,55 @@
-// LanguageDropdown.js
-
 import React from "react";
 import "./EditorPanelButtonGroup.css"
+import { useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-// import Select from "react-select";
-// import { languageOptions } from "../constants/languageOptions";
+import { Configurationsfactory } from "../../mpce/configurationsfactory";
 
 const EditorPanelButtonGroup = ({ onSelectChange }) => {
 
-    const languageOptions = [
+    let displayAreaScaleConf = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT");
+
+    const spacecrafts = displayAreaScaleConf.spaceCrafts.map(item => item.displayName);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [selected, setSelected] = useState(spacecrafts.length > 0 ? spacecrafts[0] : "");
+
+    useEffect(() => {
+        if (selected)
         {
-            id: 1,
-            name: "",
-            label: "0",
-            value: 0,
-        },
-        {
-            id: 2,
-            name: "",
-            label: "1",
-            value: 1,
-        },
-        {
-            id: 3,
-            name: "",
-            label: "2",
-            value: 2,
-        },
-    ]
+            onSelectChange(selected);
+        }
+    }, []);
 
     return (
-        <div class="dropdown">
-            <button class="dropbtn">
-                <span>Falcon 9 (apollo) A13MLK</span>
-                <IoIosArrowDown className="icon" id="spacecraft-select-btn"/>
-            </button>
-            <div class="dropdown-content">
-                <a href="#">Falcon 9 (first stage) AP782</a>
-                <a href="#">Dragon KQ8</a>
-                <a href="#">Mars (Sat) GU912A</a>
+    <div className="dropdown">
+        <button className="dropbtn" onClick={() => {setIsOpen(!isOpen)}}>
+            <span>{selected}</span>
+        </button>
+
+        {isOpen && (
+            <div className="dropdown-content">
+                <ul>
+                    {
+                        spacecrafts.map((item, index) => (
+                            <li
+                                className="contentBtn"
+                                key={index} 
+                                onClick = {
+                                    () => {
+                                        if (item !== selected) {setSelected(item)}
+                                        onSelectChange(item)
+                                        setIsOpen(false);
+                                    }
+                                }>
+                                {item}
+                            </li>
+                        ))
+                    }
+                </ul>
             </div>
-        </div>
-    );
+        )}
+    </div>
+  );
 };
 
 export default EditorPanelButtonGroup;
