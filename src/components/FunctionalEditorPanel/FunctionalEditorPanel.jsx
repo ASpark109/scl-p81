@@ -6,24 +6,12 @@ import {AiFillCaretRight} from "react-icons/ai";
 import {FaSquare} from "react-icons/fa";
 import EditorPanelButtonGroup from '../EditorPanelButtonGroup/EditorPanelButtonGroup';
 
-const FunctionalEditorPanel = ({onRunClick, onSpacecraftSelected}) => {
+const FunctionalEditorPanel = ({onSpacecraftSelected}) => {
 
     return (
         <div className='functionalPanel'>
             <div className='rightContentBlock'>
                 <EditorPanelButtonGroup onSelectChange={onSpacecraftSelected} className="testBtn"></EditorPanelButtonGroup>
-                {/* <EditorPanelButtonGroup></EditorPanelButtonGroup> */}
-                {/* <div id="hello">
-                    hello
-                </div> */}
-            </div>
-            <div className='leftContentBlock'>
-                <button className='startButton' onClick={onRunClick}>
-                    <AiFillCaretRight className='startBtn' />
-                </button>
-                <button className='stopButton'>
-                    <FaSquare className='stopBtn'/>
-                </button>
             </div>
         </div>
         
