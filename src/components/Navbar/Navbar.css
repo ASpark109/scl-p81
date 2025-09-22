@@ -83,6 +83,10 @@
     margin-right: 1px;
 }
 
+.main-panel-button.inactive {
+    opacity: 0.4;
+}
+
 .main-panel-button .icon {
     margin-right: 8px;
     font-size: 14px;

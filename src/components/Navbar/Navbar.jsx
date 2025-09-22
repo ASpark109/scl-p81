@@ -13,7 +13,7 @@ import { IoPlanet } from "react-icons/io5";
 import { FaWpexplorer } from "react-icons/fa";
 import { MdOutlineExplore } from "react-icons/md";
 
-const Navbar = () => {
+const Navbar = ({ onButtonClick, isProgramRunning}) => {
 
   return (
     <nav className='navbar'>
@@ -27,11 +27,11 @@ const Navbar = () => {
 
             <div className='navbar-content'>
                 <div className='navbar-content tool-buttons'>
-                    <button className="main-panel-button">
+                    <button className={`main-panel-button ${isProgramRunning ? "inactive" : ""}`} onClick={() => onButtonClick("run")} disabled={isProgramRunning}>
                         <FaPlay className="icon" id="run-btn"/>
                         <span>Run</span>
                     </button>
-                    <button className="main-panel-button">
+                    <button className={`main-panel-button ${isProgramRunning ? "" : "inactive"}`} onClick={() => onButtonClick("stop")} disabled={!isProgramRunning}>
                         <ImStop2 className="icon" id="stop-btn"/>
                         <span>Stop</span>
                     </button>
@@ -46,19 +46,19 @@ const Navbar = () => {
                 </div>
 
                 <div className='navbar-content'>
-                    <div class="toggle-item">
+                    <div className="toggle-item">
                         <input type="radio" id="html" name="language" value="HTML"/>
-                        <label for="html">Development</label>
+                        <label htmlFor="html">Development</label>
                     </div>
 
-                    <div class="toggle-item">
+                    <div className="toggle-item">
                         <input type="radio" id="css" name="language" value="CSS"/>
-                        <label for="css">Mission Configuration</label>
+                        <label htmlFor="css">Mission Configuration</label>
                     </div>
 
-                    <div class="toggle-item">
+                    <div className="toggle-item">
                         <input type="radio" id="javascript" name="language" value="JavaScript"/>
-                        <label for="javascript">Live Monitor</label>
+                        <label htmlFor="javascript">Live Monitor</label>
                     </div>
                 </div>
             </div>
