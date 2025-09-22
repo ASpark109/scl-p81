@@ -2,22 +2,24 @@ import { logger } from "../utils/userlogger";
 
 export class UserInteractionInterface
 {
-    static #spacecrafts = [];
+    static #spacecrafts = new Map();
 
     static controlModel = null;
     static n = -1;
 
-    static addSpacecraft(controllModel)
+    static addControlModel(controllModel, displayName)
     {
-        this.#spacecrafts.push(controllModel);
-        console.log(this.#spacecrafts.length)
+        this.#spacecrafts.set(displayName, controllModel);
     }
 
-    static setControlModel(n)
+    static setControlModel(displayName)
     {
-        this.controlModel = this.#spacecrafts[n];
-        this.n = n;
-        console.log(this.n)
+        this.controlModel = this.#spacecrafts.get(displayName);
+    }
+
+    static getControlModel(displayName)
+    {
+        return this.#spacecrafts.get(displayName);
     }
 
     static showN()
@@ -36,5 +38,3 @@ export class UserInteractionInterface
         return {"x": 112, "y": 53}
     }
 }
-
-//export const userInteractionInterface = new UserInteractionInterface();

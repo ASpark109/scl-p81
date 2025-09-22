@@ -7,15 +7,18 @@ import OutputWindow from '../OutputWindow/OutputWindow'
 import DisplayObjectArea from '../DisplayObjectArea/DisplayObjectArea'
 import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPanel/FunctionalDisplayObjectAreaPanel"
 import FunctionalEditorPanel from '../FunctionalEditorPanel/FunctionalEditorPanel';
+import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 // import MatterJSComponent from '../../pixiTest/pixiT';
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
 
-const DevelopmentArea = () => {
+const DevelopmentArea = ({ trigger }) => {
 	const [scale, setScale] = useState({scale: 1});
 	const [isMapViewEnabled, setViewMode] = useState(false);
+	const [currentSpacecraft, setCurrentSpacecraft] = useState("");
 
-	const displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
-	let currentScale = isMapViewEnabled ? displayAreaScaleConf.abstractViewScale : displayAreaScaleConf.physicalViewScale;
+	const initConf = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT")
+		.spaceCrafts
+		.map(({ Name, displayName }) => ({ Name, displayName }));;
 
 	const handleOutput = (msg) => {
 		OutputWindow.receiveLog(msg);
@@ -25,21 +28,20 @@ const DevelopmentArea = () => {
 		switch (buttonType)
 		{
 		case "scalePlus":
-			// if ((scale.scale + 1) !== currentScale.length)
-			{
-				setScale({scale: 1});
-			}
+			setScale({scale: 1});
 			break;
 		case "scaleMinus":
-			// if ((scale.scale - 1) !== -1)
-			{
-				setScale({scale: -1});
-			}
+			setScale({scale: -1});
 			break;
 		case "viewMode":
 			setViewMode(!isMapViewEnabled);
 			break;
 		}
+	}
+
+	const handleNewSelectedSpacecraft = (item) =>
+	{
+		setCurrentSpacecraft(item);
 	}
 
 return (
@@ -66,31 +68,25 @@ return (
 				<SplitPane split="horizontal" defaultSize="50%" allowResize={true}>
 					<div className='upper-panel'>
 						<div className="editPanel">
-							<FunctionalEditorPanel 
-								// onRunClick={handleRunCode}
-								// onSpacecraftSelected={(spacecraft)=>{UserInteractionInterface.setControlModel(spacecraft.value);}}
-							/>
+							<FunctionalEditorPanel onSpacecraftSelected={(item)=>{handleNewSelectedSpacecraft(item)}}/>
 						</div>
 						<div className="editor">
 							<CodeEditorWindow
 								initCode={
-	`// start your project here
+`
+let test = System.LandingLegs.Leg1.PneumaticBlock.setValveState(true)
 
-	let openValve = Interface.System.LandingLegs.Leg1.PneumaticBlock.setValveState(true);
-	let result = Interface.System.LandingLegs.Leg1.PneumaticBlock.readPressure()
-
-	result.onFinished((value) => {
-		console.log("Sensor value received:", value);
-	});
-
-	function loop()
-	{
-
-	}
-	`}
+function loop()
+{
+	console.log("Hello, world")
+}
+`}
 								language={"javascript"}
 								theme={"vs-dark"}
-								onOutput={handleOutput}>
+								onOutput={handleOutput}
+								trigger={trigger}
+								currentSpacecraft={currentSpacecraft}
+								initConf={initConf}>
 							</CodeEditorWindow>
 						</div>
 					</div>
