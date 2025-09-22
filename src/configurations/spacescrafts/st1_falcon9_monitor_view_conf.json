@@ -1,0 +1,37 @@
+{
+    "mainFrameDimensions": {"x": 500, "y": 800},
+    "mainStageDimensions": {"x": 90, "y": 720},
+
+    "legs": {
+        "dimensions": {"x": 15, "y": 135},
+        "position": {
+            "x1": -60,
+            "y1": 280,
+            "x2": 60,
+            "y2": 280}
+    },
+
+    "fuelTank": {
+        "name": "Fuel",
+        "dimensions": {"x": 70, "y": 200},
+        "position": {"x": 0, "y": 220}
+    },
+
+    "oxidiserTank": {
+        "name": "Oxid.",
+        "dimensions": {"x": 70, "y": 120},
+        "position": {"x": 0, "y": 40}
+    },
+
+    "pressureSensorLeftLeg": {
+        "name": "Pneum. L",
+        "unit": "psi",
+        "position": {"x": -130, "y": 350}
+    },
+
+    "pressureSensorRightLeg": {
+        "name": "Pneum. R",
+        "unit": "psi",
+        "position": {"x": 130, "y": 350}
+    }
+}

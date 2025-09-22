@@ -8,6 +8,7 @@
     [
         {
             "Name": "FALCON9_ST1",
+            "displayName": "Falcon9St1 Optimus",
             "type": "spacecraft",
 
             "Position": {"x": 0, "y": -6671000},
@@ -17,10 +18,11 @@
         },
         {
             "Name": "FALCON9_ST1",
+            "displayName": "Falcon9St1 Appolo",
             "type": "spacecraft",
 
-            "Position": {"x": 60, "y": -6671000},
-            "Velocity": {"x": 7729.97, "y": 0},
+            "Position": {"x": 58, "y": -6671000},
+            "Velocity": {"x": 7729.99, "y": 0},
 
             "RotationAngle": -90
         }

@@ -1,0 +1,27 @@
+{
+    "Leg1": {
+        "Sensor": {
+            "method": {
+                "name": "readValue",
+                "messageId": 1,
+                "params": {}
+            }
+        }
+    },
+    "Leg2": {
+        "Pump": {
+            "FuelPump": {
+                "method": {
+                    "name": "info",
+                    "messageId": 2,
+                    "params": {}
+                }
+            },
+            "method": {
+                "name": "open",
+                "messageId": 3,
+                "params": ["state", "timeout"]
+            }
+        }
+    }
+}
