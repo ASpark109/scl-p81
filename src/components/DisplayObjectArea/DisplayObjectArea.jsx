@@ -7,6 +7,8 @@ import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPane
 const DisplayObjectArea = ({scale, isMapViewEnabled}) => {
 
     const pixiContainer = useRef();
+    const pixiSpaceCraftsSystemStateContainer = useRef();
+
     const matterContainer = useRef();
     const matterContainerPhys = useRef();
 
@@ -18,7 +20,10 @@ const DisplayObjectArea = ({scale, isMapViewEnabled}) => {
         const conf = "TEST_ENVIRONMENT";
         let displayOperator = new EnvironmentSubSystem(conf)
 
-        if (!displayOperator.initialize(pixiContainer, matterContainer, matterContainerPhys))
+        if (!displayOperator.initialize(pixiContainer,
+                                        pixiSpaceCraftsSystemStateContainer,
+                                        matterContainer,
+                                        matterContainerPhys))
         {
             console.log("displayOperator - error");
         }
@@ -58,13 +63,14 @@ const DisplayObjectArea = ({scale, isMapViewEnabled}) => {
         }
     }, [isMapViewEnabled]);
 
-  return<div id="hello">
-            <div id = "renderWin">
-                <div id="renWin1" ref={pixiContainer}></div>
-                <div ref={matterContainerPhys}></div>
-                <div ref={matterContainer}></div>
+    return<div id="hello">
+                <div id = "renderWin">
+                    <div id="renWin1" ref={pixiContainer}></div>
+                    <div id="systemStateWin" ref={pixiSpaceCraftsSystemStateContainer}></div>
+                    {/* <div ref={matterContainerPhys}></div> */}
+                    {/* <div ref={matterContainer}></div> */}
+                </div>
             </div>
-        </div>
 };
 
 export default DisplayObjectArea;
