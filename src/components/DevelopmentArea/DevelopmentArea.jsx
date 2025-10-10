@@ -74,12 +74,40 @@ return (
 							<CodeEditorWindow
 								initCode={
 `
-let test = System.LandingLegs.Leg1.PneumaticBlock.setValveState(true)
+//Falcon9St1 Optimus
+
+// let test1 = System.LandingLegs.Leg1.PneumaticBlock.setValveState(true);
+
+// let test2 = System.RCS.Block1.activateUnitCFor(1000);
+
+// let test3 = System.EngineBlock.Engine[0].start();
+
+// let test4 = System.FuelSystem.Tank1.FillLevelSensor.readValue();
+
+// test4.onFinished((result) => {
+//     console.log(result)
+// })
+
+// System.FuelSystem.Pump.setRPM(10);
+// System.FuelSystem.Pump.enable();
+
+// setTimeout(() => {
+//     System.FuelSystem.Pump.disable();
+// }, 300);
+
+
+// let test5 = System.FuelSystem.Tank1.FillLevelSensor.readValue();
+
+// test5.onFinished((result) => {
+//     console.log(result)
+// })
+//console.log(System)
 
 function loop()
 {
-	console.log("Hello, world")
+
 }
+
 `}
 								language={"javascript"}
 								theme={"vs-dark"}

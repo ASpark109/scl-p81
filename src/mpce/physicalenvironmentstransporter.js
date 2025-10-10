@@ -180,8 +180,8 @@ export class PhysicalEnvironmentsTransporter
                 {
                     this.#mSpaceCraftsLocationGrid[h][w] = spaceCraftId;
 
-                    return {x: w * this.#mDistanceBetweenObjects,
-                            y: h * this.#mDistanceBetweenObjects};
+                    return {x: (w * this.#mDistanceBetweenObjects) + 100,
+                            y: (h * this.#mDistanceBetweenObjects) + 500};
                 }
             }
         }

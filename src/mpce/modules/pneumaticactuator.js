@@ -31,6 +31,13 @@ export class PneumaticActuator extends ModuleBase
         }
     }
 
+    #disFunc()
+    {
+        return (Math.pow(this.#pressureTank, 2) - Math.pow(this.#pressureTank - this.#throttle, 2))/ 10; // y = x / 5
+    }
+
+    // ================ interface ================
+    
     setValveState(isOpen)
     {
         if (isOpen !== this.#isValveOpen)
@@ -47,10 +54,5 @@ export class PneumaticActuator extends ModuleBase
     pistonDisplacement()
     {
         return this.#actuator.length;
-    }
-
-    #disFunc()
-    {
-        return (Math.pow(this.#pressureTank, 2) - Math.pow(this.#pressureTank - this.#throttle, 2))/ 10; // y = x / 5
     }
 }

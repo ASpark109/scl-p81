@@ -67,8 +67,8 @@ const DisplayObjectArea = ({scale, isMapViewEnabled}) => {
                 <div id = "renderWin">
                     <div id="renWin1" ref={pixiContainer}></div>
                     <div id="systemStateWin" ref={pixiSpaceCraftsSystemStateContainer}></div>
-                    {/* <div ref={matterContainerPhys}></div> */}
-                    {/* <div ref={matterContainer}></div> */}
+                    {/* <div ref={matterContainerPhys}></div>
+                    <div ref={matterContainer}></div> */}
                 </div>
             </div>
 };

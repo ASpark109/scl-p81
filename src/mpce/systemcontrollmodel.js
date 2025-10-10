@@ -24,7 +24,7 @@ export class SystemControllModel
 
     }
 
-    addObject(physicalmodel, configuration)
+    addObject(physicalmodel, abstructModel, configuration)
     {
         if (configuration.type !== "spacecraft")
         {
@@ -38,7 +38,7 @@ export class SystemControllModel
         switch(spacecraftName)
         {
         case "FALCON9_ST1":
-            let spaceCraft = buildSt1_falcon9(physicalmodel, conf);
+            let spaceCraft = buildSt1_falcon9(physicalmodel, abstructModel, conf);
             this.#spacecrafts.push(spaceCraft);
 
             let {obj, map} = this.generateAbsModel(spaceCraft);

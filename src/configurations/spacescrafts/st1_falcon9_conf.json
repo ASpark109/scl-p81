@@ -29,20 +29,52 @@
     
             "engines":
             {
-                "marching_engines":
+                "count": 2,
+                "parameters":
                 {
-                    "count": 4,
-                    "thrust": 100,
+                    "id": "eng",
+                    "thrust": 1,
                     "inclination": 5
-                },
-
-                "correction_engines":
-                {
-                    "count": 2,
-                    "thrust": 5,
-                    "inclination": 0
                 }
             },
+
+            "fuelSystem":
+            {
+                "fuelTank":
+                {
+                    "capacity": 1000
+                },
+                "oxidiser":
+                {
+                    "capacity": 500
+                } 
+            },
+
+            "rcs":
+            {
+                "units":
+                [
+                    {
+                        "id": "lRCR",
+                        "position": {"x": -20, "y": -150},
+                        "thrust": 5,
+                        "direction": "left",
+                        "fuel": 10
+                    },
+                    {
+                        "id": "rRCR",
+                        "position": {"x": 20, "y": -150},
+                        "thrust": 5,
+                        "direction": "right",
+                        "fuel": 10
+                    }
+                ],
+
+                "tank":
+                {
+                    "capacity": 100
+                }
+            },              
 
             "batteries":
             {
