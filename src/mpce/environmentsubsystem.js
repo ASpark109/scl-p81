@@ -94,7 +94,12 @@ export class EnvironmentSubSystem
         let physicalObj = this.#mPhysicalEnvironmentModel.addObject(item);
         let abstractObj = this.#mAbstractEnvironmentModel.addObject(item, physicalObj);
         let visualObj   = this.#mVisualisationBase.addObject(item, physicalObj, abstractObj);
-        let systemControl = this.#mSystemControllModel.addObject(physicalObj, item) // пізніше передавати візуальну модель
+
+        let monitorInter = this.#mSystemControllModel.addObject(physicalObj, abstractObj, visualObj, item)
+        if (monitorInter !== null)
+        {
+            this.#mVisualisationBase.setMonitoringInterfaceForId(physicalObj.id, monitorInter);
+        }
     }
 
     removeObject()

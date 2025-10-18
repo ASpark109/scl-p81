@@ -34,6 +34,8 @@ export class SystemStateMonitor
         this.systemStateApplication.stage.addChild(this.systemStateContainer);
 
         this.#pixiContainter.current.appendChild(this.systemStateApplication.view);
+
+        setInterval(() => this.#update(), 100);
     }
 
     addObject(spaceCraftName, id)
@@ -56,7 +58,22 @@ export class SystemStateMonitor
         newMonitor.x = 100 + totalWidth;
         newMonitor.y = 150;
 
+        newMonitor.id = id;
+
         this.systemStateContainer.addChild(newMonitor);
-        //console.log(configuration)
+    }
+
+    setInterfaceForId(id, i)
+    {
+        let monitor = this.systemStateContainer.children.find(item => item.id === id);
+        monitor.setInterface(i);
+    }
+
+    #update()
+    {
+        for (const child of this.systemStateContainer.children)
+        {
+            child.update();
+        }
     }
 }

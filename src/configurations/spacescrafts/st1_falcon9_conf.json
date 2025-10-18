@@ -29,7 +29,7 @@
     
             "engines":
             {
-                "count": 2,
+                "count": 1,
                 "parameters":
                 {
                     "id": "eng",
@@ -77,16 +77,20 @@
             },              
 
             "batteries":
-            {
-                "count": 4,
-                "capacity": 100
-            },
+            [
+                {
+                    "capacity": 50000,
+                    "maxInput": 2000,
+                    "maxOutput": 2000
+                }
+            ],
 
-            "tanks_capacity":
-            {
-                "fuel": 10,
-                "oxidiser": 10
-            },
+            "solarPanels":
+            [
+                {
+                    "maxPowerGenerationPerSec": 3000
+                }
+            ],
 
             "landingLegPneumaticSystem":
             {

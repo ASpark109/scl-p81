@@ -143,7 +143,10 @@ export class VisualisationBase
         }
     }
 
-    
+    setMonitoringInterfaceForId(id, monitorinterface)
+    {
+        this.SystemStateMonitor.setInterfaceForId(id, monitorinterface);
+    }
 
     updateFunction()
     {

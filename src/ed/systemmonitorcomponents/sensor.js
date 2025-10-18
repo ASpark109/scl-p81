@@ -7,6 +7,7 @@ export class Sensor extends PIXI.Container
     #sensorName = "";
     #unit = "";
     #value = 0;
+    #displayValue = null;
 
     constructor(name, unit)
     {
@@ -22,8 +23,8 @@ export class Sensor extends PIXI.Container
     {
         const rect = new PIXI.Graphics();
 
-        rect.lineStyle(1, styles.green, 1);   // товщина 2px, зелений колір
-        rect.drawRect(0, 0, styles.sensorFrameWidth, styles.sensorFrameHeight);   // (x, y, width, height)
+        rect.lineStyle(1, styles.green, 1);
+        rect.drawRect(0, 0, styles.sensorFrameWidth, styles.sensorFrameHeight);
 
         rect.pivot.set( rect.width / 2,
                         rect.height / 2);
@@ -31,26 +32,26 @@ export class Sensor extends PIXI.Container
         const sensorName = new PIXI.Text(this.#sensorName, {
             fontFamily: "B612 Mono, monospace",
             fontSize: styles.fontSizeDefault,
-            fill: styles.blue,   // зелений колір тексту
+            fill: styles.blue,
             align: "center"
         });
 
-        const message = new PIXI.Text(this.#value + " " + this.#unit, {
+        this.#displayValue = new PIXI.Text(this.#value + " " + this.#unit, {
             fontFamily: "B612 Mono, monospace",
             fontSize: styles.fontSizeDefault,
-            fill: styles.green,   // зелений колір тексту
+            fill: styles.green,
             align: "center"
         });
 
         sensorName.anchor.set(0.5);
         sensorName.y = -rect.height / 5;
 
-        message.anchor.set(0.5);
-        message.y = rect.height / 5;
+        this.#displayValue.anchor.set(0.5);
+        this.#displayValue.y = rect.height / 5;
 
         this.addChild(rect);
         this.addChild(sensorName);
-        this.addChild(message);
+        this.addChild(this.#displayValue);
     }
 
     update(newValue)
@@ -59,5 +60,6 @@ export class Sensor extends PIXI.Container
             return;
 
         this.#value = newValue;
+        this.#displayValue.text = Math.round(this.#value) + " " + this.#unit;
     }
 }

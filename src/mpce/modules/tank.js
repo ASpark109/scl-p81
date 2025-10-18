@@ -1,22 +1,18 @@
-import { ModuleBase } from './modulebase.js';
 import { Sensor } from './sensor.js';
 
-export class Tank extends ModuleBase
+export class Tank
 {
     #maxCapacity = null;
     #fuelWeight = null;
 
     constructor(conf)
     {
-        super()
-
         this.#maxCapacity = conf.maxCapacity;
         this.#fuelWeight = conf.fuelWeight;
 
         this.FillLevelSensor = new Sensor(() => {
-            return this.#fuelWeight.toFixed(2);
+            return this.#fuelWeight;
         });
-        //ModuleBase.updateList.push(this.#update.bind(this));
     }
 
     #update()

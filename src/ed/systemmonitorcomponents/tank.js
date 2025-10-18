@@ -8,6 +8,7 @@ export class Tank extends PIXI.Container
     #name = "";
     #width = 0;
     #height = 0;
+    #displayValue = null;
 
     constructor(name, width, height)
     {
@@ -36,7 +37,7 @@ export class Tank extends PIXI.Container
             align: "center"
         });
 
-        let value = new PIXI.Text(0 + " kg.", {
+        this.#displayValue = new PIXI.Text(0 + " kg.", {
             fontFamily: "B612 Mono, monospace",
             fontSize: styles.fontSizeDefault,
             fill: styles.green,
@@ -47,13 +48,13 @@ export class Tank extends PIXI.Container
         header.x = rect.x;
         header.y = rect.y;
         
-        value.anchor.set(0.5);
-        value.x = rect.x;
-        value.y = rect.y + 20;
+        this.#displayValue.anchor.set(0.5);
+        this.#displayValue.x = rect.x;
+        this.#displayValue.y = rect.y + 20;
 
         this.addChild(rect);
         this.addChild(header);
-        this.addChild(value);
+        this.addChild(this.#displayValue);
     }
 
     update(newValue)
@@ -62,5 +63,6 @@ export class Tank extends PIXI.Container
             return;
 
         this.#value = newValue;
+        this.#displayValue.text = Math.round(this.#value);
     }
 }

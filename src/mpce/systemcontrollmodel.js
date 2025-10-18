@@ -24,7 +24,7 @@ export class SystemControllModel
 
     }
 
-    addObject(physicalmodel, abstructModel, configuration)
+    addObject(physicalmodel, abstructModel, visualObj, configuration)
     {
         if (configuration.type !== "spacecraft")
         {
@@ -38,15 +38,19 @@ export class SystemControllModel
         switch(spacecraftName)
         {
         case "FALCON9_ST1":
-            let spaceCraft = buildSt1_falcon9(physicalmodel, abstructModel, conf);
+            let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualObj, conf);
             this.#spacecrafts.push(spaceCraft);
+
+            //let a = monitorInter.get("Leg1PneumPress");
+            //console.log(a())
 
             let {obj, map} = this.generateAbsModel(spaceCraft);
 
             UserInteractionInterface.addControlModel(map, configuration.displayName);
             Configurationsfactory.addGeneratedAbsConfiguration("FALCON9_ST1", obj);
 
-            break;
+            //console.log(monitorInter)
+            return monitorInter;
         default:
             break;
         }
@@ -76,6 +80,9 @@ export class SystemControllModel
             // 1. Власні властивості
             for (const key of Object.keys(obj))
             {
+                if (key === "_electricalDevice")
+                    continue;
+                
                 const value = obj[key];
 
                 if (typeof value === "object" && value !== null)

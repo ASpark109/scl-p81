@@ -20,7 +20,7 @@
     "oxidiserTank": {
         "name": "Oxid.",
         "dimensions": {"x": 70, "y": 120},
-        "position": {"x": 0, "y": 40}
+        "position": {"x": 0, "y": -30}
     },
 
     "pressureSensorLeftLeg": {
@@ -33,5 +33,15 @@
         "name": "Pneum. R",
         "unit": "psi",
         "position": {"x": 130, "y": 350}
+    },
+
+    "powerSuplySystem": {
+        "name": "Power suply system",
+        "position": {"x": 250, "y": 0},
+        "dimensions": {"x": 400, "y": 55}
+    },
+
+    "pump": {
+        "position": {"x": 50, "y":35}
     }
 }
