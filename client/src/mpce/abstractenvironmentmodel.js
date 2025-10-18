@@ -1,15 +1,18 @@
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { DockingTree } from "../mpce/dockingtree";
+import { Vector } from "../utils/vector";
 
 class Spacecraft
 {
+    #forceVectors = new Map();
+
     constructor(position, velocity, physicalObj = null)
     {
         this.position = position;
         this.velocity = velocity;
         this.velocityPhys = {x: 0, y: 0};
         this.id = physicalObj.id;
-        this.force = {};
+        this.force = {x: 0, y: 0};
 
         //Композити не мають поки маси, якось потрібно вирішити
         this.mass = 12//physicalObj;
@@ -18,6 +21,36 @@ class Spacecraft
         this.composit = false
         this.compositRef = -1;
         this.dockedSpacecrafts = [];
+    }
+
+    addNewVector(id)
+    {
+        if (this.#forceVectors.has(id))
+        {
+            console.log("ERROR: id " + id + " already exists")
+            return false;
+        }
+
+        //console.log(id)
+        
+        this.#forceVectors.set(id, {x: 0, y: 0});
+    }
+
+    setVectorForId(id, vector)
+    {
+        if (this.#forceVectors.has(id))
+        {
+            this.#forceVectors.set(id, vector);
+
+            let totalV = {x: 0, y: 0};
+            for (const [key, vec] of this.#forceVectors)
+            {
+                totalV.x += vec.x;
+                totalV.y += vec.y;
+            }
+
+            this.force = totalV;
+        }
     }
 }
 
@@ -43,7 +76,7 @@ export class AbstractEnvironmentModel
     #mSpacecrafts = [];
     #mDockedSpaceCrafts = [];
 
-    #deltaTime = 1;
+    #deltaTime = 1//0.01666;
 
     #closeGroupCount = 0;
 
@@ -256,80 +289,25 @@ export class AbstractEnvironmentModel
 
         for (let i = 0; i < this.#mSpaceBodies.length; i++)
         {
-            //if (spacecraft.id !== this.#mSpaceBodies[i].id)
-            //{
             let v = Vector.sub(this.#mSpaceBodies[i].position, {x: x, y: y});
             let f = this.G_CONST * spacecraft.mass * this.#mSpaceBodies[i].mass / Math.pow(Vector.magnitude(v), 2);
 
             fv = Vector.add(Vector.mult(Vector.normalise(v), f), fv);
-            //}
         }
 
-        spacecraft.force = fv;
+        // spacecraft.force = fv;
+        fv = Vector.add(spacecraft.force, fv);
 
-        //! Тут можна додавати оновлювати прискорення для обєкта, або сили
+        // let t = new Date();
+        // if (spacecraft.id === 0 && spacecraft.test === false && spacecraft.velocity.y <= -1)
+        // {
+        //     spacecraft.test = true
+        //     console.log("IIIIIIIDDDDDDDDD 0")
+        //     console.log(this.count + " " + t.getSeconds() + ":" + t.getMilliseconds() + " " + spacecraft.velocity.y)
+        //     //console.log(spacecraft.velocity.y)
+        // }
 
         return Vector.div(fv, spacecraft.mass);
     }
 
-}
-
-//=============================================
-
-class Vector
-{
-    static add(v1, v2)
-    {
-        return {
-            x: v1.x + v2.x,
-            y: v1.y + v2.y
-        };
-    }
-
-    static sub(v1, v2)
-    {
-        return {
-            x: v1.x - v2.x,
-            y: v1.y - v2.y
-        };
-    }
-
-    static mult(v, a)
-    {
-        return {
-            x: v.x * a,
-            y: v.y * a
-        };
-    }
-
-    static div(v, a)
-    {
-        if (a === 0) {
-            throw new Error("Division by zero is not allowed.");
-        }
-    
-        return {
-            x: v.x / a,
-            y: v.y / a
-        };
-    }
-
-    static normalise(v)
-    {
-        const length = Math.sqrt(v.x * v.x + v.y * v.y);
-    
-        if (length === 0) {
-            throw new Error("Cannot normalize a zero-length vector.");
-        }
-    
-        return {
-            x: v.x / length,
-            y: v.y / length
-        };
-    }
-
-    static magnitude(v)
-    {
-        return Math.sqrt(v.x * v.x + v.y * v.y);
-    }
 }

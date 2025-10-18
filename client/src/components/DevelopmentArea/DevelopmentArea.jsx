@@ -74,8 +74,6 @@ return (
 							<CodeEditorWindow
 								initCode={
 `
-//Falcon9St1 Optimus
-
 // let test1 = System.LandingLegs.Leg1.PneumaticBlock.setValveState(true);
 
 // let test2 = System.RCS.Block1.activateUnitCFor(1000);
@@ -101,6 +99,56 @@ return (
 // test5.onFinished((result) => {
 //     console.log(result)
 // })
+
+// let test6 = System.PowerSupplySystem.energyProduction();
+// let test7 = System.PowerSupplySystem.energyConsumption();
+// let test8 = System.PowerSupplySystem.energyAccumulated();
+// let test9 = System.PowerSupplySystem.setPowerForComponent();
+
+// test9.onFinished((result) => {
+//     console.log(result)
+// })
+
+let counter = 0;
+
+setInterval(() => {
+let test6 = System.PowerSupplySystem.energyProduction();
+let test7 = System.PowerSupplySystem.energyConsumption();
+let test8 = System.PowerSupplySystem.energyAccumulated();
+let test9 = System.FuelSystem.Pump.availablePower();
+
+console.log("====================== " + counter);
+
+counter++;
+
+test6.onFinished((result) => {
+    console.log("Prod: " + result.max + " " + result.current)
+})
+
+test7.onFinished((result) => {
+    console.log("Cons: " + result)
+})
+
+test8.onFinished((result) => {
+    console.log("Accu: " + result)
+})
+
+test9.onFinished((result) => {
+    console.log("Avai: " + result)
+})
+
+if (counter === 30)
+{
+    System.FuelSystem.Pump.setPowerConsumption(5000);
+}
+
+if (counter === 45)
+{
+    System.FuelSystem.Pump.setPowerConsumption(300);
+}
+
+}, 1000)
+
 //console.log(System)
 
 function loop()

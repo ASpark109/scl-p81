@@ -34,13 +34,17 @@ export class PhysicalEnvironmentModel
     #nearbyObjects = []; 
     #mSpaceCraftsLocationGrid = [];
 
-    #mDistanceBetweenObjects = constants.DISTANCE_BETWEEN_OBJECTS;
 
+    testRotate = 0;
+
+    #mDistanceBetweenObjects = constants.DISTANCE_BETWEEN_OBJECTS;
 
     container = null
 
     constuctor(configuration)
     {
+            this.lastTime = new Date(); // або Date.now()
+            this.deltaTime = 0;
         if (configuration != null)
         {
             //this.#mConfiguration = Configurationsfactory.getConfiguration(configuration);
@@ -78,6 +82,18 @@ export class PhysicalEnvironmentModel
         Events.on(this.#mEngine, "afterUpdate", (event) => {
             this.#mAbstractUpdate()
             ModuleBase.updateAll();
+
+            // const now = new Date();
+                // this.deltaTime = now - this.lastTime; // різниця в мс
+                // this.lastTime = now; // оновлюємо час
+
+                // console.log(this.deltaTime)
+
+                // const timing = event.source.timing; // або this.#mEngine.timing
+                // const delta = timing.lastDelta / 1000; // останній крок у секундах
+                // const fps = 1 / delta;
+                // console.log("FPS:", fps.toFixed(1));
+            
         })
 
 
@@ -92,6 +108,15 @@ export class PhysicalEnvironmentModel
         });
 
         Matter.Render.run(render)
+
+
+        // setInterval(() => {
+        //     this.testRotate += 1;
+        //     if (this.testRotate === 3)
+        //         this.testRotate = 0;
+
+        //     console.log(this.testRotate)
+        // }, 2000)
 
 
         //==========================================
@@ -145,6 +170,49 @@ export class PhysicalEnvironmentModel
 
         Matter.Render.run(renderPhys)
 
+        // Matter.Events.on(render, "afterRender", () => {
+        //     let ctx = render.context;
+
+        //     let thetaV = -7.594;
+        //     let blockPositionVector = 151.327;
+        //     let body = this.#mWorld.composites[1].bodies.find(item => item.name === "stage");
+
+        //     let angle = ((90 - body.angle * 180 / Math.PI) - thetaV);
+        //     let forceAngle = -body.angle * 180 / Math.PI + 90 + 180//(90 - (body.angle * 180 / Math.PI) - 90);
+
+        //     if (this.testRotate === 1)
+        //         forceAngle += 180
+
+        //     let forceX = body.position.x + Math.cos(angle * Math.PI / 180) * blockPositionVector;
+        //     let forceY = body.position.y - Math.sin(angle * Math.PI / 180) * blockPositionVector;
+
+        //     let forceVX = forceX + Math.cos(forceAngle * Math.PI / 180) * 50;
+        //     let forceVY = forceY - Math.sin(forceAngle * Math.PI / 180) * 50;
+            
+        //     ctx.beginPath();
+        //     ctx.arc(forceX,
+        //             forceY, 3, 0, 2 * Math.PI);
+        //     ctx.fillStyle = "green";
+        //     ctx.fill();
+
+        //     if (this.testRotate !== 0)
+        //     {
+        //         ctx.beginPath();
+        //         ctx.moveTo(forceX,
+        //                 forceY);
+        //         ctx.lineTo(forceVX,
+        //                 forceVY);
+        //         ctx.strokeStyle = "blue";
+        //         ctx.lineWidth = 2;
+        //         ctx.stroke();
+                
+        //         Matter.Body.applyForce(body, {x: forceX, 
+        //                                     y: forceY},
+        //                                     {x:  Math.cos(forceAngle * Math.PI / 180) * 0.001,
+        //                                     y: -Math.sin(forceAngle * Math.PI / 180) * 0.001});
+        //     }
+        // });
+
         let mouse = Mouse.create(renderPhys.canvas)
         let mouseConstraint = MouseConstraint.create(this.#mEngineInter, {
             mouse: mouse,
@@ -170,7 +238,14 @@ export class PhysicalEnvironmentModel
 
     start()
     {
-        Runner.run(this.#mRunner, this.#mEngine);
+        const timestep = 1000 / 60; // 16.666... мс = 60 FPS
+
+        this.stop(); // якщо вже був запущений
+
+        setInterval(() => {
+            Matter.Engine.update(this.#mEngine, timestep);
+        }, timestep);
+        //Runner.run(this.#mRunner, this.#mEngine);
     }
 
     stop()
@@ -222,6 +297,7 @@ export class PhysicalEnvironmentModel
 
             DockingTree.addNode(spacecraft.id, null, spacecraft.id === 1 ? 1 : 1); // weight поки 1, потім змінити
 
+            // console.log(this.#mWorld)
             return spacecraft
         }
         else

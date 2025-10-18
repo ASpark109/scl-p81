@@ -16,9 +16,12 @@ const CodeEditorWindow = ({ initCode = "",
   	const [userCodeList, setCodeList] = useState(() => {
 		const obj = {};
 		
+		
+
 		for (let i = 0; i < initConf.length; i++)
 		{
-  			obj[`${initConf[i].displayName}`] = `//${initConf[i].displayName}\n` + initCode;
+			let init = initConf[i].displayName === "Falcon9St1 Appolo" ? " " : initCode
+  			obj[`${initConf[i].displayName}`] = `//${initConf[i].displayName}\n` + init;
 		}
 
 		return obj;

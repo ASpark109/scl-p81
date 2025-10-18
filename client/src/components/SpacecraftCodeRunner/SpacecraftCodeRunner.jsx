@@ -10,12 +10,12 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
         if(codeRunTrigger)
         {
             handleRunCode();
-            console.log("start code" + spaceCraftName)
+            //console.log("start code" + spaceCraftName)
         }
         else
         {
             setOutputDoc("");
-            console.log("stop code")
+            //console.log("stop code")
         }
     }, [codeRunTrigger]);
 
@@ -185,7 +185,7 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
     };
 
     useEffect(() => {
-        console.log("NAME " + spaceCraftName)
+        // console.log("NAME " + spaceCraftName)
         let model = UserInteractionInterface.getControlModel(spaceCraftName);
 
         const listener = async (event) => {

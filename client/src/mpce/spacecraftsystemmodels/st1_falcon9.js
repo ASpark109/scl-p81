@@ -3,6 +3,21 @@ import { RCSBlock } from "../modules/rcsblock.js";
 import { Tank } from "../modules/tank.js";
 import { Engine } from "../modules/engine.js";
 import { Pump } from "../modules/pump.js";
+import { ElectricalPowerSystem } from "../modules/electricalpowersystem.js";
+import { SolarPanel } from "../modules/solarpanel.js";
+import { Battery } from "../modules/battery.js";
+
+class System
+{
+    constructor(landingLegs, rcs, engineBlock, fuelSystem, electricalPowerSystem)
+    {
+        this.LandingLegs = landingLegs;
+        this.RCS = rcs;
+        this.EngineBlock = engineBlock;
+        this.FuelSystem = fuelSystem;
+        this.PowerSupplySystem = electricalPowerSystem;
+    }
+}
 
 class Leg
 {
@@ -18,17 +33,6 @@ class LandingLegs
     {
         this.Leg1 = leg1;
         this.Leg2 = leg2;
-    }
-}
-
-class System
-{
-    constructor(landingLegs, rcs, engineBlock, fuelSystem)
-    {
-        this.LandingLegs = landingLegs;
-        this.RCS = rcs;
-        this.EngineBlock = engineBlock;
-        this.FuelSystem = fuelSystem;
     }
 }
 
@@ -65,12 +69,10 @@ class FuelSystem
         this.Tank1 = new TankWrapper(tank1);
         this.Tank2 = new TankWrapper(tank2);
         this.Pump = pump;
-
-        console.log("READ SENSOR >>> " + this.Tank1.FillLevelSensor.readValue())
     }
 }
 
-export function buildSt1_falcon9(physicalModel, abstructModel, conf)
+export function buildSt1_falcon9(physicalModel, abstructModel, visualObj, conf)
 {
     // *** shared objects ***
 
@@ -126,11 +128,41 @@ export function buildSt1_falcon9(physicalModel, abstructModel, conf)
 
     // *** Fuel System ***
 
+    // *** Electrical Power System ***
+
+    const batteriesConf = conf.parts.find(item => item.name === "stage").batteries;
+    const solarPanelsConf = conf.parts.find(item => item.name === "stage").solarPanels;
+
+    let batteries = batteriesConf.map(b => new Battery(b.capacity, b.maxInput, b.maxOutput));
+    let solarPanels = solarPanelsConf.map(sp => new SolarPanel(sp.maxPowerGenerationPerSec));
+
+    let electricalPowerSystem = new ElectricalPowerSystem([pump._electricalDevice,
+                                                           tank1.FillLevelSensor._electricalDevice,
+                                                           tank2.FillLevelSensor._electricalDevice],
+                                                           solarPanels,
+                                                           batteries); // consumers, suppliers, batteries
+
+    // *** Electrical Power System ***
+
     // *** final assembly ***
     let spaceCraft = new System(landingLegs,
                                 rcs,
                                 engineBlock,
-                                fuelSystem); // не забудь розширити System
+                                fuelSystem,
+                                electricalPowerSystem); // не забудь розширити System
 
-    return spaceCraft;
+    // *** system monitoring inteface ***
+
+    let monitorInter = new Map();
+
+    monitorInter.set("Leg1PneumPress", () => spaceCraft.LandingLegs.Leg1.PneumaticBlock.pressureTank());
+    monitorInter.set("Leg2PneumPress", () => spaceCraft.LandingLegs.Leg2.PneumaticBlock.pressureTank());
+    monitorInter.set("Leg1PneumDisp", () => spaceCraft.LandingLegs.Leg1.PneumaticBlock.pistonDisplacement());
+    monitorInter.set("Leg2PneumDisp", () => spaceCraft.LandingLegs.Leg2.PneumaticBlock.pistonDisplacement());
+    monitorInter.set("Tank1", () => spaceCraft.FuelSystem.Tank1.FillLevelSensor.readValue());
+    monitorInter.set("Tank2", () => spaceCraft.FuelSystem.Tank2.FillLevelSensor.readValue());
+    monitorInter.set("PSSInfo", () => spaceCraft.PowerSupplySystem.info());
+    monitorInter.set("PumpStatus", () => spaceCraft.FuelSystem.Pump.readStatus());
+
+    return {spaceCraft, monitorInter};
 }

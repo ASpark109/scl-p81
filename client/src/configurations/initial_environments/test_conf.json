@@ -12,9 +12,9 @@
             "type": "spacecraft",
 
             "Position": {"x": 0, "y": -6671000},
-            "Velocity": {"x": 7730, "y": 0},
+            "Velocity": {"x": 0, "y": 0},
 
-            "RotationAngle": 90
+            "RotationAngle": 0
         },
         {
             "Name": "FALCON9_ST1",
@@ -22,9 +22,9 @@
             "type": "spacecraft",
 
             "Position": {"x": 58, "y": -6671000},
-            "Velocity": {"x": 7729.99, "y": 0},
+            "Velocity": {"x": 0, "y": 0},
 
-            "RotationAngle": -90
+            "RotationAngle": 0
         }
     ],
 
@@ -38,7 +38,7 @@
             "Velocity": {"x": 0, "y": 0},
 
             "Radius": 6371000,
-            "Mass": 5.98e24,
+            "Mass": 0,
             "RotationSpeed": 0,
             "RotationAngle": 0
         }
