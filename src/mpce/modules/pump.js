@@ -1,6 +1,7 @@
 import { ModuleBase } from './modulebase.js';
+import { ElectricalDevice } from './electricaldevice.js';
 
-export class Pump extends ModuleBase
+export class Pump//extends ModuleBase
 {
     #connection1 = null;
     #connection2 = null;
@@ -11,15 +12,17 @@ export class Pump extends ModuleBase
     #rpm = 0;
     #maxRPM = 100;
 
+    _electricalDevice = null;
+
     constructor(connection1, connection2)
     {
-        super();
-
         this.#connection1 = connection1;
         this.#connection2 = connection2;
 
         if (connection1 === null || connection2 === null)
             return;
+
+        this._electricalDevice = new ElectricalDevice();
 
         ModuleBase.updateList.push(this.#update.bind(this));
     }
@@ -49,6 +52,7 @@ export class Pump extends ModuleBase
             return;
 
         this.#isEnabled = true;
+        this._electricalDevice.setEnergiCons(5000);
     }
 
     disable()
@@ -56,7 +60,9 @@ export class Pump extends ModuleBase
         if (!this.#isEnabled)
             return;
 
+        this.#rpm = 0;
         this.#isEnabled = false;
+        this._electricalDevice.setEnergiCons(300);
     }
 
     changeDirection(dir)
@@ -77,5 +83,20 @@ export class Pump extends ModuleBase
             rpm = this.#maxRPM;
 
         this.#rpm = rpm;
+    }
+
+    availablePower()
+    {
+        return this._electricalDevice.availableEnergy()
+    }
+
+    setPowerConsumption(e)
+    {
+        return this._electricalDevice.setEnergiCons(e)
+    }
+
+    readStatus()
+    {
+        return {rpm: this.#rpm, dir: this.#direction}
     }
 }
