@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 
-function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunTrigger}) {
+function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunTrigger, isEnvInit}) {
     const iframeRef = useRef();
     const [outputDoc, setOutputDoc] = useState("");
 
@@ -185,7 +185,6 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
     };
 
     useEffect(() => {
-        // console.log("NAME " + spaceCraftName)
         let model = UserInteractionInterface.getControlModel(spaceCraftName);
 
         const listener = async (event) => {
@@ -214,7 +213,7 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
     
         window.addEventListener("message", listener);
         return () => window.removeEventListener("message", listener);
-    }, []);
+    }, [isEnvInit]);
 
     return (
         <iframe

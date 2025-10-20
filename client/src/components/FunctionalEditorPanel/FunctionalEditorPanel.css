@@ -31,7 +31,7 @@
 #hello{
     width: 100%;
     height: 100%;
-    background-color: aqua;
+    background-color: rgb(97, 97, 97);
 }
 
 .stopButton{

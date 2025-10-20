@@ -80,11 +80,9 @@ export class AbstractEnvironmentModel
 
     #closeGroupCount = 0;
 
-    flag = true;
-
     count = 0
 
-//: public
+    //: public
     addObject(conf, physicalObj)
     {
         if (conf.type == "spacecraft")
@@ -245,7 +243,7 @@ export class AbstractEnvironmentModel
         //! TODO
     }
 
-//: private
+    //: private
     #calculateNewSystemState()
     {
         for (let i = 0; i < this.#mSpacecrafts.length; i++)
@@ -298,16 +296,6 @@ export class AbstractEnvironmentModel
         // spacecraft.force = fv;
         fv = Vector.add(spacecraft.force, fv);
 
-        // let t = new Date();
-        // if (spacecraft.id === 0 && spacecraft.test === false && spacecraft.velocity.y <= -1)
-        // {
-        //     spacecraft.test = true
-        //     console.log("IIIIIIIDDDDDDDDD 0")
-        //     console.log(this.count + " " + t.getSeconds() + ":" + t.getMilliseconds() + " " + spacecraft.velocity.y)
-        //     //console.log(spacecraft.velocity.y)
-        // }
-
         return Vector.div(fv, spacecraft.mass);
     }
-
 }

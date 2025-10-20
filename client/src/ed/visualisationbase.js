@@ -9,7 +9,6 @@ import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { Configurationsfactory } from "../mpce/configurationsfactory";
-import { UserInteractionInterface } from "../mpce/userinteractioninterface"
 import { SystemStateMonitor } from './systemstatemonitor';
 
 const DISPLAY_WIDTH = 2000;
@@ -22,21 +21,17 @@ export class VisualisationBase
         this.application = null;
         this.components = [];
         this.environmentComponents = [];
-        this.sector = [];
         this.test = null;
         this.focusObject = null
         this.prevPos = {x: 0, y: 0}
         this.shiftx = {x: 0, y: 0}
-        this.updateFunc = null;
+        this.updateFunc = null
         this.abstructCameraView = false;
         this.metersPerPixelAbstruct = 1/40000;
-        this.approachingComponents = [];
         this.viewScales = {"abstract": null, "physical": null};
         this.scaleLevel = 1;
         this.displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
         this.currentScale = 0;
-        this.counter = 1;
-        this.adder = 0.01;
 
         this.SystemStateMonitor = null;
             
@@ -51,7 +46,7 @@ export class VisualisationBase
         dockingPort: dockingPort
     }
 
-    initialize(container, pixiSpaceCraftsSystemStateContainer)
+    initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView)
     {
         this.application = new PIXI.Application({
             width: DISPLAY_WIDTH,
@@ -68,15 +63,14 @@ export class VisualisationBase
 
         container.current.appendChild(this.application.view);
 
+        this.updateFunc = isMapView ? this.updateFunctionAbstruct : this.updateFunctionPhysical;
+
         this.updateFunction();
 
         this.application.ticker.stop();
 
         this.viewScales.abstract = this.displayAreaScaleConf.abstractViewScale;
         this.viewScales.physical = this.displayAreaScaleConf.physicalViewScale;
-
-
-        // systemStateMonitor
 
         this.SystemStateMonitor = new SystemStateMonitor(pixiSpaceCraftsSystemStateContainer);
     }
@@ -316,10 +310,18 @@ export class VisualisationBase
     stop()
     {
         this.application.ticker.stop();
+        this.SystemStateMonitor.stop();
     }
 
     start()
     {
         this.application.ticker.start();
+        this.SystemStateMonitor.start();
+    }
+
+    reset()
+    {
+        this.application.destroy(true);
+        this.SystemStateMonitor.reset();
     }
 }

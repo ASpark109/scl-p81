@@ -7,6 +7,7 @@ import DevelopmentArea from './components/DevelopmentArea/DevelopmentArea';
 function App() {
   
     const [isProgramRunning, setTrigger] = useState(false);
+    const [resetCounter, setResetCounter] = useState(0);
 
     const handleTrigger = (btnType) => {
         switch (btnType)
@@ -17,6 +18,9 @@ function App() {
             case "stop":
                 setTrigger(() => false);
                 break;
+            case "reset":
+                setResetCounter(prev => prev + 1);
+                setTrigger(() => false);
             default:
                 break;
         }
@@ -25,7 +29,7 @@ function App() {
     return (
         <div className="AppRoot">
             <Navbar onButtonClick={handleTrigger} isProgramRunning={isProgramRunning}/>
-            <DevelopmentArea trigger={isProgramRunning}/>
+            <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter}/>
         </div>
     );
 }

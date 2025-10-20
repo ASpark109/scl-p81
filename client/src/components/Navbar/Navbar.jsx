@@ -12,6 +12,9 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { IoPlanet } from "react-icons/io5";
 import { FaWpexplorer } from "react-icons/fa";
 import { MdOutlineExplore } from "react-icons/md";
+import { BiReset } from "react-icons/bi";
+import { HiOutlineCommandLine } from "react-icons/hi2";
+import { FiSave } from "react-icons/fi";
 
 const Navbar = ({ onButtonClick, isProgramRunning}) => {
 
@@ -35,6 +38,17 @@ const Navbar = ({ onButtonClick, isProgramRunning}) => {
                         <ImStop2 className="icon" id="stop-btn"/>
                         <span>Stop</span>
                     </button>
+                    <button className="main-panel-button" onClick={() => onButtonClick("reset")}>
+                        <BiReset className="icon" id="res-btn"/>
+                        <span>Reset</span>
+                    </button>
+                    
+                    <div className="groupBorderNav"></div>
+
+                    <button className="main-panel-button">
+                        <FiSave className="icon" id="sv-btn"/>
+                        <span>Save</span>
+                    </button>
                     <button className="main-panel-button">
                         <IoRocketSharp className="icon" id="sbm-btn"/>
                         <span>Submit</span>
@@ -42,6 +56,13 @@ const Navbar = ({ onButtonClick, isProgramRunning}) => {
                     <button className="main-panel-button">
                         <RiRadarFill className="icon" id="dl-btn"/>
                         <span>Data link</span>
+                    </button>
+
+                    <div className="groupBorderNav"></div>
+
+                    <button className="main-panel-icon-button">
+                        <HiOutlineCommandLine className="icon" id="cmd-btn"/>
+                        {/* <span>Data link</span> */}
                     </button>
                 </div>
 

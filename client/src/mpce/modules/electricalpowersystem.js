@@ -19,8 +19,6 @@ export class ElectricalPowerSystem
         this.#batteries = batteries;
 
         ModuleBase.updateList.push(this.#update.bind(this));
-
-        console.log(ModuleBase.updateList)
     }
 
     #update()

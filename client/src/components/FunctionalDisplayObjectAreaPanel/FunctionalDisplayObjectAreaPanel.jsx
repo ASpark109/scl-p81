@@ -41,7 +41,7 @@ const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled}) =>
                 </button>
             </div>
 
-             <div className="groupBorder"></div>
+            <div className="groupBorder"></div>
 
             <EditorPanelButtonGroup onSelectChange={() => {}} className="testBtn"></EditorPanelButtonGroup>
         </div>        

@@ -12,6 +12,11 @@ export class UserInteractionInterface
         this.#spacecrafts.set(displayName, controllModel);
     }
 
+    static resetControlModels()
+    {
+        this.#spacecrafts.length = 0;
+    }
+
     static setControlModel(displayName)
     {
         this.controlModel = this.#spacecrafts.get(displayName);

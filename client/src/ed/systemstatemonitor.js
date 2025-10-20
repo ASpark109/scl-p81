@@ -13,6 +13,8 @@ export class SystemStateMonitor
     systemStateApplication = null;
     systemStateContainer = null;
 
+    #runner = null;
+
     constructor(pixiSpaceCraftsSystemStateContainer)
     {
         this.#pixiContainter = pixiSpaceCraftsSystemStateContainer;
@@ -34,8 +36,23 @@ export class SystemStateMonitor
         this.systemStateApplication.stage.addChild(this.systemStateContainer);
 
         this.#pixiContainter.current.appendChild(this.systemStateApplication.view);
+    }
 
-        setInterval(() => this.#update(), 100);
+    start()
+    {
+        if (this.#runner) return;
+
+        this.#runner = setInterval(() => {
+            this.#update()
+        }, 200);
+    }
+
+    stop()
+    {
+        if (this.#runner) {
+            clearInterval(this.#runner);
+            this.#runner = null;
+        }
     }
 
     addObject(spaceCraftName, id)
@@ -67,6 +84,12 @@ export class SystemStateMonitor
     {
         let monitor = this.systemStateContainer.children.find(item => item.id === id);
         monitor.setInterface(i);
+    }
+
+    reset()
+    {
+        this.stop();
+        this.systemStateApplication.destroy(true);
     }
 
     #update()

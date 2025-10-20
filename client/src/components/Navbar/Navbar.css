@@ -20,6 +20,8 @@
     padding: 0;
     display: flex;
     flex-direction: row;
+        justify-content: space-between;
+    align-items: center;
 }
 
 .navbar-nav li:hover{
@@ -83,6 +85,20 @@
     margin-right: 1px;
 }
 
+.main-panel-icon-button {
+    display: flex;
+    align-items: center;
+    background-color: #222222;
+    color: white;
+    border: none;
+    padding: 5px 5px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-right: 1px;
+}
+
 .main-panel-button.inactive {
     opacity: 0.4;
 }
@@ -94,8 +110,18 @@
     transition: color 0.2s;
 }
 
+.main-panel-icon-button .icon {
+    font-size: 14px;
+    color: #a7a7a7;
+    transition: color 0.2s;
+}
+
 #stop-btn {
     font-size: 16px;
+}
+
+#sv-btn {
+    font-size: 18px;
 }
 
 #sbm-btn {
@@ -106,6 +132,14 @@
     font-size: 18px;
 }
 
+#res-btn {
+    font-size: 21px;
+}
+
+#cmd-btn {
+    font-size: 25px;
+}
+
 .main-panel-button:hover #run-btn {
     color: #2ce95c;
 }
@@ -114,12 +148,24 @@
     color: #e92c2c;
 }
 
+.main-panel-button:hover #sv-btn {
+    color: #ff7c24;
+}
+
 .main-panel-button:hover #sbm-btn {
     color: #fdb329;
 }
 
 .main-panel-button:hover #dl-btn {
     color: #5092f5;
+}
+
+.main-panel-button:hover #res-btn {
+    color: #dadd40;
+}
+
+.main-panel-icon-button:hover #cmd-btn {
+    color: #1dad00;
 }
 
 .main-panel-button:hover {
@@ -132,6 +178,11 @@
 }
 
 .main-panel-button:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.main-panel-icon-button:last-child {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
@@ -232,4 +283,14 @@ input[type="radio"]:checked + label {
 
 .discuss:hover {
     background-color: #e73e2854;
+}
+
+.groupBorderNav {
+    display: flex;
+    width: 1px;
+    height: 28px;
+    border: 1px solid #4e4e4e;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 1px;
 }

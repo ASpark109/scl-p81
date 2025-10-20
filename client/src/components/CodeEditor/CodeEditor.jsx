@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
 import SpacecraftCodeRunner from "../SpacecraftCodeRunner/SpacecraftCodeRunner"
 import "./CodeEditor.css";
@@ -11,12 +10,11 @@ const CodeEditorWindow = ({ initCode = "",
 							onOutput,
 							trigger,
 							currentSpacecraft,
-							initConf}) => 
+							initConf,
+							isEnvInit}) => 
 {
   	const [userCodeList, setCodeList] = useState(() => {
 		const obj = {};
-		
-		
 
 		for (let i = 0; i < initConf.length; i++)
 		{
@@ -29,7 +27,6 @@ const CodeEditorWindow = ({ initCode = "",
 	);
 
 	const handleCodeChange = (newCode) => {
-		// console.log(currentSpacecraft)
     	setCodeList((prev) => ({
       		...prev,
       		[currentSpacecraft]: newCode
@@ -84,6 +81,7 @@ const CodeEditorWindow = ({ initCode = "",
 										  spaceCraftName={spaceCraft.displayName}
 										  config={Configurationsfactory.getConfiguration(spaceCraft.Name, "abstractSystemInterfaceData")}
 										  codeRunTrigger={trigger}
+										  isEnvInit={isEnvInit}
 					></SpacecraftCodeRunner>
 				))
 			}

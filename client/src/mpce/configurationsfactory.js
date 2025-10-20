@@ -45,7 +45,7 @@ export class Configurationsfactory
 
 let configurations =
 {
-    // SPACECRAFRS -----
+    // *** SPACECRAFRS ***
         FALCON9_ST1:
         {
             spaceCraftData: FALCON9_ST1,
@@ -53,9 +53,9 @@ let configurations =
             abstractSystemInterfaceData: null
         },
 
-    // INITIAL ENVIRONMENTS -----
+    // *** INITIAL ENVIRONMENTS ***
         TEST_ENVIRONMENT: TEST_ENVIRONMENT,
     
-    // OTHER -----
+    // *** OTHER ***
         SCALE_DISPLAY_AREA: SCALE_DISPLAY_AREA
 };

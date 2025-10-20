@@ -5,6 +5,7 @@ import { SignalSlotDispatcher } from "./signalslotdispatcher.js";
 import { SystemControllModel } from "./systemcontrollmodel.js";
 import { UserInteractionInterface } from "./userinteractioninterface.js";
 import { VisualisationBase } from "../ed/visualisationbase";
+import { ModuleBase } from "./modules/modulebase.js";
 
 export class EnvironmentSubSystem
 {
@@ -21,7 +22,7 @@ export class EnvironmentSubSystem
         this.displayApp = null;
     }
 
-    initialize(container, pixiSpaceCraftsSystemStateContainer, containerM, matterContainerPhys)
+    initialize(container, pixiSpaceCraftsSystemStateContainer, containerM, matterContainerPhys, isMapView)
     {        
         this.#mPhysicalEnvironmentModel = new PhysicalEnvironmentModel(this.#mConfiguration);
 
@@ -65,7 +66,8 @@ export class EnvironmentSubSystem
 
         this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
                                                     this.#mAbstractEnvironmentModel), containerM, matterContainerPhys);
-        this.#mVisualisationBase.initialize(container, pixiSpaceCraftsSystemStateContainer);
+
+        this.#mVisualisationBase.initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView);
 
         this.createInitialConfiguration();
 
@@ -105,6 +107,14 @@ export class EnvironmentSubSystem
     removeObject()
     {
         //TODO
+    }
+
+    resetEnvironment()
+    {
+        UserInteractionInterface.resetControlModels();
+        ModuleBase.updateList.length = 0;
+        this.#mVisualisationBase.reset();
+        this.#mPhysicalEnvironmentModel.reset();
     }
 
     onSetFocusObj(id)

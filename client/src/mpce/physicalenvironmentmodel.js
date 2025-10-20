@@ -34,20 +34,13 @@ export class PhysicalEnvironmentModel
     #nearbyObjects = []; 
     #mSpaceCraftsLocationGrid = [];
 
-
     testRotate = 0;
-
-    #mDistanceBetweenObjects = constants.DISTANCE_BETWEEN_OBJECTS;
-
-    container = null
 
     constuctor(configuration)
     {
-            this.lastTime = new Date(); // або Date.now()
-            this.deltaTime = 0;
         if (configuration != null)
         {
-            //this.#mConfiguration = Configurationsfactory.getConfiguration(configuration);
+            this.#mConfiguration = configuration;
         }
         else
         {
@@ -79,25 +72,28 @@ export class PhysicalEnvironmentModel
 
         Composite.translate(this.#mWorld, {x: 300, y: 300});
 
+
+        
         Events.on(this.#mEngine, "afterUpdate", (event) => {
             this.#mAbstractUpdate()
             ModuleBase.updateAll();
 
+            // console.log("h")
             // const now = new Date();
-                // this.deltaTime = now - this.lastTime; // різниця в мс
-                // this.lastTime = now; // оновлюємо час
+            // this.deltaTime = now - this.lastTime; // різниця в мс
+            // this.lastTime = now; // оновлюємо час
 
-                // console.log(this.deltaTime)
+            // console.log(this.deltaTime)
 
-                // const timing = event.source.timing; // або this.#mEngine.timing
-                // const delta = timing.lastDelta / 1000; // останній крок у секундах
-                // const fps = 1 / delta;
-                // console.log("FPS:", fps.toFixed(1));
+            // const timing = event.source.timing; // або this.#mEngine.timing
+            // const delta = timing.lastDelta / 1000; // останній крок у секундах
+            // const fps = 1 / delta;
+            // console.log("FPS:", fps.toFixed(1));
             
         })
 
 
-        const render = Matter.Render.create({
+        this.render = Matter.Render.create({
             element: container.current,
             engine: this.#mEngine,
             options: {
@@ -107,7 +103,7 @@ export class PhysicalEnvironmentModel
             }
         });
 
-        Matter.Render.run(render)
+        //Matter.Render.run(render)
 
 
         // setInterval(() => {
@@ -158,7 +154,7 @@ export class PhysicalEnvironmentModel
             }
         })
 
-        const renderPhys = Matter.Render.create({
+        this.renderPhys = Matter.Render.create({
             element: containerPhys.current,
             engine: this.#mEngineInter,
             options: {
@@ -168,7 +164,7 @@ export class PhysicalEnvironmentModel
             }
         });
 
-        Matter.Render.run(renderPhys)
+        Matter.Render.run(this.renderPhys)
 
         // Matter.Events.on(render, "afterRender", () => {
         //     let ctx = render.context;
@@ -213,7 +209,7 @@ export class PhysicalEnvironmentModel
         //     }
         // });
 
-        let mouse = Mouse.create(renderPhys.canvas)
+        let mouse = Mouse.create(this.renderPhys.canvas)
         let mouseConstraint = MouseConstraint.create(this.#mEngineInter, {
             mouse: mouse,
             
@@ -245,12 +241,37 @@ export class PhysicalEnvironmentModel
         setInterval(() => {
             Matter.Engine.update(this.#mEngine, timestep);
         }, timestep);
-        //Runner.run(this.#mRunner, this.#mEngine);
+
+        //Runner.run(this.#mRunner, this.#mEngine); // стара версія
     }
 
     stop()
     {
         Runner.stop(this.#mRunner, this.#mEngine);
+    }
+
+    reset()
+    {
+        Matter.Render.stop(this.renderPhys);
+        Matter.Render.stop(this.render);
+
+        if (this.renderPhys.canvas && this.renderPhys.canvas.parentNode) {
+            this.renderPhys.canvas.parentNode.removeChild(this.renderPhys.canvas);
+        }
+
+        this.renderPhys.canvas = null;
+        this.renderPhys.context = null;
+
+
+        if (this.render.canvas && this.render.canvas.parentNode) {
+            this.render.canvas.parentNode.removeChild(this.render.canvas);
+        }
+
+        if (this.#mRunnerInter) Runner.stop(this.#mRunnerInter);
+        if (this.#mRunner) Runner.stop(this.#mRunner);
+
+        Events.off(this.#mEngine, "afterUpdate")
+        Events.off(this.#mEngineInter, "afterUpdate")
     }
 
     addObject(item)
@@ -297,7 +318,6 @@ export class PhysicalEnvironmentModel
 
             DockingTree.addNode(spacecraft.id, null, spacecraft.id === 1 ? 1 : 1); // weight поки 1, потім змінити
 
-            // console.log(this.#mWorld)
             return spacecraft
         }
         else
