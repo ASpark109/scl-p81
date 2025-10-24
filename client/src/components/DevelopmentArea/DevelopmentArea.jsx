@@ -9,8 +9,13 @@ import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPane
 import FunctionalEditorPanel from '../FunctionalEditorPanel/FunctionalEditorPanel';
 import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
+import { getFileNamesList } from '../../api/userSrcCode';
 
-const DevelopmentArea = ({ trigger, resetTrigger}) => {
+const initConf = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT")
+  .spaceCrafts
+  .map(({ Name, displayName }) => ({ Name, displayName }));
+
+const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger}) => {
 
 	const [scale, setScale] = useState({scale: 1});
 	const [isMapViewEnabled, setViewMode] = useState(false);
@@ -62,6 +67,12 @@ const DevelopmentArea = ({ trigger, resetTrigger}) => {
         // container.addEventListener("click", handleClick);
         // container.addEventListener("wheel", handleWheel);
 
+		const fetchFiles = async () => {
+    		const files = await getFileNamesList();
+   			console.log("Файли:", files);
+  		};
+  		fetchFiles();
+
         return () => {
             if (environmentRef.current)
             {
@@ -69,7 +80,6 @@ const DevelopmentArea = ({ trigger, resetTrigger}) => {
             }
         };
     }, []);
-
 
 	useEffect(() => {
 		if (environmentRef.current)
@@ -93,11 +103,6 @@ const DevelopmentArea = ({ trigger, resetTrigger}) => {
 			initializeEnvironment();
 		}
 	}, [resetTrigger]);
-
-
-	const initConf = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT")
-		.spaceCrafts
-		.map(({ Name, displayName }) => ({ Name, displayName }));;
 
 	const handleOutput = (msg) => {
 		OutputWindow.receiveLog(msg);
@@ -156,98 +161,15 @@ return (
 						</div>
 						<div className="editor">
 							<CodeEditorWindow
-								initCode={
-`
-let test1 = System.LandingLegs.Leg1.PneumaticBlock.setValveState(true);
-
-// let test2 = System.RCS.Block1.activateUnitCFor(1000);
-
-// let test3 = System.EngineBlock.Engine[0].start();
-
-// let test4 = System.FuelSystem.Tank1.FillLevelSensor.readValue();
-
-// test4.onFinished((result) => {
-//     console.log(result)
-// })
-
-// System.FuelSystem.Pump.setRPM(10);
-// System.FuelSystem.Pump.enable();
-
-// setTimeout(() => {
-//     System.FuelSystem.Pump.disable();
-// }, 300);
-
-
-// let test5 = System.FuelSystem.Tank1.FillLevelSensor.readValue();
-
-// test5.onFinished((result) => {
-//     console.log(result)
-// })
-
-// let test6 = System.PowerSupplySystem.energyProduction();
-// let test7 = System.PowerSupplySystem.energyConsumption();
-// let test8 = System.PowerSupplySystem.energyAccumulated();
-// let test9 = System.PowerSupplySystem.setPowerForComponent();
-
-// test9.onFinished((result) => {
-//     console.log(result)
-// })
-
-// let counter = 0;
-
-// setInterval(() => {
-// let test6 = System.PowerSupplySystem.energyProduction();
-// let test7 = System.PowerSupplySystem.energyConsumption();
-// let test8 = System.PowerSupplySystem.energyAccumulated();
-// let test9 = System.FuelSystem.Pump.availablePower();
-
-// console.log("====================== " + counter);
-
-// counter++;
-
-// test6.onFinished((result) => {
-//     console.log("Prod: " + result.max + " " + result.current)
-// })
-
-// test7.onFinished((result) => {
-//     console.log("Cons: " + result)
-// })
-
-// test8.onFinished((result) => {
-//     console.log("Accu: " + result)
-// })
-
-// test9.onFinished((result) => {
-//     console.log("Avai: " + result)
-// })
-
-// if (counter === 30)
-// {
-//     System.FuelSystem.Pump.setPowerConsumption(5000);
-// }
-
-// if (counter === 45)
-// {
-//     System.FuelSystem.Pump.setPowerConsumption(300);
-// }
-
-// }, 1000)
-
-//console.log(System)
-
-function loop()
-{
-
-}
-
-`}
+								initCode={``}
 								language={"javascript"}
 								theme={"vs-dark"}
 								onOutput={handleOutput}
 								trigger={trigger}
 								currentSpacecraft={currentSpacecraft}
 								initConf={initConf}
-								isEnvInit={isEnvInitialized}>
+								isEnvInit={isEnvInitialized}
+								saveTrigger={saveTrigger}>
 							</CodeEditorWindow>
 						</div>
 					</div>

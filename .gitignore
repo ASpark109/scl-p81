@@ -25,3 +25,4 @@ yarn-error.log*
 /spacecrafttest
 src/mpce/deviceelements.json
 node_modules
+/server/saved

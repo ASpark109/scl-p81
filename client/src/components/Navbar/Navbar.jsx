@@ -16,7 +16,7 @@ import { BiReset } from "react-icons/bi";
 import { HiOutlineCommandLine } from "react-icons/hi2";
 import { FiSave } from "react-icons/fi";
 
-const Navbar = ({ onButtonClick, isProgramRunning}) => {
+const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
 
   return (
     <nav className='navbar'>
@@ -45,7 +45,7 @@ const Navbar = ({ onButtonClick, isProgramRunning}) => {
                     
                     <div className="groupBorderNav"></div>
 
-                    <button className="main-panel-button">
+                    <button className="main-panel-button" onClick={() => onButtonClick("save")}>
                         <FiSave className="icon" id="sv-btn"/>
                         <span>Save</span>
                     </button>
@@ -60,8 +60,8 @@ const Navbar = ({ onButtonClick, isProgramRunning}) => {
 
                     <div className="groupBorderNav"></div>
 
-                    <button className="main-panel-icon-button">
-                        <HiOutlineCommandLine className="icon" id="cmd-btn"/>
+                    <button className="main-panel-icon-button" onClick={() => onButtonClick("cmd")}>
+                        <HiOutlineCommandLine className={`icon ${isCMDVisible ? "icon--visible" : ""}`} id="cmd-btn"/>
                         {/* <span>Data link</span> */}
                     </button>
                 </div>

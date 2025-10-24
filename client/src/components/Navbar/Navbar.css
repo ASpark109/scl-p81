@@ -164,7 +164,7 @@
     color: #dadd40;
 }
 
-.main-panel-icon-button:hover #cmd-btn {
+#cmd-btn.icon--visible {
     color: #1dad00;
 }
 

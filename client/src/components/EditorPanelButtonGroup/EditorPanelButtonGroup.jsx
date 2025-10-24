@@ -1,23 +1,32 @@
 import React from "react";
-import "./EditorPanelButtonGroup.css"
 import { useState, useEffect } from "react";
+
+import "./EditorPanelButtonGroup.css"
+
 import { IoIosArrowDown } from "react-icons/io";
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
+import { getFileNamesList } from "../../api/userSrcCode";
+
+import { IoIosCheckmark } from "react-icons/io";
 
 const EditorPanelButtonGroup = ({ onSelectChange }) => {
 
-    let displayAreaScaleConf = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT");
-
-    const spacecrafts = displayAreaScaleConf.spaceCrafts.map(item => item.displayName);
-
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState(spacecrafts.length > 0 ? spacecrafts[0] : "");
+    const [selected, setSelected] = useState(null);
+    const [spacecraftNames, setSpacecraftNames] = useState([]);
 
     useEffect(() => {
-        if (selected)
-        {
-            onSelectChange(selected);
-        }
+        const fetchFiles = async () => {
+            const files = await getFileNamesList();
+            setSpacecraftNames(files);
+
+            if (files.length > 0)
+            {
+                setSelected(files[0]);
+                onSelectChange(files[0]);
+            }
+        };
+        fetchFiles();
     }, []);
 
     return (
@@ -26,26 +35,29 @@ const EditorPanelButtonGroup = ({ onSelectChange }) => {
             <span>{selected}</span>
         </button>
 
+        {/* add animation */}
         {isOpen && (
-            <div className="dropdown-content">
-                <ul>
-                    {
-                        spacecrafts.map((item, index) => (
-                            <li
-                                className="contentBtn"
-                                key={index} 
-                                onClick = {
-                                    () => {
-                                        if (item !== selected) {setSelected(item)}
-                                        onSelectChange(item)
-                                        setIsOpen(false);
-                                    }
-                                }>
-                                {item}
-                            </li>
-                        ))
-                    }
-                </ul>
+            <div className={`dropdown-content ${isOpen ? "active" : ""}`}>
+                {spacecraftNames.length > 0 && (
+                    <ul>
+                        {
+                            spacecraftNames.map((item, index) => (
+                                <li className="contentBtn"
+                                    key={index} 
+                                    onClick = {
+                                        () => {
+                                            if (item !== selected) {setSelected(item)}
+                                            onSelectChange(item)
+                                            setIsOpen(false);
+                                        }
+                                    }>
+                                    <span>{item}</span>
+                                    {item === selected && <IoIosCheckmark className="icon"/>}
+                                </li>
+                            ))
+                        }
+                    </ul>
+                )}
             </div>
         )}
     </div>
