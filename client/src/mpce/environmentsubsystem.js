@@ -111,6 +111,7 @@ export class EnvironmentSubSystem
 
     resetEnvironment()
     {
+        UserInteractionInterface.resetIframe();
         UserInteractionInterface.resetControlModels();
         ModuleBase.updateList.length = 0;
         this.#mVisualisationBase.reset();

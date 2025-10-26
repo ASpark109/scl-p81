@@ -1,21 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 
-function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunTrigger, isEnvInit}) {
+import { saveCode } from "../../api/userSrcCode";
+
+function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunTrigger, isEnvInit, saveTrigger, currentSpacecraft}) {
     const iframeRef = useRef();
     const [outputDoc, setOutputDoc] = useState("");
+
+    useEffect(() => {
+        if (spaceCraftName === currentSpacecraft)
+        {
+            const handleSave = async () => {
+                const data = await saveCode(code, `${spaceCraftName}.txt`);
+                console.log(`Saved: ${spaceCraftName}`, data);
+            };
+
+            handleSave();
+        }
+    }, [saveTrigger])
 
     useEffect(() => 
     {
         if(codeRunTrigger)
         {
             handleRunCode();
-            //console.log("start code" + spaceCraftName)
         }
         else
         {
             setOutputDoc("");
-            //console.log("stop code")
         }
     }, [codeRunTrigger]);
 
@@ -32,6 +44,89 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
                         ).join(" ");
                         window.parent.postMessage({ type: "log", payload: formatted }, "*");
                         };
+
+                        class CommandInterface
+                        {
+                            #commands = [];
+                            constructor()
+                            {
+                                this.#commands = [];
+
+                                window.addEventListener("message", (event) =>
+                                {
+                                    if (event.data?.type === "commands-interface-request")
+                                    {
+                                        const { functionName, params, requestId } = event.data;
+                                        
+                                        const cmd = this.#commands.find(f => f.name === functionName);
+                                        if (cmd)
+                                        {
+                                            try {
+                                                const result = cmd(...params);
+
+                                                if (result instanceof Promise) {
+                                                    result
+                                                        .then(result => {
+                                                            window.parent.postMessage({
+                                                                type: "commands-interface-response",
+                                                                requestId,
+                                                                result: result
+                                                            }, "*");
+                                                        })
+                                                        .catch(err => {
+                                                            window.parent.postMessage({
+                                                                type: "commands-interface-response",
+                                                                requestId,
+                                                                error: err.message
+                                                            }, "*");
+                                                        });
+                                                }
+                                                else
+                                                {
+                                                    window.parent.postMessage({
+                                                        type: "commands-interface-response",
+                                                        requestId,
+                                                        result
+                                                    }, "*");
+                                                }
+                                            }
+                                            catch (err) {
+                                                window.parent.postMessage({
+                                                    type: "commands-interface-response",
+                                                    requestId,
+                                                    error: err.message
+                                                }, "*");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            window.parent.postMessage({
+                                                type: "commands-interface-response",
+                                                requestId,
+                                                result:"command not found"
+                                            }, "*");                                           
+                                        }
+                                    }
+                                });
+                            }
+
+                            addCommand(cmd)
+                            {
+                                if (typeof cmd !== "function")
+                                {
+                                    console.error("Not a function");
+                                    return;
+                                }
+                                this.#commands.push(cmd);
+                            }
+
+                            showAllCommands()
+                            {
+                                return this.#commands.map(f => f.name);
+                            }
+                        }
+
+                        const CMDInterface = new CommandInterface();
 
                         // Універсальний асинхронний відповідач
                         class AsyncResponder
@@ -187,9 +282,11 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
     useEffect(() => {
         let model = UserInteractionInterface.getControlModel(spaceCraftName);
 
+        UserInteractionInterface.addIframe(spaceCraftName, iframeRef);
+
         const listener = async (event) => {
             const { type, args, params, messageId, id} = event.data || {};
-            
+
             if (type === "call-interface-method" && event.source === iframeRef.current?.contentWindow)
             {
                 console.log("call-inter-method " + spaceCraftName)
@@ -228,7 +325,7 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
                 {
                     iframeRef.current.contentWindow.postMessage({ type: "set-interface", payload: config},
                                                                 "*");
-                    console.log("Інтерфейс відправлено в iframe 🚀");
+                    console.log("Інтерфейс відправлено в iframe");
                 }
             }}
         />

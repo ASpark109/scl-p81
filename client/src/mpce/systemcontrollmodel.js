@@ -5,6 +5,7 @@ import { UserInteractionInterface } from "./userinteractioninterface.js"
 
 import { buildSt1_falcon9 } from "./spacecraftsystemmodels/st1_falcon9.js";
 
+/* eslint-disable no-useless-constructor */
 export class SystemControllModel
 {
     #spacecrafts = []
@@ -41,15 +42,11 @@ export class SystemControllModel
             let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualObj, conf);
             this.#spacecrafts.push(spaceCraft);
 
-            //let a = monitorInter.get("Leg1PneumPress");
-            //console.log(a())
-
             let {obj, map} = this.generateAbsModel(spaceCraft);
 
             UserInteractionInterface.addControlModel(map, configuration.displayName);
             Configurationsfactory.addGeneratedAbsConfiguration("FALCON9_ST1", obj);
-
-            //console.log(monitorInter)
+            
             return monitorInter;
         default:
             break;
