@@ -1,6 +1,6 @@
 import { constants } from "./constants.js";
 
-let Matter = require('matter-js');
+import Matter from 'matter-js';
 
 export class PhysicalEnvironmentsTransporter
 {
@@ -10,8 +10,6 @@ export class PhysicalEnvironmentsTransporter
     #mEngineInter = null;
     #mSpaceCraftsLocationGrid = [];
     #mDistanceBetweenObjects = constants.DISTANCE_BETWEEN_OBJECTS;
-
-    #mRunnerOn = false;
 
     constructor (w1, w2, runner, e)
     {
@@ -128,13 +126,7 @@ export class PhysicalEnvironmentsTransporter
         }
 
         Matter.Composite.add(this.#mWorldInter, physicalObject)
-        //Matter.Composite.add(this.#mWorldInter, physicalObject.constraints)
-
-        if (!this.#mRunnerOn)
-        {
-            this.#mRunnerOn = true;
-            Matter.Runner.run(this.#mRunnerInter, this.#mEngineInter);
-        }
+        // Matter.Composite.add(this.#mWorldInter, physicalObject.constraints)
 
         return {x: relVel.x / 10, y: relVel.y / 10};
     }

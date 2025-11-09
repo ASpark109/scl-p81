@@ -6,7 +6,7 @@ import { ModuleBase } from "./modules/modulebase.js";
 import { PhysicalEnvironmentsTransporter } from "./physicalenvironmentstransporter.js";
 import { SpaceCraftBuilder } from "./spacecraftbuilder.js"
 
-var Matter = require('matter-js');
+import Matter from 'matter-js';
 
 let Engine = Matter.Engine,
 Runner = Matter.Runner,
@@ -71,25 +71,10 @@ export class PhysicalEnvironmentModel
         }
 
         Composite.translate(this.#mWorld, {x: 300, y: 300});
-
-
         
         Events.on(this.#mEngine, "afterUpdate", (event) => {
             this.#mAbstractUpdate()
             ModuleBase.updateAll();
-
-            // console.log("h")
-            // const now = new Date();
-            // this.deltaTime = now - this.lastTime; // різниця в мс
-            // this.lastTime = now; // оновлюємо час
-
-            // console.log(this.deltaTime)
-
-            // const timing = event.source.timing; // або this.#mEngine.timing
-            // const delta = timing.lastDelta / 1000; // останній крок у секундах
-            // const fps = 1 / delta;
-            // console.log("FPS:", fps.toFixed(1));
-            
         })
 
 
@@ -97,23 +82,13 @@ export class PhysicalEnvironmentModel
             element: container.current,
             engine: this.#mEngine,
             options: {
-                width: 2000, // Adjust width
-                height: 800, // Adjust height
-                wireframes: true, // Disable wireframe to use full rendering
+                width: 2000,
+                height: 800,
+                wireframes: true,
             }
         });
 
         //Matter.Render.run(render)
-
-
-        // setInterval(() => {
-        //     this.testRotate += 1;
-        //     if (this.testRotate === 3)
-        //         this.testRotate = 0;
-
-        //     console.log(this.testRotate)
-        // }, 2000)
-
 
         //==========================================
 
@@ -158,9 +133,9 @@ export class PhysicalEnvironmentModel
             element: containerPhys.current,
             engine: this.#mEngineInter,
             options: {
-                width: 2000, // Adjust width
-                height: 800, // Adjust height
-                wireframes: false, // Disable wireframe to use full rendering
+                width: 2000,
+                height: 800,
+                wireframes: true,
             }
         });
 
@@ -240,6 +215,7 @@ export class PhysicalEnvironmentModel
 
         setInterval(() => {
             Matter.Engine.update(this.#mEngine, timestep);
+            Matter.Engine.update(this.#mEngineInter, timestep);
         }, timestep);
 
         //Runner.run(this.#mRunner, this.#mEngine); // стара версія
@@ -248,6 +224,7 @@ export class PhysicalEnvironmentModel
     stop()
     {
         Runner.stop(this.#mRunner, this.#mEngine);
+        Runner.stop(this.#mRunnerInter, this.#mEngineInter);
     }
 
     reset()
