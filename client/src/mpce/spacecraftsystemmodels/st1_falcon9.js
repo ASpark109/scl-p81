@@ -6,16 +6,19 @@ import { Pump } from "../modules/pump.js";
 import { ElectricalPowerSystem } from "../modules/electricalpowersystem.js";
 import { SolarPanel } from "../modules/solarpanel.js";
 import { Battery } from "../modules/battery.js";
+import { Transmitter } from "../modules/radiocommunication/transmitter.js";
+import { Receiver } from "../modules/radiocommunication/receiver.js";
 
 class System
 {
-    constructor(landingLegs, rcs, engineBlock, fuelSystem, electricalPowerSystem)
+    constructor(landingLegs, rcs, engineBlock, fuelSystem, electricalPowerSystem, radioCommunication)
     {
         this.LandingLegs = landingLegs;
         this.RCS = rcs;
         this.EngineBlock = engineBlock;
         this.FuelSystem = fuelSystem;
         this.PowerSupplySystem = electricalPowerSystem;
+        this.RadioCommunication = radioCommunication;
     }
 }
 
@@ -72,7 +75,16 @@ class FuelSystem
     }
 }
 
-export function buildSt1_falcon9(physicalModel, abstructModel, visualObj, conf)
+class RadioCommunication
+{
+    constructor(transmitter, receiver)
+    {
+        this.Transmitter = transmitter;
+        this.Receiver = receiver;
+    }
+}
+
+export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, signalHub, conf)
 {
     // *** shared objects ***
 
@@ -98,8 +110,8 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualObj, conf)
     let rocketBody = physicalModel.bodies.find(item => item.name === "stage");
     let rcsConf = conf.parts.find(item => item.name === "stage").rcs;
 
-    let rcsBlock1 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[0]);
-    let rcsBlock2 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[1]);
+    let rcsBlock1 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[0], visualEffects);
+    let rcsBlock2 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[1], visualEffects);
 
     let rcsFuelTank = new Tank(rcsConf.tank);
 
@@ -128,6 +140,17 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualObj, conf)
 
     // *** Fuel System ***
 
+    // *** Radio Communication ***
+    
+    let t = new Transmitter(1, 1, 100, 1, 400, 200, abstructModel);
+    let r = new Receiver(1, 1, 1, 1, abstructModel);
+    let rc = new RadioCommunication(t, r);
+
+    signalHub.registerRadioModule(t);
+    signalHub.registerRadioModule(r);
+
+    // *** Radio Communication ***
+
     // *** Electrical Power System ***
 
     const batteriesConf = conf.parts.find(item => item.name === "stage").batteries;
@@ -138,7 +161,9 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualObj, conf)
 
     let electricalPowerSystem = new ElectricalPowerSystem([pump._electricalDevice,
                                                            tank1.FillLevelSensor._electricalDevice,
-                                                           tank2.FillLevelSensor._electricalDevice],
+                                                           tank2.FillLevelSensor._electricalDevice,
+                                                           t._electricalDevice,
+                                                           r._electricalDevice],
                                                            solarPanels,
                                                            batteries); // consumers, suppliers, batteries
 
@@ -149,7 +174,8 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualObj, conf)
                                 rcs,
                                 engineBlock,
                                 fuelSystem,
-                                electricalPowerSystem); // не забудь розширити System
+                                electricalPowerSystem,
+                                rc); // не забудь розширити System
 
     // *** system monitoring inteface ***
 

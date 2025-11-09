@@ -2,6 +2,7 @@ import { Configurationsfactory } from "./configurationsfactory.js";
 
 import { PneumaticActuator } from "./modules/pneumaticactuator";
 import { UserInteractionInterface } from "./userinteractioninterface.js"
+import { SignalsHub } from "./modules/radiocommunication/signalhub.js";
 
 import { buildSt1_falcon9 } from "./spacecraftsystemmodels/st1_falcon9.js";
 
@@ -9,6 +10,7 @@ import { buildSt1_falcon9 } from "./spacecraftsystemmodels/st1_falcon9.js";
 export class SystemControllModel
 {
     #spacecrafts = []
+    #signalHub = new SignalsHub();
 
     constructor()
     {
@@ -25,7 +27,7 @@ export class SystemControllModel
 
     }
 
-    addObject(physicalmodel, abstructModel, visualObj, configuration)
+    addObject(physicalmodel, abstructModel, visualEffects, configuration)
     {
         if (configuration.type !== "spacecraft")
         {
@@ -39,7 +41,7 @@ export class SystemControllModel
         switch(spacecraftName)
         {
         case "FALCON9_ST1":
-            let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualObj, conf);
+            let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf);
             this.#spacecrafts.push(spaceCraft);
 
             let {obj, map} = this.generateAbsModel(spaceCraft);
