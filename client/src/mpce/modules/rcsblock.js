@@ -1,10 +1,16 @@
 import { ModuleBase } from './modulebase.js';
 import { Vector } from '../../utils/vector.js';
 
-let Matter = require('matter-js');
+import Matter from 'matter-js';
 
 class Unit
 {
+    constructor(id)
+    {
+        this.id = id;
+
+        console.log(this.id)
+    }
     isEnabled = false;
 }
 
@@ -21,15 +27,19 @@ export class RCSBlock extends ModuleBase
     #forcaAppliedToCenter = {x: 0, y: 0};
     #id = null
 
-    #unitsState = {
-        A: new Unit(),
-        B: new Unit(),
-        C: new Unit(),
-    }
+    #visualEffects = null;
 
-    constructor(rocketBody, abstructModel, conf)
+    #unitsState = null;
+
+    constructor(rocketBody, abstructModel, conf, visualEffects)
     {
         super()
+
+        this.#unitsState = {
+            A: new Unit("rcsThrusterA" + (conf.direction === "left" ? "L" : "R")),
+            B: new Unit("rcsThrusterB" + (conf.direction === "left" ? "L" : "R")),
+            C: new Unit("rcsThrusterC" + (conf.direction === "left" ? "L" : "R"))
+        };
 
         this.#body = rocketBody;
         this.#abstructModel = abstructModel;
@@ -39,6 +49,8 @@ export class RCSBlock extends ModuleBase
         this.#thetaV = this.#calculateAngle(conf.position)
 
         this.#id = conf.id;
+
+        this.#visualEffects = visualEffects;
 
         abstructModel.addNewVector(conf.id);
 
@@ -120,9 +132,13 @@ export class RCSBlock extends ModuleBase
             return false;
 
         unit.isEnabled = true;
+        this.#visualEffects.setVisible(unit.id, true);
 
         setTimeout(() => {
             unit.isEnabled = false;
+
+            this.#visualEffects.setVisible(unit.id, false);
+
             this.#abstructModel.setVectorForId(this.#id, {x: 0, y: 0});
         }, duration)
 

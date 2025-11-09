@@ -7,9 +7,12 @@ import falcon9leg from '../assets/images/falcon9leg.png';
 import satellite from '../assets/images/satelliteicon.png';
 import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
+import rcsThruster from '../assets/images/rcs.png';
+
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { Configurationsfactory } from "../mpce/configurationsfactory";
 import { SystemStateMonitor } from './systemstatemonitor';
+import { VisualEffectsContainer } from './visualeffectscontainer';
 
 const DISPLAY_WIDTH = 2000;
 const DISPLAY_HEIGHT = 1100;
@@ -43,7 +46,8 @@ export class VisualisationBase
         falcon9leg: falcon9leg,
         rocketIcon: satellite,
         planet: planet,
-        dockingPort: dockingPort
+        dockingPort: dockingPort,
+        rcs: rcsThruster
     }
 
     initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView)
@@ -77,64 +81,75 @@ export class VisualisationBase
 
     addObject(item, composite, abstract)
     {
-        if (item.type == "spacecraft")
-        {
-            let object = []
-
-            for (const body of composite.bodies)
+        return new Promise((resolve) => {
+            if (item.type == "spacecraft")
             {
-                let rectangle = PIXI.Sprite.from(this.images[body.imageDev]);
-                rectangle.anchor.set(0.5, 0.5);
+                let object = []
 
-                //! Напевно треба зробити мап
-                object.push(rectangle);
+                for (const body of composite.bodies)
+                {
+                    let rectangle = PIXI.Sprite.from(this.images[body.imageDev]);
+                    rectangle.anchor.set(0.5, 0.5);
+
+                    //! Напевно треба зробити мап
+                    object.push(rectangle);
+                }
+
+                // const visualEffectsContainer = new PIXI.Container();
+                // const testEffect = PIXI.Sprite.from(this.images["rcs"])
+
+                // visualEffectsContainer.addChild(testEffect);
+                // this.test.addChild(visualEffectsContainer);
+
+                let icon = PIXI.Sprite.from(this.images["rocketIcon"])
+                icon.anchor.set(0.5, 0.5);
+
+                const visualEffectsContainer = new VisualEffectsContainer(item.Name);
+                this.test.addChild(visualEffectsContainer);
+
+                let obj = {
+                    "visual": object,
+                    "visualEffects": visualEffectsContainer,
+                    "visualAbstruct": icon,
+                    "physical": composite.bodies,
+                    "abstract": abstract,
+                    "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
+                    "id": composite.id
+                }
+
+                this.test.addChild(...object);
+                this.components.push(obj);
+
+                this.SystemStateMonitor.addObject(item.Name, composite.id)
+
+                resolve(obj);
             }
+            else if (item.type == "spaceobject")
+            {
+                // let icon1 = PIXI.Sprite.from(this.images["planet"]);
+                // icon1.anchor.set(0.5,0.5);
 
-            let icon = PIXI.Sprite.from(this.images["rocketIcon"])
-            icon.anchor.set(0.5, 0.5);
+                // icon1.scale.set(300000)
+                const circle = new PIXI.Graphics();
+                circle.beginFill(0x011591);
+                circle.drawCircle(0, 0, item.Radius * this.metersPerPixelAbstruct);
+                circle.endFill();
 
-            let obj = {
-                "visual": object,
-                "visualAbstruct": icon,
-                "physical": composite.bodies,
-                "abstract": abstract,
-                "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
-                "id": composite.id
+                circle.pivot.set(0.5, 0.5)
+
+                //circle.scale.set(1/this.#scale)
+
+
+                let obj = {
+                    "visual": circle,
+                    "physical": null,
+                    "abstract": abstract
+                }
+
+                this.test.addChild(circle);
+                this.environmentComponents.push(obj);
             }
-
-            this.test.addChild(...object);
-            this.components.push(obj);
-
-            this.SystemStateMonitor.addObject(item.Name, composite.id)
-
-            return obj;
-        }
-        else if (item.type == "spaceobject")
-        {
-
-            // let icon1 = PIXI.Sprite.from(this.images["planet"]);
-            // icon1.anchor.set(0.5,0.5);
-
-            // icon1.scale.set(300000)
-            const circle = new PIXI.Graphics();
-            circle.beginFill(0x011591);
-            circle.drawCircle(0, 0, item.Radius * this.metersPerPixelAbstruct);
-            circle.endFill();
-
-            circle.pivot.set(0.5, 0.5)
-
-            //circle.scale.set(1/this.#scale)
-
-
-            let obj = {
-                "visual": circle,
-                "physical": null,
-                "abstract": abstract
-            }
-
-            this.test.addChild(circle);
-            this.environmentComponents.push(obj);
-        }
+        });
     }
 
     setMonitoringInterfaceForId(id, monitorinterface)
@@ -167,6 +182,11 @@ export class VisualisationBase
                 item.visual[i].y = item.physical[i].position.y - item.mountingPoint.y + (item.abstract.position.y - this.shiftx.y) * 10;
                 item.visual[i].rotation = item.physical[i].angle;
             }
+
+            // console.log(item.mountingPoint.x)
+            item.visualEffects.x = item.visual[0].x;
+            item.visualEffects.y = item.visual[0].y;
+            item.visualEffects.rotation = item.physical[0].angle
         }
 
         

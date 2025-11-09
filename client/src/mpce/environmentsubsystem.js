@@ -91,13 +91,13 @@ export class EnvironmentSubSystem
         this.onSetFocusObj(0); // Id може починатися не з 0
     }
 
-    addObject(item)
+    async addObject(item)
     {
         let physicalObj = this.#mPhysicalEnvironmentModel.addObject(item);
         let abstractObj = this.#mAbstractEnvironmentModel.addObject(item, physicalObj);
-        let visualObj   = this.#mVisualisationBase.addObject(item, physicalObj, abstractObj);
+        let visualObj   = await this.#mVisualisationBase.addObject(item, physicalObj, abstractObj);
 
-        let monitorInter = this.#mSystemControllModel.addObject(physicalObj, abstractObj, visualObj, item)
+        let monitorInter = this.#mSystemControllModel.addObject(physicalObj, abstractObj, visualObj.visualEffects, item)
         if (monitorInter !== null)
         {
             this.#mVisualisationBase.setMonitoringInterfaceForId(physicalObj.id, monitorInter);
