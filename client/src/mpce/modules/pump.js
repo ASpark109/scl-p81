@@ -1,7 +1,7 @@
 import { ModuleBase } from './modulebase.js';
 import { ElectricalDevice } from './electricaldevice.js';
 
-export class Pump//extends ModuleBase
+export class Pump
 {
     #connection1 = null;
     #connection2 = null;
@@ -52,7 +52,7 @@ export class Pump//extends ModuleBase
             return;
 
         this.#isEnabled = true;
-        this._electricalDevice.setEnergiCons(5000);
+        this._electricalDevice.setPower(5000);
     }
 
     disable()
@@ -62,7 +62,7 @@ export class Pump//extends ModuleBase
 
         this.#rpm = 0;
         this.#isEnabled = false;
-        this._electricalDevice.setEnergiCons(300);
+        this._electricalDevice.setPower(300);
     }
 
     changeDirection(dir)
@@ -87,12 +87,12 @@ export class Pump//extends ModuleBase
 
     availablePower()
     {
-        return this._electricalDevice.availableEnergy()
+        return this._electricalDevice.currentPower()
     }
 
     setPowerConsumption(e)
     {
-        return this._electricalDevice.setEnergiCons(e)
+        return this._electricalDevice.setPower(e)
     }
 
     readStatus()

@@ -24,7 +24,7 @@ export class ElectricalPowerSystem
     #update()
     {
         this.#totalMaxEnergyProduction = this.#suppliers.reduce((acc, item) => acc + item.powerGeneration(), 0);
-        this.#totalEnergyConsumption = this.#consumers.reduce((acc, item) => acc + item.energyConsumption(), 0);
+        this.#totalEnergyConsumption = this.#consumers.reduce((acc, item) => acc + item.requiredPower(), 0);
         this.#totalEnergyAccumulated = this.#batteries.reduce((acc, item) => acc + item.storedEnergy(), 0);
         this.#totalBatteryCapacity = this.#batteries.reduce((acc, item) => acc + item.capacity(), 0);
 
@@ -52,7 +52,8 @@ export class ElectricalPowerSystem
 
         for (let item of this.#consumers)
         {
-            item.setAvailableEnergy(Math.floor(item.energyConsumption() * a));
+            //console.log(item.requiredPower())
+            item.setAvailablePower(Math.floor(item.requiredPower() * a));
         }
     }
 

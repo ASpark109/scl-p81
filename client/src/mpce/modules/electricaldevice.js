@@ -1,32 +1,41 @@
 export class ElectricalDevice
 {
-    #energyConsumption = null;
-    #availableEnergy = 0
+    #power = 0;
+    #availablePower = 0
+    #minPower = 0;
+    #maxPower = 0;
 
-    constructor(minEnergyConsumption = 5, energyConsumption = 300) // подумати що тут можна зробити
+    constructor(minPower = 100, maxPower = 100) // подумати що тут можна зробити
     {
-        this.#energyConsumption = energyConsumption;
+        this.#maxPower = maxPower;
+        this.#minPower = minPower;
     }
 
-    energyConsumption()
+    setAvailablePower(e)
     {
-        return this.#energyConsumption;
+        // if (this.#minPower == 500)
+        //     console.log(e)
+
+        if (e > this.#power)
+            e = this.#power;
+        this.#availablePower = e;
     }
 
-    setEnergiCons(e)
+    // ========================
+
+    requiredPower()
     {
-        this.#energyConsumption = e;
+        return this.#power;
     }
 
-    setAvailableEnergy(e)
+    currentPower()
     {
-        if (e > this.#energyConsumption)
-            e = this.#energyConsumption;
-        this.#availableEnergy = e;
+        return this.#availablePower;
     }
 
-    availableEnergy()
+    setPower(power)
     {
-        return this.#availableEnergy + "(" + Math.round(this.#availableEnergy * 100 / this.#energyConsumption) + "%)";
+        console.log("wtf " + power)
+        this.#power = Math.max(0, Math.min(power, this.#maxPower));
     }
 }

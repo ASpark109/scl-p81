@@ -1,6 +1,6 @@
 import { ModuleBase } from './modulebase.js';
 
-let Matter = require('matter-js');
+import Matter from 'matter-js';
 
 export class Engine extends ModuleBase
 {
