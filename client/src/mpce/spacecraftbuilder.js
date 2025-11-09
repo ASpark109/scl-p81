@@ -1,6 +1,6 @@
 import { Configurationsfactory } from "./configurationsfactory.js";
 
-var Matter = require('matter-js');
+import Matter from 'matter-js';
 // SPACECRAFTS
 // import { st1_falcon9 } from './spacecrafts/st1_falcon9';
 

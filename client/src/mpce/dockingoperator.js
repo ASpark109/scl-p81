@@ -1,7 +1,7 @@
 import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { DockingTree, DockingNode } from "../mpce/dockingtree";
 
-let Matter = require('matter-js');
+import Matter from 'matter-js';
 
 export class DockingOperator
 {
