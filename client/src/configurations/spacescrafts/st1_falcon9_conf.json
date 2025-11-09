@@ -92,6 +92,27 @@
                 }
             ],
 
+            "radioCommunication":
+            {
+                "transmitter":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0,
+                    "maxBitRate": 0,
+                    "minBitRate": 0
+                },
+
+                "receiver":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0
+                }
+            },
+
             "landingLegPneumaticSystem":
             {
                 "pressureTank": 30,
