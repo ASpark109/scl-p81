@@ -8,10 +8,11 @@ import { SolarPanel } from "../modules/solarpanel.js";
 import { Battery } from "../modules/battery.js";
 import { Transmitter } from "../modules/radiocommunication/transmitter.js";
 import { Receiver } from "../modules/radiocommunication/receiver.js";
+import { DockingPort } from "../modules/dockingport.js";
 
 class System
 {
-    constructor(landingLegs, rcs, engineBlock, fuelSystem, electricalPowerSystem, radioCommunication)
+    constructor(landingLegs, rcs, engineBlock, fuelSystem, electricalPowerSystem, radioCommunication, dockingSystem)
     {
         this.LandingLegs = landingLegs;
         this.RCS = rcs;
@@ -19,6 +20,7 @@ class System
         this.FuelSystem = fuelSystem;
         this.PowerSupplySystem = electricalPowerSystem;
         this.RadioCommunication = radioCommunication;
+        this.DockingSystem = dockingSystem
     }
 }
 
@@ -81,6 +83,14 @@ class RadioCommunication
     {
         this.Transmitter = transmitter;
         this.Receiver = receiver;
+    }
+}
+
+class DockingSystem
+{
+    constructor(ports)
+    {
+        this.Ports = ports;
     }
 }
 
@@ -169,13 +179,30 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     // *** Electrical Power System ***
 
+    // *** Docking Ports ***
+
+    let dockingConf = conf.parts.find(item => item.name === "stage").dockingSystem;
+
+    let ports = dockingConf.ports.map(port => new DockingPort(port, physicalModel.requestUndocking, physicalModel.id));
+
+    let dockingSystem = new DockingSystem(ports);
+
+    // *** Docking Ports ***
+
+    // *** Rendezvous and Proximity Operations system ***
+
+    
+
+    // *** Rendezvous and Proximity Operations system ***
+
     // *** final assembly ***
     let spaceCraft = new System(landingLegs,
                                 rcs,
                                 engineBlock,
                                 fuelSystem,
                                 electricalPowerSystem,
-                                rc); // не забудь розширити System
+                                rc,
+                                dockingSystem); // не забудь розширити System
 
     // *** system monitoring inteface ***
 
