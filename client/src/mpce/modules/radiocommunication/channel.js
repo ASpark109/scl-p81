@@ -32,7 +32,7 @@ export class Channel
             let dis = Math.sqrt(x*x + y*y);
             let t = dis / 299792458;
 
-            console.log(dis + " " + t)
+            //console.log(dis + " " + t)
 
             setTimeout(()=>{
                 receiver.signalReceived(signal[0]);
@@ -49,6 +49,11 @@ export class Channel
                         clearInterval(send);
                     }
                 }, 1000 / bitRate);
+
+                window.parent.postMessage(
+                { type: "ground-communication-system", signal, bitRate},
+                "*");
+
             }, t * 1000);
         }
     }

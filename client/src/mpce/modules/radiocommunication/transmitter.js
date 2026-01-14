@@ -54,22 +54,20 @@ export class Transmitter
     setBitRate(newBitRate)
     {
         this.#bitRate = Math.max(this.#minBr, Math.min(newBitRate, this.#maxBr));
-        console.log(this.#bitRate + " <<<<<")
     }
 
     sendMessage(msg) // bits 0b10100101000101
     {
         console.log(this._electricalDevice.currentPower() + " " +this.#minPower)
-        if (this.#isBusy || !this.#isEnabled || this._electricalDevice.currentPower() < this.#minPower)
+        if (this.#isBusy || !this.#isEnabled) // this._electricalDevice.currentPower() < this.#minPower
         {
-            console.log("error")
             return false;
         }
 
         this.#signalHub.sendSignal(this.#carrierFreq, msg, this.#absObj.position, this.#bitRate);
         
-        console.log(this.#powerBrRatio)
-        console.log(this.#minPower + this.#powerBrRatio * this.#bitRate)
+        // console.log(this.#powerBrRatio)
+        // console.log(this.#minPower + this.#powerBrRatio * this.#bitRate)
 
         this._electricalDevice.setPower(this.#minPower + this.#powerBrRatio * this.#bitRate);
 
@@ -77,7 +75,6 @@ export class Transmitter
         // або автоматично зменшувати бітрейт
 
         setTimeout(() => {
-            console.log("ddddddddddddddd")
             this._electricalDevice.setPower(this.#minPower);
         }, msg.length * 1000 / this.#bitRate);
 

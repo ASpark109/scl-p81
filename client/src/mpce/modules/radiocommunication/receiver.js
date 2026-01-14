@@ -38,7 +38,6 @@ export class Receiver
 
     signalReceived(signal)
     {
-        console.log("<<<<<<<<<<<<<<<<<<<<<<")
         this.#signalsStorage.push(signal);
     }
 

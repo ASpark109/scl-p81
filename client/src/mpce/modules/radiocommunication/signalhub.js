@@ -35,8 +35,15 @@ export class SignalsHub
 
     sendSignal(carrierFreq, signal, position, bitRate)
     {
+        if (!(signal instanceof Uint8Array))
+        {
+            return false;
+        }
+
         if (this.#channels.has(carrierFreq))
+        {
             this.#channels.get(carrierFreq).sendSignal(signal, position, bitRate);
+        }
     }
 
     registerRadioModule(module)
