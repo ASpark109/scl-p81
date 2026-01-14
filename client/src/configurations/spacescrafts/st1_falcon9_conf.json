@@ -10,7 +10,7 @@
             "image_dev": "falcon9fs",
             "image_main": "",
 
-            "mass": 10,
+            "componentMass": 25000,
 
             "dimensions":
             {
@@ -33,11 +33,14 @@
                 "parameters":
                 {
                     "id": "eng",
-                    "thrust": 1,
-                    "inclination": 5
+                    "thrust": 67500,
+                    "inclination": 5,
+                    "minThrust": 0.4,
+                    "maxThrust": 1
                 }
             },
 
+            "fuelMass": 20000,
             "fuelSystem":
             {
                 "fuelTank":
@@ -57,14 +60,14 @@
                     {
                         "id": "lRCR",
                         "position": {"x": -20, "y": -150},
-                        "thrust": 5,
+                        "thrust": 5000,
                         "direction": "left",
                         "fuel": 10
                     },
                     {
                         "id": "rRCR",
                         "position": {"x": 20, "y": -150},
-                        "thrust": 5,
+                        "thrust": 5000,
                         "direction": "right",
                         "fuel": 10
                     }
@@ -113,6 +116,16 @@
                 }
             },
 
+            "dockingSystem":
+            {
+                "ports": [
+                    {
+                        "id": 1,
+                        "type": ""
+                    }
+                ]
+            },
+
             "landingLegPneumaticSystem":
             {
                 "pressureTank": 30,
@@ -129,7 +142,7 @@
             "image_dev": "falcon9leg",
             "image_main": "",
 
-            "mass": 1,
+            "mass": 0.1,
 
             "dimensions":
             {
@@ -154,7 +167,7 @@
             "image_dev": "falcon9leg",
             "image_main": "",
 
-            "mass": 1,
+            "mass": 0.1,
 
             "dimensions":{
                 "width": 10,
@@ -251,13 +264,14 @@
         },
 
         {
+            "id": 1,
             "name": "dockingPort",
             "objectType": "rectangle",
             "master": false,
             "image_dev": "dockingPort",
             "image_main": "",
 
-            "mass": 1,
+            "mass": 0.1,
             "dimensions":{
                 "width": 10,
                 "height": 30

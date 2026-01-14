@@ -2,13 +2,14 @@
 import FALCON9_ST1 from "../configurations/spacescrafts/st1_falcon9_conf.json";
 
 // SPACECRAFTS MONITOR DISPLAY
-import FALCON9_ST1_MONITOR from "../configurations/spacescrafts/st1_falcon9_monitor_view_conf.json"
+import FALCON9_ST1_MONITOR from "../configurations/spacescrafts/st1_falcon9_monitor_view_conf.json";
 
 // SPACECRAFTS VISUAL EFFECTS
-import FALCON9_ST1_VISUAL from "../configurations/spacescrafts/st1_falcon9_visual_effects_conf.json"
+import FALCON9_ST1_VISUAL from "../configurations/spacescrafts/st1_falcon9_visual_effects_conf.json";
 
 // INITIAL ENVIRONMENTS -----
 import TEST_ENVIRONMENT from "../configurations/initial_environments/test_conf.json";
+import TEST_ENVIRONMENT1 from "../configurations/initial_environments/test_conf1.json";
 
 // OTHER -----
 import SCALE_DISPLAY_AREA from "../configurations/scale_display_area_conf.json";
@@ -54,8 +55,18 @@ let configurations =
             abstractSystemInterfaceData: null
         },
 
+    // *** GROUND COMMUNICATION SYSTEM
+        GCS:
+        {
+            // spaceCraftData: FALCON9_ST1,
+            // monitorDisplayData: FALCON9_ST1_MONITOR,
+            // visualEffects: FALCON9_ST1_VISUAL,
+            abstractSystemInterfaceData: null
+        },
+
     // *** INITIAL ENVIRONMENTS ***
         TEST_ENVIRONMENT: TEST_ENVIRONMENT,
+        TEST_ENVIRONMENT1: TEST_ENVIRONMENT1,
     
     // *** OTHER ***
         SCALE_DISPLAY_AREA: SCALE_DISPLAY_AREA
