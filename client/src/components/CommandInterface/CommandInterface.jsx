@@ -6,7 +6,7 @@ import CMDCombobox from "./CMDCombobox/CMDCombobox";
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 
-export default function CommandInterface({isVisible}) {
+export default function CommandInterface({isVisible, mode}) {
     const [text, setText] = useState("");
     const [historyCounter, setHistoryCounter] = useState(-1);
     const [callsHistory, setCallsHistory] = useState([]);
@@ -156,7 +156,7 @@ export default function CommandInterface({isVisible}) {
     };
 
     const handlOnSelectedChanged = (newItem) =>{
-        const iframe = UserInteractionInterface.getIframe(newItem);
+        const iframe = UserInteractionInterface.getIframe(newItem, mode);
         console.log(newItem)
         setCurrentSpacecraftInterface(iframe);
     }

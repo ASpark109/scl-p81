@@ -11,11 +11,20 @@ import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
 import { getFileNamesList } from '../../api/userSrcCode';
 
-const initConf = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT")
-  .spaceCrafts
-  .map(({ Name, displayName }) => ({ Name, displayName }));
+const data = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT")
 
-const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger}) => {
+const initConf = [
+	...data.spaceCrafts.map(item => ({
+		Name: item.Name,
+		displayName: item.displayName
+	})),
+	...data.groundCommunicationSystem.map(item => ({
+		Name: item.Name,
+		displayName: item.displayName
+	}))
+];
+
+const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, mode}) => {
 
 	const [scale, setScale] = useState({scale: 1});
 	const [isMapViewEnabled, setViewMode] = useState(false);
@@ -33,7 +42,7 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger}) => {
 	function initializeEnvironment()
 	{
         const conf = "TEST_ENVIRONMENT";
-        let environment = new EnvironmentSubSystem(conf)
+        let environment = new EnvironmentSubSystem(conf, mode)
 
         if (!environment.initialize(pixiContainer,
 									pixiSpaceCraftsSystemStateContainer,
@@ -131,6 +140,7 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger}) => {
 return (
 	<div className='splitPaneContainer'>
 		<SplitPane
+			key="dev-pane"
 			split="vertical"
 			defaultSize="60%"
 			allowResize={true}
@@ -169,7 +179,8 @@ return (
 								currentSpacecraft={currentSpacecraft}
 								initConf={initConf}
 								isEnvInit={isEnvInitialized}
-								saveTrigger={saveTrigger}>
+								saveTrigger={saveTrigger}
+								mode={mode}>
 							</CodeEditorWindow>
 						</div>
 					</div>

@@ -20,12 +20,12 @@
 
 
 .Pane.vertical.Pane1  {
-  min-width: 25%;
-  max-width: 70%;
+  min-width: 10%;
+  max-width: 90%;
 }
 .Pane.vertical.Pane2  {
-  min-width: 25%;
-  max-width: 75%;
+  min-width: 10%;
+  max-width: 90%;
 }
 
 .displayobjectfuncpanel {

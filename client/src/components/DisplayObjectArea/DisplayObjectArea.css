@@ -1,10 +1,7 @@
-#renderWin {
+.dispalyArea {
     display: flex;
-    flex-direction: column; /* Розташовує дочірні елементи вертикально */
-    width: 100%; /* Займає всю ширину */
-    height: 100%; /* Фіксована висота контейнера */
-    overflow-y: auto; /* Вертикальна прокрутка */
-    overflow-x: hidden; /* Приховує горизонтальну прокрутку */
-    border: 1px solid #ccc; /* Опціональна рамка для візуалізації меж */
-    background-color: #031433; /* Фон для покращення вигляду */
-  }
+    flex-direction: column;
+    background-color: #031433;
+    height: 90vh;
+    /* overflow-y: auto; */
+}
