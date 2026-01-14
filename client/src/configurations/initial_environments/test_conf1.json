@@ -1,0 +1,59 @@
+{
+    "_comment": "1m in physical engine equal to 10px//5.98e24   7730",
+
+    "EnvironmentWidth": 150000000,
+    "EnvironmentHeight": 150000000,
+
+    "spaceCrafts": 
+    [
+        {
+            "Name": "FALCON9_ST1",
+            "displayName": "Falcon9St1_Optimus",
+            "type": "spacecraft",
+            "isManned": true,
+
+            "Position": {"x": 0, "y": -6671000},
+            "Velocity": {"x": 7730, "y": 0},
+
+            "RotationAngle": 90
+        },
+        {
+            "Name": "FALCON9_ST1",
+            "displayName": "Falcon9St1_Appolo",
+            "type": "spacecraft",
+            "isManned": true,
+
+            "Position": {"x": 70, "y": -6671000},
+            "Velocity": {"x": 7730.06, "y": 0},
+
+            "RotationAngle": -90
+        }
+    ],
+
+    "groundCommunicationSystem":
+    [
+        {
+            "Name": "GCS",
+            "displayName": "graundComSystem",
+            "type": "groundCommunicationSystem",
+
+            "position": 0
+        }
+    ],
+
+    "spaceObjects":
+    [       
+        {
+            "Name": "Earth",
+            "type": "spaceobject",
+
+            "Position": {"x": 0, "y": 0},
+            "Velocity": {"x": 0, "y": 0},
+
+            "Radius": 6371000,
+            "Mass": 5.98e24,
+            "RotationSpeed": 0,
+            "RotationAngle": 0
+        }
+    ]
+}

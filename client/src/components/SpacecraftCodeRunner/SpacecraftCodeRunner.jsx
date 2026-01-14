@@ -3,7 +3,15 @@ import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 
 import { saveCode } from "../../api/userSrcCode";
 
-function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunTrigger, isEnvInit, saveTrigger, currentSpacecraft}) {
+function SpacecraftCodeRunner({code,
+                               spaceCraftName,
+                               config,
+                               onOutput,
+                               codeRunTrigger,
+                               isEnvInit,
+                               saveTrigger,
+                               currentSpacecraft,
+                               mode}) {
     const iframeRef = useRef();
     const [outputDoc, setOutputDoc] = useState("");
 
@@ -29,15 +37,20 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
         {
             setOutputDoc("");
         }
-    }, [codeRunTrigger]);
+    }, [codeRunTrigger, code]);
 
     const handleRunCode = () => {
+        if (!code)
+        {
+            return;
+        }
+
         const wrappedCode =
         `
             <html>
                 <body>
                     <pre id="output"></pre>
-                    <script>
+                    <script type="module">
                         console.log = function(...args) {
                         const formatted = args.map(arg =>
                             typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
@@ -48,66 +61,53 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
                         class CommandInterface
                         {
                             #commands = [];
+
+                            #responseTypes = new Map();
+
                             constructor()
                             {
                                 this.#commands = [];
+                                this.#responseTypes.set("commands-interface-request", "commands-interface-response");
+                                this.#responseTypes.set("gcs-interface-request", "gcs-interface-response");
 
                                 window.addEventListener("message", (event) =>
                                 {
-                                    if (event.data?.type === "commands-interface-request")
+                                    if (event.data?.type === "commands-interface-request" ||
+                                        event.data?.type === "gcs-interface-request")
                                     {
+                                        const resType = this.#responseTypes.get(event.data?.type);
+
                                         const { functionName, params, requestId } = event.data;
                                         
                                         const cmd = this.#commands.find(f => f.name === functionName);
                                         if (cmd)
                                         {
+                                            console.log("qqqqqq")
                                             try {
                                                 const result = cmd(...params);
-
-                                                if (result instanceof Promise) {
-                                                    result
-                                                        .then(result => {
-                                                            window.parent.postMessage({
-                                                                type: "commands-interface-response",
-                                                                requestId,
-                                                                result: result
-                                                            }, "*");
-                                                        })
-                                                        .catch(err => {
-                                                            window.parent.postMessage({
-                                                                type: "commands-interface-response",
-                                                                requestId,
-                                                                error: err.message
-                                                            }, "*");
-                                                        });
-                                                }
-                                                else
-                                                {
-                                                    window.parent.postMessage({
-                                                        type: "commands-interface-response",
-                                                        requestId,
-                                                        result
-                                                    }, "*");
-                                                }
+                                                
+                                                this.#sendResponce(resType, requestId, result, null);
+                                            
                                             }
                                             catch (err) {
-                                                window.parent.postMessage({
-                                                    type: "commands-interface-response",
-                                                    requestId,
-                                                    error: err.message
-                                                }, "*");
+                                                this.#sendResponce(resType, requestId, null, err.message);
                                             }
                                         }
                                         else
                                         {
-                                            window.parent.postMessage({
-                                                type: "commands-interface-response",
-                                                requestId,
-                                                result:"command not found"
-                                            }, "*");                                           
+                                            this.#sendResponce(resType, requestId, "command not found", null);                                     
                                         }
                                     }
                                 });
+                            }
+
+                            #sendResponce(resType, requestId, result = null, error = null)
+                            {
+                                window.parent.postMessage({
+                                    type: resType,
+                                    requestId,
+                                    result
+                                }, "*");  
                             }
 
                             addCommand(cmd)
@@ -128,20 +128,42 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
 
                         const CMDInterface = new CommandInterface();
 
-                        // Універсальний асинхронний відповідач
-                        class AsyncResponder
+                        class EventListener
                         {
+                            #eventProcessors = new Map();
                             constructor()
                             {
-                                this._callbacks = new Map();
-                                window.addEventListener("message", (event) =>
-                                {
-                                    if (event.data?.type === "interface-response")
+                                window.addEventListener("message", (event) => {
+                                    if (event.data?.type === "eventMessage")
                                     {
+                                        const { eventName, data } = event.data;
+                                        let func = this.#eventProcessors.get(eventName);
+                                        
+                                        if(func)
+                                        {
+                                            func(data);
+                                        }
+                                    }
+                                });
+                            }
+
+                            setEventProcessorForName(eventName, func)
+                            {
+                                this.#eventProcessors.set(eventName, func)
+                            }
+                        }
+
+                        const eventListener = new EventListener();
+
+                        // Універсальний асинхронний відповідач
+                        class AsyncResponder {
+                            constructor() {
+                                this._callbacks = new Map();
+                                window.addEventListener("message", (event) => {
+                                    if (event.data?.type === "interface-response") {
                                         const { id, result } = event.data;
                                         const callback = this._callbacks.get(id);
-                                        if (callback)
-                                        {
+                                        if (callback) {
                                             callback(result);
                                             this._callbacks.delete(id);
                                         }
@@ -149,18 +171,19 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
                                 });
                             }
 
-                            waitForResponse(id, timeout = 1000)
-                            {
-                                return new Promise((resolve, reject) => {
-                                const timer = setTimeout(() => {
-                                    this._callbacks.delete(id);
-                                    reject(new Error("Timeout waiting for response"));
-                                }, timeout);
 
-                                this._callbacks.set(id, (result) => {
-                                    clearTimeout(timer);
-                                    resolve(result);
-                                });
+                            waitForResponse(id, timeout = 1000) {
+                                return new Promise((resolve, reject) => {
+                                    const timer = setTimeout(() => {
+                                        this._callbacks.delete(id);
+                                        reject(new Error("Timeout waiting for response"));
+                                    }, timeout);
+
+
+                                    this._callbacks.set(id, (result) => {
+                                        clearTimeout(timer);
+                                        resolve(result);
+                                    });
                                 });
                             }
                         }
@@ -169,62 +192,56 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
 
                         let System = null;
 
-                        window.addEventListener("message", (event) => {
+                        function waitForSystem() {
+                            return new Promise((resolve) => {
+                                if (System) {
+                                    resolve(System);
+                                } else {
+                                    const handler = (event) => {
+                                        if (event.data?.type === "set-interface") {
+                                            System = transformMethods(event.data.payload);
+                                            window.removeEventListener("message", handler);
+                                            resolve(System);
+                                        }
+                                    };
+                                    window.addEventListener("message", handler);
+                                }
+                            });
+                        }
 
-                            if (event.data?.type === "set-interface")
-                            {
-                                System = transformMethods(event.data.payload)
-                            }
-                        });
-
-                        function transformMethods(obj)
-                        {
+                        function transformMethods(obj) {
                             if (obj === null || typeof obj !== "object") return obj;
                             if (Array.isArray(obj)) return obj.map(transformMethods);
 
                             const result = {};
-                            for (const key of Object.keys(obj))
-                            {
+                            for (const key of Object.keys(obj)) {
                                 const val = obj[key];
 
-                                if (val.method && val && typeof val === "object")
-                                {
-                                    const { name, params, messageId } = val.method;
+                                if (val && typeof val === "object" && val.method) {
+                                    const {
+                                        name,
+                                        params,
+                                        messageId
+                                    } = val.method;
                                     if (typeof name !== "string") continue;
 
-                                    result[name] = function (...args)
-                                    {
+                                    result[name] = function(...args) {
                                         const id = Math.random().toString(36).slice(2);
 
-                                        window.parent.postMessage(
-                                        {
+                                        window.parent.postMessage({
                                             type: "call-interface-method",
                                             method: name,
                                             args,
                                             params,
                                             messageId,
                                             id
-                                        }, "*");
-                                        
-                                        return {
-                                            onFinished(callback, timeout = 1000)
-                                            {
-                                                asyncResponder
-                                                    .waitForResponse(id, timeout)
-                                                    .then(result => callback(result))
-                                                    .catch(err =>
-                                                        console.log("Async call failed:", err.message)
-                                                    );
-                                            },
-                                            get promise()
-                                            {
-                                                return asyncResponder.waitForResponse(id);
-                                            }
-                                        };
+                                        },
+                                        "*");
+
+                                        // Return only a promise instead of onFinished wrapper
+                                        return asyncResponder.waitForResponse(id);
                                     };
-                                } 
-                                else
-                                {
+                                } else {
                                     result[key] = transformMethods(val);
                                 }
                             }
@@ -232,45 +249,44 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
                             return result;
                         }
 
-                        setTimeout(() => {
-                            try
-                            {
-                                ${code}
+                        try
+                        {
+                            System = await waitForSystem();
+                            ${code}
 
-                                if (typeof loop === 'function')
-                                {
-                                    function runLoop() {
-                                        try
+                            if (typeof loop === 'function')
+                            {
+                                function runLoop() {
+                                    try
+                                    {
+                                        const result = loop();
+                                        if (result instanceof Promise)
                                         {
-                                            const result = loop();
-                                            if (result instanceof Promise)
-                                            {
-                                                result.then(() => setTimeout(runLoop, 100));
-                                            }
-                                            else
-                                            {
-                                                setTimeout(runLoop, 100);
-                                            }
+                                            result.then(() => setTimeout(runLoop, 100));
                                         }
-                                        catch (err)
+                                        else
                                         {
-                                            console.log("Loop error:", err);
                                             setTimeout(runLoop, 100);
                                         }
                                     }
-                                    
-                                    runLoop();
-                                } 
-                                else
-                                {
-                                    console.log("Функція loop() не знайдена.");
+                                    catch (err)
+                                    {
+                                        console.log("Loop error:", err);
+                                        setTimeout(runLoop, 100);
+                                    }
                                 }
-                            }
-                            catch (err)
+                                
+                                runLoop();
+                            } 
+                            else
                             {
-                                console.log("Error:", err);
+                                console.log("Функція loop() не знайдена.");
                             }
-                        }, 2000);
+                        }
+                        catch (err)
+                        {
+                            console.log("Error:", err);
+                        }
                     </script>
                 </body>
             </html>
@@ -280,9 +296,9 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
     };
 
     useEffect(() => {
-        let model = UserInteractionInterface.getControlModel(spaceCraftName);
+        let model = UserInteractionInterface.getControlModel(spaceCraftName, mode);
 
-        UserInteractionInterface.addIframe(spaceCraftName, iframeRef);
+        UserInteractionInterface.addIframe(spaceCraftName, iframeRef, mode);
 
         const listener = async (event) => {
             const { type, args, params, messageId, id} = event.data || {};
@@ -325,7 +341,7 @@ function SpacecraftCodeRunner({ code, spaceCraftName, config, onOutput, codeRunT
                 {
                     iframeRef.current.contentWindow.postMessage({ type: "set-interface", payload: config},
                                                                 "*");
-                    console.log("Інтерфейс відправлено в iframe");
+                    console.log("Інтерфейс відправлено в iframe " + spaceCraftName);
                 }
             }}
         />

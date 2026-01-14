@@ -5,8 +5,10 @@ import { DockingTree } from "../mpce/dockingtree";
 import { ModuleBase } from "./modules/modulebase.js";
 import { PhysicalEnvironmentsTransporter } from "./physicalenvironmentstransporter.js";
 import { SpaceCraftBuilder } from "./spacecraftbuilder.js"
+import { engineUpdater } from "./engineupdater.js";
 
 import Matter from 'matter-js';
+import { UserInteractionInterface } from "./userinteractioninterface.js";
 
 let Engine = Matter.Engine,
 Runner = Matter.Runner,
@@ -29,15 +31,19 @@ export class PhysicalEnvironmentModel
     #mBuilder = new SpaceCraftBuilder();
     #mObjectsTransporter = null;
     #mDockingOperator = null;
-    #mAbstractUpdate = null
+    #mAbstractUpdate = null;
     
     #nearbyObjects = []; 
     #mSpaceCraftsLocationGrid = [];
 
+    #mode = null;
+
     testRotate = 0;
 
-    constuctor(configuration)
+    constuctor(configuration, mode)
     {
+        this.#mode = mode;
+
         if (configuration != null)
         {
             this.#mConfiguration = configuration;
@@ -47,6 +53,12 @@ export class PhysicalEnvironmentModel
             console.log("Не вдалось отримати конфігурацію");
         }
     }
+
+     logTime(date = new Date()) {
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    console.log(`${minutes}:${seconds} - w`);
+}
 
     initialize(abstractUpdate, container, containerPhys)
     {
@@ -74,7 +86,6 @@ export class PhysicalEnvironmentModel
         
         Events.on(this.#mEngine, "afterUpdate", (event) => {
             this.#mAbstractUpdate()
-            ModuleBase.updateAll();
         })
 
 
@@ -106,25 +117,27 @@ export class PhysicalEnvironmentModel
             {
                 let group = this.#nearbyObjects[gi];
 
-                let ax = (group[0].phys.bodies[0].velocity.x / 10) - group[0].relVel.x
-                let ay = (group[0].phys.bodies[0].velocity.y / 10) - group[0].relVel.y
+                let ax = (group[0].phys.bodies[0].velocity.x) - group[0].relVel.x
+                let ay = (group[0].phys.bodies[0].velocity.y) - group[0].relVel.y
 
-                group[0].relVel.x = group[0].phys.bodies[0].velocity.x / 10
-                group[0].relVel.y = group[0].phys.bodies[0].velocity.y / 10
+                group[0].relVel.x = group[0].phys.bodies[0].velocity.x
+                group[0].relVel.y = group[0].phys.bodies[0].velocity.y
 
-                group[0].abs.velocity.x += ax;
-                group[0].abs.velocity.y += ay;
+                group[0].abs.velocity.x += (ax * 60 / 10);
+                group[0].abs.velocity.y += (ay * 60 / 10);
+
+                // тут поки все працює (до кінця не розумію як) якщо змінюється кількість кадрів в секунду, чи в delta в abs, це всьо перестане працювати
 
                 for (let i = 1; i < group.length; i++)
                 {
-                    group[i].abs.velocity.x = group[0].abs.velocity.x + (group[i].phys.bodies[0].velocity.x - group[0].phys.bodies[0].velocity.x) / 10
-                    group[i].abs.velocity.y = group[0].abs.velocity.y + (group[i].phys.bodies[0].velocity.y - group[0].phys.bodies[0].velocity.y) / 10
+                    group[i].abs.velocity.x = group[0].abs.velocity.x + (group[i].phys.bodies[0].velocity.x - group[0].phys.bodies[0].velocity.x) * 60 / 10
+                    group[i].abs.velocity.y = group[0].abs.velocity.y + (group[i].phys.bodies[0].velocity.y - group[0].phys.bodies[0].velocity.y) * 60 / 10
 
-                    Matter.Body.applyForce(group[i].phys.bodies[0],
-                    {x: group[i].phys.bodies[0].position.x,
-                    y: group[i].phys.bodies[0].position.y },
-                    {x: 12 * (group[i].abs.force.x - group[0].abs.force.x) / 2776,
-                    y: 12 * (group[i].abs.force.y - group[0].abs.force.y) / 2776});
+                    // Matter.Body.applyForce(group[i].phys.bodies[0],
+                    // {x: group[i].phys.bodies[0].position.x,
+                    // y: group[i].phys.bodies[0].position.y },
+                    // {x: 12 * (group[i].abs.force.x - group[0].abs.force.x) / 2776,
+                    // y: 12 * (group[i].abs.force.y - group[0].abs.force.y) / 2776});
                 }
             }
         })
@@ -204,19 +217,22 @@ export class PhysicalEnvironmentModel
                                                                         this.#mRunnerInter,
                                                                         this.#mEngineInter);
         
-        this.#mDockingOperator = new DockingOperator(this.#mWorldInter, this.#mEngineInter);
+        this.#mDockingOperator = new DockingOperator(this.#mWorldInter, this.#mEngineInter, this.#mode);
+
+        engineUpdater.add(this.#mEngine);
+        engineUpdater.add(this.#mEngineInter);
     }
 
     start()
     {
         const timestep = 1000 / 60; // 16.666... мс = 60 FPS
 
-        this.stop(); // якщо вже був запущений
+        //this.stop(); // якщо вже був запущений
 
-        setInterval(() => {
-            Matter.Engine.update(this.#mEngine, timestep);
-            Matter.Engine.update(this.#mEngineInter, timestep);
-        }, timestep);
+        // setInterval(() => {
+        //     Matter.Engine.update(this.#mEngine, timestep);
+        //     Matter.Engine.update(this.#mEngineInter, timestep);
+        // }, timestep);
 
         //Runner.run(this.#mRunner, this.#mEngine); // стара версія
     }
@@ -258,8 +274,22 @@ export class PhysicalEnvironmentModel
         {
             return null;
         }
+
+        if (item.type == "groundCommunicationSystem")
+        {
+            console.log("Ground Communication System does not have a physical model")
+            return null;
+        }
         
         let spacecraft = this.#mBuilder.buildSpaceCraft(item.Name);
+
+        spacecraft.requestUndocking = (spacecraft, portId) => {
+            this.#mDockingOperator.doUndock(spacecraft, portId);
+        }
+
+        UserInteractionInterface.addSpacecraftId(spacecraft.id, item.displayName, this.#mode);
+
+        //console.log(spacecraft)
 
         if (spacecraft.bodies.length > 0)
         {
@@ -330,6 +360,7 @@ export class PhysicalEnvironmentModel
             const relativeVelocity = this.#mObjectsTransporter.
                     transportObjectToPhysicalInteractionEnvironment(objects[0], objects[1]);
 
+            console.log(relativeVelocity)
             // тут треба підтягувати всі ініші апарати, якщо вони стиковані
             
             let newItem0 = {
@@ -372,8 +403,8 @@ export class PhysicalEnvironmentModel
 
         let position = this.#nearbyObjects[groupIndex].findIndex(item => item.abs.id === object.id);
 
-        let ch = DockingTree.getAllChildIds(object.id);
-        console.log(ch);
+        //let ch = DockingTree.getAllChildIds(object.id);
+        //console.log(ch);
 
         if (position !== -1)
         {

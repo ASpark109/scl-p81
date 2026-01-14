@@ -14,16 +14,19 @@ const CodeEditorWindow = ({ initCode = "",
 							currentSpacecraft,
 							initConf,
 							isEnvInit,
-							saveTrigger}) => 
+							saveTrigger,
+							mode}) => 
 {
   	const [userCodeList, setCodeList] = useState(() => {
 		const obj = {};
 
-		for (let i = 0; i < initConf.length; i++)
-		{
-			let init = initCode;
-			obj[`${initConf[i].displayName}`] = `//${initConf[i].displayName}\n` + init;
-		}
+		// for (let i = 0; i < initConf.length; i++)
+		// {
+		// 	let init = initCode;
+		// 	obj[`${initConf[i].displayName}`] = `//${initConf[i].displayName}\n` + init;
+		// }
+
+		// console.log(obj)
 
 		return obj;
 	});
@@ -36,6 +39,7 @@ const CodeEditorWindow = ({ initCode = "",
 			{
 				const spacecraft = initConf[i];
 				const filename = `${spacecraft.displayName}.txt`;
+
 				const code = await getFileByName(filename);
 				codes[spacecraft.displayName] = code || `// ${spacecraft.displayName}\n // not found`;
 			}
@@ -103,7 +107,8 @@ const CodeEditorWindow = ({ initCode = "",
 										  codeRunTrigger={trigger}
 										  isEnvInit={isEnvInit}
 										  saveTrigger={saveTrigger}
-										  currentSpacecraft={currentSpacecraft}>
+										  currentSpacecraft={currentSpacecraft}
+										  mode={mode}>
 					</SpacecraftCodeRunner>
 				))
 			}

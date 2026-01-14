@@ -2,7 +2,7 @@
 .functionalDisplayObjectAreaPanel{
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    width: 100%;
+    /* width: 100%; */
     height: 50px;
     display: flex;
     flex-direction: row;

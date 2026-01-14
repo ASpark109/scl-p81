@@ -36,6 +36,7 @@ export class PhysicalEnvironmentsTransporter
 
     transportMasterObjectToPhysicalInteractionEnvironment(object)
     {
+        console.log("TRANSPORT MASTER")
         let physicalObject = Matter.Composite.allComposites(this.#mWorld)
                                         .find(item => item.id === object.id);
 
@@ -116,8 +117,10 @@ export class PhysicalEnvironmentsTransporter
 
         let relVel = {x: 0, y: 0};
 
-        relVel.x = (object.velocity.x - object0.velocity.x) * 10;
-        relVel.y = (object.velocity.y - object0.velocity.y) * 10;
+        relVel.x = (object.velocity.x - object0.velocity.x) * 10 / 60;
+        relVel.y = (object.velocity.y - object0.velocity.y) * 10 / 60;
+
+        console.log(relVel.x + " " + object.velocity.x + " " + object0.velocity.x)
 
         Matter.Composite.translate(physicalObject, relativePosition);
         for (let i = 0; i < physicalObject.bodies.length; i++)
@@ -128,7 +131,7 @@ export class PhysicalEnvironmentsTransporter
         Matter.Composite.add(this.#mWorldInter, physicalObject)
         // Matter.Composite.add(this.#mWorldInter, physicalObject.constraints)
 
-        return {x: relVel.x / 10, y: relVel.y / 10};
+        return {x: relVel.x, y: relVel.y};
     }
 
     transportObjectToAbstractPhysicalEnvironment(object)

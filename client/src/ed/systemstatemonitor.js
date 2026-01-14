@@ -4,7 +4,7 @@ import { Configurationsfactory } from "../mpce/configurationsfactory";
 import { F9Monitor } from './f9monitor';
 
 const DISPLAY_WIDTH = 2000;
-const DISPLAY_HEIGHT = 1500;
+const DISPLAY_HEIGHT = 1170;
 
 export class SystemStateMonitor
 {
@@ -26,7 +26,7 @@ export class SystemStateMonitor
     {
         this.systemStateApplication = new PIXI.Application({
             width: DISPLAY_WIDTH,
-            height: DISPLAY_HEIGHT * 3 / 4,
+            height: DISPLAY_HEIGHT,
             backgroundColor: 0x020D19,
             antialias: true
         });

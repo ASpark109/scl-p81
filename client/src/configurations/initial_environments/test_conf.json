@@ -8,23 +8,36 @@
     [
         {
             "Name": "FALCON9_ST1",
-            "displayName": "Falcon9St1 Optimus",
+            "displayName": "Falcon9St1_Optimus",
             "type": "spacecraft",
+            "isManned": true,
 
-            "Position": {"x": 0, "y": -6671000},
+            "Position": {"x": 20, "y": -6671000},
             "Velocity": {"x": 0, "y": 0},
 
             "RotationAngle": 0
         },
         {
             "Name": "FALCON9_ST1",
-            "displayName": "Falcon9St1 Appolo",
+            "displayName": "Falcon9St1_Appolo",
             "type": "spacecraft",
+            "isManned": true,
 
-            "Position": {"x": 58, "y": -6671000},
+            "Position": {"x": 0, "y": -6671020},
             "Velocity": {"x": 0, "y": 0},
 
             "RotationAngle": 0
+        }
+    ],
+
+    "groundCommunicationSystem":
+    [
+        {
+            "Name": "GCS",
+            "displayName": "graundComSystem",
+            "type": "groundCommunicationSystem",
+
+            "position": 0
         }
     ],
 

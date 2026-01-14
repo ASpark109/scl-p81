@@ -23,8 +23,8 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
         <div className='navbar-container'>
             <div className='navbar-content'>
                 <button className="explore-button">
-                    <MdOutlineExplore className="icon" />
-                    <span>Explore</span>
+                    {/* <MdOutlineExplore className="icon" /> */}
+                    <span>Documentation</span>
                 </button>
             </div>
 
@@ -53,7 +53,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                         <IoRocketSharp className="icon" id="sbm-btn"/>
                         <span>Submit</span>
                     </button>
-                    <button className="main-panel-button">
+                    <button className="main-panel-button" onClick={() => onButtonClick("gcs")}>
                         <RiRadarFill className="icon" id="dl-btn"/>
                         <span>Data link</span>
                     </button>
@@ -67,7 +67,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                 </div>
 
                 <div className='navbar-content'>
-                    <div className="toggle-item">
+                    <div className="toggle-item" onClick={() => onButtonClick("development")}>
                         <input type="radio" id="html" name="language" value="HTML"/>
                         <label htmlFor="html">Development</label>
                     </div>
@@ -77,7 +77,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                         <label htmlFor="css">Mission Configuration</label>
                     </div>
 
-                    <div className="toggle-item">
+                    <div className="toggle-item" onClick={() => onButtonClick("liveMonitor")}>
                         <input type="radio" id="javascript" name="language" value="JavaScript"/>
                         <label htmlFor="javascript">Live Monitor</label>
                     </div>
@@ -85,7 +85,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
             </div>
 
             <div className='navbar-content'>
-                <button className="right-panel-button">
+                {/* <button className="right-panel-button">
                     <IoSettingsSharp className="icon"/>
                 </button>
                 <button className="right-panel-button">
@@ -94,7 +94,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                 </button>
                 <button className="avatar-button">
                     <img id="img" src="/image.png" alt="Profile"/>
-                </button>
+                </button> */}
                 <button className="right-panel-button discuss">
                     <span>Discuss</span>
                 </button>                 

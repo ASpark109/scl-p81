@@ -1,61 +1,78 @@
-import { logger } from "../utils/userlogger";
-
 export class UserInteractionInterface
 {
-    static #controlModels = new Map();
-    static #iframes = new Map();
+    static #controlModelsDev = new Map();
+    static #controlModelsRt = new Map();
+
+    static #iframesDev = new Map();
+    static #iframesRt = new Map();
+
+    static #spaceCraftIdsDev = new Map();
+    static #spaceCraftIdsRt = new Map();
 
     static controlModel = null;
     static n = -1;
 
-    static addControlModel(controllModel, displayName)
+    static addControlModel(controllModel, displayName, mode)
     {
-        this.#controlModels.set(displayName, controllModel);
+        if (mode === "dev")
+            this.#controlModelsDev.set(displayName, controllModel)
+        else if (mode === "rt")
+            this.#controlModelsRt.set(displayName, controllModel)
     }
 
     static resetControlModels()
     {
-        this.#controlModels.length = 0;
+        this.#controlModelsDev.length = 0;
     }
 
-    static setControlModel(displayName)
+    static getControlModel(displayName, mode)
     {
-        this.controlModel = this.#controlModels.get(displayName);
+        if (mode === "dev")
+            return this.#controlModelsDev.get(displayName);
+        else if (mode === "rt")
+            return this.#controlModelsRt.get(displayName);
+
+        return null;
     }
 
-    static getControlModel(displayName)
+    static addIframe(displayName, iframe, mode)
     {
-        return this.#controlModels.get(displayName);
+        if (mode === "dev")
+            this.#iframesDev.set(displayName, iframe);
+        else if (mode === "rt")
+            this.#iframesRt.set(displayName, iframe);
     }
 
-    static addIframe(displayName, iframe)
+    static getIframe(displayName, mode)
     {
-        this.#iframes.set(displayName, iframe);
+        if (mode === "dev")
+            return this.#iframesDev.get(displayName);
+        else if (mode === "rt")
+            return this.#iframesRt.get(displayName);
+
+        return null;
     }
 
-    static getIframe(displayName)
+    static addSpacecraftId(id, displayName, mode)
     {
-        return this.#iframes.get(displayName);
+        if (mode === "dev")
+            this.#spaceCraftIdsDev.set(id, displayName);
+        else if (mode === "rt")
+            this.#spaceCraftIdsRt.set(id, displayName);
+    }
+
+    static getIframeWithId(id, mode)
+    {
+        if (mode === "dev")
+            return this.#iframesDev.get(this.#spaceCraftIdsDev.get(id));
+        else if (mode === "rt")
+            return this.#iframesRt.get(this.#spaceCraftIdsRt.get(id));
+
+        return null;
     }
 
     static resetIframe()
     {
-        this.#iframes.length = 0;
-    }
-
-    static showN()
-    {
-        console.log(this.n);
-    }
-
-    static getModelsCount()
-    {
-        return this.#controlModels.length;
-    }
-
-    static testUserInteractionInterface()
-    {
-        logger("hello interface");
-        return {"x": 112, "y": 53}
+        this.#iframesDev.length = 0;
     }
 }

@@ -99,9 +99,4 @@ export class ElectricalPowerSystem
 
         return info;
     }
-
-    consumers()
-    {
-        return this.#batteries
-    }
 }

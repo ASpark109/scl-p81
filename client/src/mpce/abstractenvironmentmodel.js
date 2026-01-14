@@ -1,4 +1,3 @@
-import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { DockingTree } from "../mpce/dockingtree";
 import { Vector } from "../utils/vector";
 
@@ -8,6 +7,8 @@ class Spacecraft
 
     constructor(position, velocity, physicalObj = null)
     {
+        this.physicalObj = physicalObj;
+
         this.position = position;
         this.velocity = velocity;
         this.velocityPhys = {x: 0, y: 0};
@@ -15,12 +16,14 @@ class Spacecraft
         this.force = {x: 0, y: 0};
 
         //Композити не мають поки маси, якось потрібно вирішити
-        this.mass = 12//physicalObj;
+        this.mass = 420//physicalObj.mass;
         this.isClose = false
         this.closeGroupIndex = -1
         this.composit = false
         this.compositRef = -1;
         this.dockedSpacecrafts = [];
+
+        console.log(physicalObj.bodies[0].mass)
     }
 
     addNewVector(id)
@@ -76,9 +79,11 @@ export class AbstractEnvironmentModel
     #mSpacecrafts = [];
     #mDockedSpaceCrafts = [];
 
-    #deltaTime = 1//0.01666;
+    #deltaTime = 0.01666;
 
     #closeGroupCount = 0;
+
+    #callbacks = null;
 
     count = 0
 
@@ -89,6 +94,7 @@ export class AbstractEnvironmentModel
         {
             let newSpacecraft = new Spacecraft(conf.Position, conf.Velocity, physicalObj);
             this.#mSpacecrafts.push(newSpacecraft);
+
             return newSpacecraft;
         }
         else if (conf.type == "spaceobject")
@@ -139,6 +145,11 @@ export class AbstractEnvironmentModel
         //TODO
     }
 
+    setCallbacks(callbacks)
+    {
+        this.#callbacks = callbacks;
+    }
+
     calculateDistances()
     {
         for (let i = 0; i < this.#mSpacecrafts.length - 1; i++) 
@@ -186,16 +197,24 @@ export class AbstractEnvironmentModel
 
                         if (flag1)
                         {
-                            SignalSlotDispatcher.emit("objectsDistancing", 
-                                    this.#mSpacecrafts[i]
-                                );
+                            console.log("DIS_2")
+                            let func = this.#callbacks.get("objectsDistancing");
+                            if (func)
+                            {
+                                func(this.#mSpacecrafts[i])
+                            }
+
                             this.#mSpacecrafts[i].isClose = false;
                         }
                         if (flag2)
                         {
-                            SignalSlotDispatcher.emit("objectsDistancing", 
-                                    this.#mSpacecrafts[q]
-                                );
+                            console.log("DIS_1")
+                            let func = this.#callbacks.get("objectsDistancing");
+                            if (func)
+                            {
+                                func(this.#mSpacecrafts[q])
+                            }
+
                             this.#mSpacecrafts[q].isClose = false;
                         }
                     }
@@ -227,7 +246,11 @@ export class AbstractEnvironmentModel
                     this.#mSpacecrafts[i].isClose = true;
                     this.#mSpacecrafts[q].isClose = true;
 
-                    SignalSlotDispatcher.emit("objectsApproaching", arr);
+                    let func = this.#callbacks.get("objectsApproaching");
+                    if (func)
+                    {
+                        func(arr)
+                    }
                 }
             }
         }
@@ -275,6 +298,12 @@ export class AbstractEnvironmentModel
     #derivatives(state, spacecraft) {
         const [x, y, vx, vy] = state;
         const acc = this.#force(spacecraft, x, y);
+
+        // if (spacecraft.id === 0)
+        // {
+        //     console.log(acc.x)
+        // }
+
         const ax = acc.x;
         const ay = acc.y;
     
@@ -284,18 +313,20 @@ export class AbstractEnvironmentModel
     #force(spacecraft, x, y)
     {
         let fv = {x: 0, y: 0};
+    
+        const spacecraftMass = spacecraft.physicalObj.bodies[0].mass * 1000;
 
         for (let i = 0; i < this.#mSpaceBodies.length; i++)
         {
             let v = Vector.sub(this.#mSpaceBodies[i].position, {x: x, y: y});
-            let f = this.G_CONST * spacecraft.mass * this.#mSpaceBodies[i].mass / Math.pow(Vector.magnitude(v), 2);
-
+            let f = this.G_CONST * spacecraftMass * this.#mSpaceBodies[i].mass / Math.pow(Vector.magnitude(v), 2);
+    
             fv = Vector.add(Vector.mult(Vector.normalise(v), f), fv);
         }
-
-        // spacecraft.force = fv;
+    
+        //spacecraft.force = fv;
         fv = Vector.add(spacecraft.force, fv);
 
-        return Vector.div(fv, spacecraft.mass);
+        return Vector.div(fv, spacecraftMass);
     }
 }

@@ -3,13 +3,13 @@ import { Vector } from '../../utils/vector.js';
 
 import Matter from 'matter-js';
 
+const AC = 0.0000000102;
+
 class Unit
 {
     constructor(id)
     {
         this.id = id;
-
-        console.log(this.id)
     }
     isEnabled = false;
 }
@@ -23,6 +23,7 @@ export class RCSBlock extends ModuleBase
     #thetaV = null;
 
     #direction = null;
+    #thrust = null;
 
     #forcaAppliedToCenter = {x: 0, y: 0};
     #id = null
@@ -44,6 +45,7 @@ export class RCSBlock extends ModuleBase
         this.#body = rocketBody;
         this.#abstructModel = abstructModel;
         this.#direction = conf.direction;
+        this.#thrust = conf.thrust;
         this.#blockPositionVector = Math.sqrt(Math.pow(conf.position.x, 2) +
                                               Math.pow(conf.position.y, 2))
         this.#thetaV = this.#calculateAngle(conf.position)
@@ -96,8 +98,11 @@ export class RCSBlock extends ModuleBase
         let forceX = this.#body.position.x + Math.cos(angle * Math.PI / 180) * this.#blockPositionVector;
         let forceY = this.#body.position.y - Math.sin(angle * Math.PI / 180) * this.#blockPositionVector;
 
-        let forceVecX = Math.cos(forceAngle * Math.PI / 180) * 0.0001;
-        let forceVecY = -Math.sin(forceAngle * Math.PI / 180) * 0.0001;
+        let acceleration = this.#thrust / (this.#body.mass * 1000);
+        let engineForce = AC * acceleration * this.#body.mass * 1000;
+
+        let forceVecX = Math.cos(forceAngle * Math.PI / 180) * engineForce;
+        let forceVecY = -Math.sin(forceAngle * Math.PI / 180) * engineForce;
 
         Matter.Body.applyForce(this.#body, {x: forceX, 
                                     y: forceY},
@@ -107,10 +112,10 @@ export class RCSBlock extends ModuleBase
 
     #applyForceAbs(direction)
     {
-        let f = 0.01;
         let angle = 90 - this.#body.angle * 180 / Math.PI + direction;
-        let forceV = {x: Math.cos(angle * Math.PI / 180) * f,
-                                     y: -Math.sin(angle * Math.PI / 180) * f}
+
+        let forceV = {x: Math.cos(angle * Math.PI / 180) * this.#thrust,
+                      y: -Math.sin(angle * Math.PI / 180) * this.#thrust}
         
         this.#forcaAppliedToCenter = Vector.add(forceV, this.#forcaAppliedToCenter);
     }
@@ -140,6 +145,9 @@ export class RCSBlock extends ModuleBase
             this.#visualEffects.setVisible(unit.id, false);
 
             this.#abstructModel.setVectorForId(this.#id, {x: 0, y: 0});
+
+            console.log(this.#body.angularVelocity * 60 * (180 / Math.PI))
+            console.log(this.#abstructModel.velocity.x)
         }, duration)
 
         return true;

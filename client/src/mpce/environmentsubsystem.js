@@ -1,7 +1,6 @@
 import { AbstractEnvironmentModel } from "./abstractenvironmentmodel";
 import { Configurationsfactory } from "./configurationsfactory.js";
 import { PhysicalEnvironmentModel } from "./physicalenvironmentmodel";
-import { SignalSlotDispatcher } from "./signalslotdispatcher.js";
 import { SystemControllModel } from "./systemcontrollmodel.js";
 import { UserInteractionInterface } from "./userinteractioninterface.js";
 import { VisualisationBase } from "../ed/visualisationbase";
@@ -16,15 +15,16 @@ export class EnvironmentSubSystem
     #mSystemControllModel = null;
     #scale = 1;
 
-    constructor(configuration)
+    constructor(configuration, mode)
     {
         this.#mConfiguration = Configurationsfactory.getConfiguration(configuration);
         this.displayApp = null;
+        this.mode = mode;
     }
 
     initialize(container, pixiSpaceCraftsSystemStateContainer, containerM, matterContainerPhys, isMapView)
-    {        
-        this.#mPhysicalEnvironmentModel = new PhysicalEnvironmentModel(this.#mConfiguration);
+    {   
+        this.#mPhysicalEnvironmentModel = new PhysicalEnvironmentModel(this.#mConfiguration, this.mode);
 
         if (this.#mPhysicalEnvironmentModel == null)
         {
@@ -48,7 +48,7 @@ export class EnvironmentSubSystem
             return false;
         }
 
-        this.#mSystemControllModel = new SystemControllModel();
+        this.#mSystemControllModel = new SystemControllModel(this.mode);
 
         if (this.#mSystemControllModel == null)
         {
@@ -56,16 +56,17 @@ export class EnvironmentSubSystem
             return false;
         }
 
-        
-        SignalSlotDispatcher.connect("objectsApproaching", this.#mPhysicalEnvironmentModel,
-                        this.#mPhysicalEnvironmentModel.objectsApproaching);
-        SignalSlotDispatcher.connect("objectsDistancing", this.#mPhysicalEnvironmentModel,
-                        this.#mPhysicalEnvironmentModel.objectsDistancing);
-        SignalSlotDispatcher.connect("objectsDocked", this.#mAbstractEnvironmentModel,
-                        this.#mAbstractEnvironmentModel.objectsDocked);
+        {
+            const callbacks = new Map();
+            callbacks.set("objectsApproaching", ((data) => this.#mPhysicalEnvironmentModel.objectsApproaching(data)))
+            callbacks.set("objectsDistancing", ((data) => this.#mPhysicalEnvironmentModel.objectsDistancing(data)))
+            this.#mAbstractEnvironmentModel.setCallbacks(callbacks);
+        }
 
         this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
-                                                    this.#mAbstractEnvironmentModel), containerM, matterContainerPhys);
+                                                       this.#mAbstractEnvironmentModel),
+                                                   containerM,
+                                                   matterContainerPhys);
 
         this.#mVisualisationBase.initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView);
 
@@ -88,6 +89,11 @@ export class EnvironmentSubSystem
             this.addObject(item)
         }
 
+        for (const item of this.#mConfiguration.groundCommunicationSystem)
+        {
+            this.addGroundCommunicationSystem(item)
+        }
+
         this.onSetFocusObj(0); // Id може починатися не з 0
     }
 
@@ -102,6 +108,11 @@ export class EnvironmentSubSystem
         {
             this.#mVisualisationBase.setMonitoringInterfaceForId(physicalObj.id, monitorInter);
         }
+    }
+
+    addGroundCommunicationSystem(item)
+    {
+        this.#mSystemControllModel.addObject(null, null, null, item)
     }
 
     removeObject()
@@ -126,7 +137,7 @@ export class EnvironmentSubSystem
     start()
     {
         this.#mVisualisationBase.start();
-        this.#mPhysicalEnvironmentModel.start()
+        // this.#mPhysicalEnvironmentModel.start()
 
     }
 

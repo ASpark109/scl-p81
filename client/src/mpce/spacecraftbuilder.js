@@ -83,7 +83,7 @@ class ConfigurableBuilder
         return Matter.Composite.create({
             bodies: this.#bodies,
             constraints: this.#constraints,
-            id: this.#id ,
+            id: this.#id
         });
     }
      
@@ -100,13 +100,13 @@ class ConfigurableBuilder
                                                 isStatic: conf.isStatic,
                                                 friction: conf.friction,
                                                 frictionAir: 0,
-                                                mass: conf.mass,
+                                                mass: conf.componentMass / 1000 + conf.fuelMass / 1000, // Kg -> T
                                                 isSensor: conf.isSensor,
-                                                dockId: conf.isSensor ? this.#id : null, // переписати потім, щоб воно не залежало від сенсора
+                                                dockId: conf.name === "dockingPort" ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 location: conf.isSensor ? conf.location : null,
 
-                                                name:conf.name,
+                                                name: conf.name,
                                                 type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
                                                 imageDev: conf.image_dev,
