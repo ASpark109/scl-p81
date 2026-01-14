@@ -1,0 +1,16 @@
+.liveViewContainer {
+    height: 94vh;
+    margin-left: 8px;
+    margin-right: 8px;
+    display: flex;
+    border: 1px solid #696969;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.DisplayObjectAreaLiveMonitor {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+}

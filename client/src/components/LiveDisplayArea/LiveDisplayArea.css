@@ -1,0 +1,24 @@
+.dispalyAreaContainer {
+    height: 94vh;
+    width: 100%;
+    display: flex;
+}
+
+.left-panel-live {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background-color: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-panel-live {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background-color: transparent;;
+    display: flex;
+    flex-direction: column;
+
+}
