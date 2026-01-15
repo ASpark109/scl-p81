@@ -9,13 +9,12 @@ import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
 import rcsThruster from '../assets/images/rcs.png';
 
-import { SignalSlotDispatcher } from "../mpce/signalslotdispatcher";
 import { Configurationsfactory } from "../mpce/configurationsfactory";
 import { SystemStateMonitor } from './systemstatemonitor';
 import { VisualEffectsContainer } from './visualeffectscontainer';
 
-const DISPLAY_WIDTH = 2000;
-const DISPLAY_HEIGHT = 1100;
+const DISPLAY_WIDTH = 2300;
+const DISPLAY_HEIGHT = 1170;
 
 export class VisualisationBase
 {
