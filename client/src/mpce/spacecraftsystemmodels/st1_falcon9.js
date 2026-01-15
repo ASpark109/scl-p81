@@ -9,10 +9,18 @@ import { Battery } from "../modules/battery.js";
 import { Transmitter } from "../modules/radiocommunication/transmitter.js";
 import { Receiver } from "../modules/radiocommunication/receiver.js";
 import { DockingPort } from "../modules/dockingport.js";
+import { ProximityRadar } from "../modules/rpo/proximityradar.js";
 
 class System
 {
-    constructor(landingLegs, rcs, engineBlock, fuelSystem, electricalPowerSystem, radioCommunication, dockingSystem)
+    constructor(landingLegs,
+                rcs,
+                engineBlock,
+                fuelSystem,
+                electricalPowerSystem,
+                radioCommunication,
+                dockingSystem,
+                rpo)
     {
         this.LandingLegs = landingLegs;
         this.RCS = rcs;
@@ -20,7 +28,8 @@ class System
         this.FuelSystem = fuelSystem;
         this.PowerSupplySystem = electricalPowerSystem;
         this.RadioCommunication = radioCommunication;
-        this.DockingSystem = dockingSystem
+        this.DockingSystem = dockingSystem;
+        this.RPO = rpo;
     }
 }
 
@@ -91,6 +100,14 @@ class DockingSystem
     constructor(ports)
     {
         this.Ports = ports;
+    }
+}
+
+class RPO
+{
+    constructor(proximityRadar)
+    {
+        this.ProximityRadar = proximityRadar;
     }
 }
 
@@ -191,7 +208,10 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     // *** Rendezvous and Proximity Operations system ***
 
-    
+    let rpoConf = conf.parts.find(item => item.name === "stage").rpo.proximityradar;
+
+    let proximityRadar = new ProximityRadar(rpoConf, abstructModel);
+    let rpo = new RPO(proximityRadar);
 
     // *** Rendezvous and Proximity Operations system ***
 
@@ -202,7 +222,8 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
                                 fuelSystem,
                                 electricalPowerSystem,
                                 rc,
-                                dockingSystem); // не забудь розширити System
+                                dockingSystem,
+                                rpo); // не забудь розширити System
 
     // *** system monitoring inteface ***
 

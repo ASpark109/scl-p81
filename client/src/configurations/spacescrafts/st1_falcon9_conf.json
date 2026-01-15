@@ -116,6 +116,17 @@
                 }
             },
 
+            "rpo":
+            {
+                "proximityradar":
+                {
+                    "distance": 20000,
+                    "viewAngle": 40,
+                    "maxP": 1000,
+                    "minP": 200
+                }
+            },
+
             "dockingSystem":
             {
                 "ports": [

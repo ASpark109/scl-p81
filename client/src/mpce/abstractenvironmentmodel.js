@@ -5,7 +5,7 @@ class Spacecraft
 {
     #forceVectors = new Map();
 
-    constructor(position, velocity, physicalObj = null)
+    constructor(position, velocity, physicalObj = null, isInSector)
     {
         this.physicalObj = physicalObj;
 
@@ -22,8 +22,14 @@ class Spacecraft
         this.composit = false
         this.compositRef = -1;
         this.dockedSpacecrafts = [];
+        this.callback = isInSector;
 
         console.log(physicalObj.bodies[0].mass)
+    }
+
+    isInView(dis, viewAngle)
+    {
+        return this.callback(this.position, this.physicalObj.bodies[0].angle, dis, viewAngle, this.id)
     }
 
     addNewVector(id)
@@ -92,7 +98,7 @@ export class AbstractEnvironmentModel
     {
         if (conf.type == "spacecraft")
         {
-            let newSpacecraft = new Spacecraft(conf.Position, conf.Velocity, physicalObj);
+            let newSpacecraft = new Spacecraft(conf.Position, conf.Velocity, physicalObj, (pos, angle, dis, viewAngle, id) => {return this.isInSector(pos, angle, dis, viewAngle, id)});
             this.#mSpacecrafts.push(newSpacecraft);
 
             return newSpacecraft;
@@ -103,6 +109,43 @@ export class AbstractEnvironmentModel
             this.#mSpaceBodies.push(newSpaceObject)
             return newSpaceObject;
         }
+    }
+
+    isInSector(
+        position,
+        rocketAngleDeg,
+        radarRange,
+        radarFovDeg,
+        id)
+    {
+        let result = [];
+
+        for(const item of this.#mSpacecrafts)
+        {
+            if (item.id === id)
+                continue;
+
+            const dx = item.position.x - position.x;
+            const dy = item.position.y - position.y;
+
+            const distance = Math.hypot(dx, dy);
+            if (distance > radarRange) {
+                continue;
+            }
+
+            const shipAngleDeg = Math.atan2(dx, -dy) * 180 / Math.PI;
+
+            let angleDiff = shipAngleDeg - rocketAngleDeg * 180 / Math.PI;
+
+            angleDiff = ((angleDiff + 180) % 360 + 360) % 360 - 180
+
+            if (Math.abs(angleDiff) <= radarFovDeg / 2)
+            {
+                result.push({x: dx, y: dy});
+            }
+        }
+
+        return result;
     }
 
     removeObject(id)
@@ -298,11 +341,6 @@ export class AbstractEnvironmentModel
     #derivatives(state, spacecraft) {
         const [x, y, vx, vy] = state;
         const acc = this.#force(spacecraft, x, y);
-
-        // if (spacecraft.id === 0)
-        // {
-        //     console.log(acc.x)
-        // }
 
         const ax = acc.x;
         const ay = acc.y;

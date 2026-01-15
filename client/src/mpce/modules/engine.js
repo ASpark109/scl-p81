@@ -57,8 +57,6 @@ export class Engine extends ModuleBase
             {
                 this.#applyForceAbs();
             }
-
-            
         }
     }
 
