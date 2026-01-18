@@ -118,12 +118,19 @@
 
             "rpo":
             {
-                "proximityradar":
+                "proximityRadar":
                 {
                     "distance": 20000,
                     "viewAngle": 40,
                     "maxP": 1000,
                     "minP": 200
+                },
+
+                "laserRangeFinder":
+                {
+                    "distance": 100,
+                    "maxP": 500,
+                    "minP": 100
                 }
             },
 

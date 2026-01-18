@@ -15,7 +15,8 @@ Runner = Matter.Runner,
 Composite = Matter.Composite,
 Events = Matter.Events,
 MouseConstraint = Matter.MouseConstraint,
-Mouse = Matter.Mouse
+Mouse = Matter.Mouse,
+Query = Matter.Query
 
 export class PhysicalEnvironmentModel
 {
@@ -283,13 +284,79 @@ export class PhysicalEnvironmentModel
         
         let spacecraft = this.#mBuilder.buildSpaceCraft(item.Name);
 
-        spacecraft.requestUndocking = (spacecraft, portId) => {
-            this.#mDockingOperator.doUndock(spacecraft, portId);
+        spacecraft.requestUndocking = (spacecraftId, portId) => {
+            this.#mDockingOperator.doUndock(spacecraftId, portId);
+        }
+        spacecraft.scanArea = (dis, portId) => {
+            const radius = dis * 10;
+
+            const port = spacecraft.bodies.find((item) => {return item.dockId !== null && item.dockId.dock === portId})
+            
+            console.log(port)
+
+            if (!port)
+            {
+                return false;
+            }
+
+            const center = port.position;
+
+            const region = {
+                min: { x: center.x - radius, y: center.y - radius },
+                max: { x: center.x + radius, y: center.y + radius }
+            };
+
+            const composites = Matter.Composite.allComposites(this.#mEngineInter.world);
+
+            let detected = [];
+
+            for(const composite of composites)
+            {
+                const res = Query.region(composite.bodies, region).filter(item => {
+                    
+                    if (item.master === true)
+                    {
+                        return item.id !== spacecraft.bodies[0].id
+                    }
+                    else
+                    {
+                        return (item.dockId !== null) && (item.dockId.parent !== port.dockId.parent)
+                    }
+                });
+
+                if (res.length)
+                    detected.push(res);
+            }
+
+            let result = detected.flatMap(row =>
+                row.flatMap(item => {
+                    if (item.name === "stage") {
+                        return item.vertices.map(({ x, y, index }) => ({
+                            x: Number(((x - center.x)/10).toFixed(3)),
+                            y: Number(((y - center.y)/10).toFixed(3)),
+                            index
+                        }));
+                    }
+
+                    if (item.name === "dockingPort") {
+                        return [{
+                            x: Number(((item.position.x - center.x)/10).toFixed(3)),
+                            y: Number(((item.position.y - center.y)/10).toFixed(3)),
+                            index: "d"
+                        }];
+                    }
+
+                    return [];
+                })
+            );
+
+            if(!result.length)
+                result = []
+
+            return result;
         }
 
         UserInteractionInterface.addSpacecraftId(spacecraft.id, item.displayName, this.#mode);
-
-        //console.log(spacecraft)
 
         if (spacecraft.bodies.length > 0)
         {

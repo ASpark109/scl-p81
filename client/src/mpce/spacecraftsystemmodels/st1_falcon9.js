@@ -10,6 +10,7 @@ import { Transmitter } from "../modules/radiocommunication/transmitter.js";
 import { Receiver } from "../modules/radiocommunication/receiver.js";
 import { DockingPort } from "../modules/dockingport.js";
 import { ProximityRadar } from "../modules/rpo/proximityradar.js";
+import { LaserRangeFinder } from "../modules/rpo/laserrangefinder.js";
 
 class System
 {
@@ -105,9 +106,10 @@ class DockingSystem
 
 class RPO
 {
-    constructor(proximityRadar)
+    constructor(proximityRadar, laserRangeFinder)
     {
         this.ProximityRadar = proximityRadar;
+        this.LaserRangeFinder = laserRangeFinder;
     }
 }
 
@@ -208,10 +210,12 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     // *** Rendezvous and Proximity Operations system ***
 
-    let rpoConf = conf.parts.find(item => item.name === "stage").rpo.proximityradar;
+    let rpoConf = conf.parts.find(item => item.name === "stage").rpo;
 
-    let proximityRadar = new ProximityRadar(rpoConf, abstructModel);
-    let rpo = new RPO(proximityRadar);
+    let proximityRadar = new ProximityRadar(rpoConf.proximityRadar, abstructModel);
+    let laserRangeFinder = new LaserRangeFinder(rpoConf.laserRangeFinder, physicalModel);
+
+    let rpo = new RPO(proximityRadar, laserRangeFinder); 
 
     // *** Rendezvous and Proximity Operations system ***
 

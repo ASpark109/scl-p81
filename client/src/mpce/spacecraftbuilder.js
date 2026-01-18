@@ -103,7 +103,7 @@ class ConfigurableBuilder
                                                 mass: conf.componentMass / 1000 + conf.fuelMass / 1000, // Kg -> T
                                                 isSensor: conf.isSensor,
                                                 dockId: conf.name === "dockingPort" ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
-                                                // dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
+                                                // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 location: conf.isSensor ? conf.location : null,
 
                                                 name: conf.name,
