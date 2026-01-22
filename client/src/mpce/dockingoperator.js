@@ -59,8 +59,8 @@ export class DockingOperator
         }
 
         let dockConstraint1 = Matter.Constraint.create({
-            bodyA: first,
-            bodyB: second,
+            bodyA: second,
+            bodyB: first,
 
             pointA: {x: 12, y: -10},
             pointB: {x: -12, y: -10},
@@ -72,8 +72,8 @@ export class DockingOperator
         });
 
         let dockConstraint2 = Matter.Constraint.create({
-            bodyA: first,
-            bodyB: second,
+            bodyA: second,
+            bodyB: first,
 
             pointA: {x: 12, y: 10},
             pointB: {x: -12, y: 10},
