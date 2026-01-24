@@ -98,7 +98,7 @@ class ConfigurableBuilder
                                            conf.dimensions.height,
                                            {
                                                 isStatic: conf.isStatic,
-                                                friction: conf.friction,
+                                                friction: 1,
                                                 frictionAir: 0,
                                                 mass: conf.componentMass / 1000 + conf.fuelMass / 1000, // Kg -> T
                                                 isSensor: conf.isSensor,

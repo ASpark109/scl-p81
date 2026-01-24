@@ -212,9 +212,9 @@ export class VisualisationBase
         {
             let item = this.components[q];
 
-                item.visualAbstruct.x = (item.abstract.position.x) * this.metersPerPixelAbstruct
-                item.visualAbstruct.y = (item.abstract.position.y) * this.metersPerPixelAbstruct
-                item.visualAbstruct.rotation = item.physical[0].angle;
+            item.visualAbstruct.x = (item.abstract.position.x) * this.metersPerPixelAbstruct
+            item.visualAbstruct.y = (item.abstract.position.y) * this.metersPerPixelAbstruct
+            item.visualAbstruct.rotation = item.physical[0].angle;
         }
 
         //this.environmentComponents[0].visual.position.set((0 - this.shiftx.x) * 10,

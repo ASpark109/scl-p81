@@ -14,15 +14,18 @@ class Spacecraft
         this.velocityPhys = {x: 0, y: 0};
         this.id = physicalObj.id;
         this.force = {x: 0, y: 0};
+        this.grav = {x: 0, y: 0};
 
         //Композити не мають поки маси, якось потрібно вирішити
-        this.mass = 420//physicalObj.mass;
+        this.mass = physicalObj.mass;
         this.isClose = false
+        this.isCloseToSurf = false
         this.closeGroupIndex = -1
         this.composit = false
         this.compositRef = -1;
         this.dockedSpacecrafts = [];
         this.callback = isInSector;
+        this.type = "sc";
 
         console.log(physicalObj.bodies[0].mass)
     }
@@ -65,13 +68,15 @@ class Spacecraft
 
 class SpaceObject
 {
-    constructor(position, velocity, mass, radius, id = 0)
+    constructor(position, velocity, mass, radius, id = 100) // id зараз фіксоване, потім потрібно виправити
     {
         this.position = position;
         this.velocity = velocity;
         this.mass = mass;
         this.radius = radius;
         this.id = id;
+        this.isClose = false;
+        this.type = "sb";
     }
 }
 
@@ -88,6 +93,8 @@ export class AbstractEnvironmentModel
     #deltaTime = 0.01666;
 
     #closeGroupCount = 0;
+    #isGroupExists = false;
+    #groupLieder = null;
 
     #callbacks = null;
 
@@ -173,14 +180,13 @@ export class AbstractEnvironmentModel
     {
         this.#calculateNewSystemState();
 
-        if (this.count === 100)
+        if (this.count === 30)
         {
-            this.calculateDistances();
+            this.calculateDistances1();
             this.count = 0
         }
 
         this.count++
-
     }
 
     objectsDocked(objectId)
@@ -193,108 +199,121 @@ export class AbstractEnvironmentModel
         this.#callbacks = callbacks;
     }
 
-    calculateDistances()
+    calculateDistances1()
     {
-        for (let i = 0; i < this.#mSpacecrafts.length - 1; i++) 
+        const closeDis = 200;
+
+        if (!this.#isGroupExists)
         {
-            for (let q = i + 1; q < this.#mSpacecrafts.length; q++)
+            for (let i = 0; i < this.#mSpacecrafts.length; i++) //  я видалив -1
             {
-                let x = this.#mSpacecrafts[i].position.x - this.#mSpacecrafts[q].position.x;
-                let y = this.#mSpacecrafts[i].position.y - this.#mSpacecrafts[q].position.y;
-
-                let d = Math.sqrt(x*x + y*y);
-
-                if (this.#mSpacecrafts[i].isClose && this.#mSpacecrafts[q].isClose &&
-                    this.#mSpacecrafts[i].closeGroupIndex === this.#mSpacecrafts[q].closeGroupIndex)
+                for (let q = i + 1; q < this.#mSpacecrafts.length; q++)
                 {
-                    if (d > 70)
+                    let sc1 = this.#mSpacecrafts[i];
+                    let sc2 = this.#mSpacecrafts[q];
+
+                    let x = sc1.position.x - sc2.position.x;
+                    let y = sc1.position.y - sc2.position.y;
+
+                    let dis = Math.sqrt(x*x + y*y);
+
+                    if (dis < closeDis)
                     {
-                        let flag1 = false;
-                        let flag2 = false;
-                        
-                        for (let n = 0; n < this.#mSpacecrafts.length; n++)
+                        this.#closeGroupCount = 2;
+                        this.#groupLieder = sc1;
+                        this.#isGroupExists = true;
+
+                        sc1.isClose = true;
+                        sc2.isClose = true;
+
+                        let func = this.#callbacks.get("objectsApproaching");
+                        if (func)
                         {
-                            let x = this.#mSpacecrafts[n].position.x - this.#mSpacecrafts[i].position.x;
-                            let y = this.#mSpacecrafts[n].position.y - this.#mSpacecrafts[i].position.y;
-
-                            let d = Math.sqrt(x*x + y*y);
-
-                            if (d <= 50)
-                            {
-                                flag1 = true;
-                            }
+                            func([sc1, sc2]);
                         }
-
-                        for (let n = 0; n < this.#mSpacecrafts.length; n++)
-                            {
-                                let x = this.#mSpacecrafts[n].position.x - this.#mSpacecrafts[q].position.x;
-                                let y = this.#mSpacecrafts[n].position.y - this.#mSpacecrafts[q].position.y;
-    
-                                let d = Math.sqrt(x*x + y*y);
-    
-                                if (d <= 50)
-                                {
-                                    flag2 = true;
-                                }
-                            }
-
-                        if (flag1)
-                        {
-                            console.log("DIS_2")
-                            let func = this.#callbacks.get("objectsDistancing");
-                            if (func)
-                            {
-                                func(this.#mSpacecrafts[i])
-                            }
-
-                            this.#mSpacecrafts[i].isClose = false;
-                        }
-                        if (flag2)
-                        {
-                            console.log("DIS_1")
-                            let func = this.#callbacks.get("objectsDistancing");
-                            if (func)
-                            {
-                                func(this.#mSpacecrafts[q])
-                            }
-
-                            this.#mSpacecrafts[q].isClose = false;
-                        }
+                        return;
                     }
                 }
-                else if (d <= 70)
+            }
+            for (let i = 0; i < this.#mSpacecrafts.length; i++)
+            {
+                for (let s = 0; s < this.#mSpaceBodies.length; s++)
                 {
-                    let arr =
-                    [
-                        this.#mSpacecrafts[i],
-                        this.#mSpacecrafts[q]
-                    ];
+                    let sc = this.#mSpacecrafts[i];
+                    let sb = this.#mSpaceBodies[s];
 
-                    if (arr[1].isClose)
+                    let x = sc.position.x - sb.position.x;
+                    let y = sc.position.y - sb.position.y;
+
+                    let dis = Math.sqrt(x*x + y*y);
+
+                    if ((dis-6371000) < closeDis)
                     {
-                        arr.reverse();
-                    }
+                        this.#closeGroupCount = 2;
+                        this.#groupLieder = sb;
+                        this.#isGroupExists = true;
 
-                    if (arr[0].closeGroupIndex === -1) //! Цей блок можна перемістити в if, який знаходиться вище
+                        sc.isClose = true;
+                        sb.isClose = true;
+
+                        let func = this.#callbacks.get("objectsApproaching");
+                        if (func)
+                        {
+                            func([sb, sc]);
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (let sc of [...this.#mSpacecrafts, ...this.#mSpaceBodies])
+            {
+                if (this.#groupLieder.id !== sc.id)
+                {
+                    let x = this.#groupLieder.position.x - sc.position.x;
+                    let y = this.#groupLieder.position.y - sc.position.y;
+
+                    let dis = Math.sqrt(x*x + y*y);
+                    if (this.#groupLieder.type === "sb")
+                        dis = dis - 6371000;
+
+                    if (dis < closeDis && sc.isClose === false)
                     {
                         this.#closeGroupCount++;
-                        arr[0].closeGroupIndex = this.#closeGroupCount;
-                        arr[1].closeGroupIndex = this.#closeGroupCount;
-                    }
-                    else
-                    {
-                        arr[1].closeGroupIndex = arr[0].closeGroupIndex;
-                    }
+                        sc.isClose = true;
 
-                    this.#mSpacecrafts[i].isClose = true;
-                    this.#mSpacecrafts[q].isClose = true;
-
-                    let func = this.#callbacks.get("objectsApproaching");
-                    if (func)
+                        let func = this.#callbacks.get("objectsApproaching");
+                        if (func)
+                        {
+                            func([sc]);
+                        }
+                    }
+                    else if (dis > closeDis && sc.isClose === true)
                     {
-                        func(arr)
+                        this.#closeGroupCount--;
+                        sc.isClose = false;
+                        let func = this.#callbacks.get("objectsDistancing");
+                        if (func)
+                        {
+                            func(sc);
+                        }
                     }
                 }
+            }
+            if (this.#closeGroupCount === 1)
+            {                
+                let func = this.#callbacks.get("objectsDistancing");
+                if (func)
+                {
+                    func(this.#groupLieder);
+                }
+                this.#isGroupExists = false;
+                this.#groupLieder.isClose = false;
+                this.#groupLieder = null;
+
+                console.log("Group not exists")
             }
         }
     }
@@ -362,7 +381,8 @@ export class AbstractEnvironmentModel
             fv = Vector.add(Vector.mult(Vector.normalise(v), f), fv);
         }
     
-        //spacecraft.force = fv;
+        spacecraft.grav = fv; // free fall ac
+
         fv = Vector.add(spacecraft.force, fv);
 
         return Vector.div(fv, spacecraftMass);

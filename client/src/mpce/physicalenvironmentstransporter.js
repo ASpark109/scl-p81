@@ -34,34 +34,33 @@ export class PhysicalEnvironmentsTransporter
 
     betweengroups = 2000
 
-    transportMasterObjectToPhysicalInteractionEnvironment(object)
+    transportMasterObjectToPhysicalInteractionEnvironment(physicalObject)
     {
-        console.log("TRANSPORT MASTER")
-        let physicalObject = Matter.Composite.allComposites(this.#mWorld)
-                                        .find(item => item.id === object.id);
-
-        let mountPoint = Matter.Composite.allConstraints(this.#mWorld)
-                                        .find(item => item.myId === object.id);
-
-        const mountPointCoord = this.#mSpaceCraftsLocationGrid.findIndex(subArray => 
-                subArray.some(item => item === object.id));
-
-        let index = this.#mSpaceCraftsLocationGrid[mountPointCoord].indexOf(object.id)
-        if (index !== -1)
-        {
-            this.#mSpaceCraftsLocationGrid[mountPointCoord][index] = -1;
-        }
-
-        Matter.Composite.remove(this.#mWorld, mountPoint);
-        Matter.Composite.remove(this.#mWorld, physicalObject);
-        
         let master = physicalObject.bodies.find(item => item.master === true);
+
+        if (master.type === "spacecraft")
+        {
+            let mountPoint = Matter.Composite.allConstraints(this.#mWorld)
+                                            .find(item => item.myId === physicalObject.id);
+
+            const mountPointCoord = this.#mSpaceCraftsLocationGrid.findIndex(subArray => 
+                    subArray.some(item => item === physicalObject.id));
+
+            let index = this.#mSpaceCraftsLocationGrid[mountPointCoord].indexOf(physicalObject.id)
+            if (index !== -1)
+            {
+                this.#mSpaceCraftsLocationGrid[mountPointCoord][index] = -1;
+            }
+
+            Matter.Composite.remove(this.#mWorld, mountPoint);
+            Matter.Composite.remove(this.#mWorld, physicalObject);
+        }
 
         let groupOrigin = this.getNewCoordinatesOrigin();
         let relativePosition = {x: 0, y: 0};
 
-        relativePosition.x = -master.position.x + groupOrigin.x + 500
-        relativePosition.y = -master.position.y + groupOrigin.y + 500;
+        relativePosition.x = -master.position.x + groupOrigin.x + 700
+        relativePosition.y = -master.position.y + groupOrigin.y + 600;
 
         Matter.Composite.translate(physicalObject, relativePosition);
 
@@ -99,9 +98,31 @@ export class PhysicalEnvironmentsTransporter
 
         let shift = {x: 0, y: 0};
 
-        shift.x = object.position.x - object0.position.x;
-        shift.y = object.position.y - object0.position.y;
+        if (object0.type === "sb")
+        {
+            function shorten(v, delta)
+            {
+                const len = Math.hypot(v.x, v.y);
+                const k = (len - delta) / len;
 
+                return {
+                    x: v.x * k,
+                    y: v.y * k
+                };
+            }
+            let n = shorten({x: object.position.x - object0.position.x,
+                y:object.position.y - object0.position.y
+            }, 6371000); // radius
+
+            shift.x = n.x;
+            shift.y = n.y;
+        }
+        else
+        {
+            shift.x = object.position.x - object0.position.x;
+            shift.y = object.position.y - object0.position.y;
+        }
+        
         let refObj = Matter.Composite.allComposites(this.#mWorldInter)
                                         .find(item => item.id === object0.id);
         
@@ -120,8 +141,6 @@ export class PhysicalEnvironmentsTransporter
         relVel.x = (object.velocity.x - object0.velocity.x) * 10 / 60;
         relVel.y = (object.velocity.y - object0.velocity.y) * 10 / 60;
 
-        console.log(relVel.x + " " + object.velocity.x + " " + object0.velocity.x)
-
         Matter.Composite.translate(physicalObject, relativePosition);
         for (let i = 0; i < physicalObject.bodies.length; i++)
         {
@@ -129,7 +148,6 @@ export class PhysicalEnvironmentsTransporter
         }
 
         Matter.Composite.add(this.#mWorldInter, physicalObject)
-        // Matter.Composite.add(this.#mWorldInter, physicalObject.constraints)
 
         return {x: relVel.x, y: relVel.y};
     }
@@ -189,7 +207,7 @@ export class PhysicalEnvironmentsTransporter
         const groupOrigin = {x: this.#groupCount * this.betweengroups, y: 0};
         this.#groupCoordinateOrigin.push(groupOrigin);
 
-        ++this.#groupCount;
+        //++this.#groupCount;
 
         return groupOrigin;
     }

@@ -16,7 +16,8 @@ Composite = Matter.Composite,
 Events = Matter.Events,
 MouseConstraint = Matter.MouseConstraint,
 Mouse = Matter.Mouse,
-Query = Matter.Query
+Query = Matter.Query,
+Bodies = Matter.Bodies
 
 export class PhysicalEnvironmentModel
 {
@@ -114,31 +115,64 @@ export class PhysicalEnvironmentModel
         this.#mWorldInter.gravity.y = 0;
 
         Events.on(this.#mEngineInter, "afterUpdate", (event) => {
-            for (let gi = 0; gi < this.#nearbyObjects.length; gi++)
-            {
-                let group = this.#nearbyObjects[gi];
+            if (this.#nearbyObjects.length === 0)
+                return;
 
-                let ax = (group[0].phys.bodies[0].velocity.x) - group[0].relVel.x
-                let ay = (group[0].phys.bodies[0].velocity.y) - group[0].relVel.y
+            let masterSc = this.#nearbyObjects[0];
 
-                group[0].relVel.x = group[0].phys.bodies[0].velocity.x
-                group[0].relVel.y = group[0].phys.bodies[0].velocity.y
+            if (masterSc.phys.bodies[0].type === "spacecraft")
+            {    
+                let ax = (masterSc.phys.bodies[0].velocity.x) - masterSc.relVel.x
+                let ay = (masterSc.phys.bodies[0].velocity.y) - masterSc.relVel.y
 
-                group[0].abs.velocity.x += (ax * 60 / 10);
-                group[0].abs.velocity.y += (ay * 60 / 10);
+                masterSc.relVel.x = masterSc.phys.bodies[0].velocity.x
+                masterSc.relVel.y = masterSc.phys.bodies[0].velocity.y
 
-                // тут поки все працює (до кінця не розумію як) якщо змінюється кількість кадрів в секунду, чи в delta в abs, це всьо перестане працювати
+                masterSc.abs.velocity.x += (ax / 10 * 60);
+                masterSc.abs.velocity.y += (ay / 10 * 60);
 
-                for (let i = 1; i < group.length; i++)
+                for (let i = 1; i < this.#nearbyObjects.length; i++)
                 {
-                    group[i].abs.velocity.x = group[0].abs.velocity.x + (group[i].phys.bodies[0].velocity.x - group[0].phys.bodies[0].velocity.x) * 60 / 10
-                    group[i].abs.velocity.y = group[0].abs.velocity.y + (group[i].phys.bodies[0].velocity.y - group[0].phys.bodies[0].velocity.y) * 60 / 10
+                    let spacecraft = this.#nearbyObjects[i];
 
-                    // Matter.Body.applyForce(group[i].phys.bodies[0],
-                    // {x: group[i].phys.bodies[0].position.x,
-                    // y: group[i].phys.bodies[0].position.y },
-                    // {x: 12 * (group[i].abs.force.x - group[0].abs.force.x) / 2776,
-                    // y: 12 * (group[i].abs.force.y - group[0].abs.force.y) / 2776});
+                    // тут поки все працює (до кінця не розумію як) якщо змінюється кількість кадрів в секунду, чи в delta в abs, це всьо перестане працювати
+
+                    spacecraft.abs.velocity.x = masterSc.abs.velocity.x + (spacecraft.phys.bodies[0].velocity.x - masterSc.phys.bodies[0].velocity.x) / 10 * 60
+                    spacecraft.abs.velocity.y = masterSc.abs.velocity.y + (spacecraft.phys.bodies[0].velocity.y - masterSc.phys.bodies[0].velocity.y) / 10 * 60
+
+                    Matter.Body.applyForce(spacecraft.phys.bodies[0],
+                        {
+                            x: spacecraft.phys.bodies[0].position.x,
+                            y: spacecraft.phys.bodies[0].position.y
+                        },
+                        {
+                            x: 0.0000100 * (spacecraft.abs.grav.x - masterSc.abs.grav.x) * 4,
+                            y: 0.0000100 * (spacecraft.abs.grav.y - masterSc.abs.grav.y) * 4
+                        }
+                    );
+                }
+            }
+            else if (masterSc.phys.bodies[0].type === "spacebody")
+            {
+                for (let i = 1; i < this.#nearbyObjects.length; i++)
+                {
+                    let spacecraft = this.#nearbyObjects[i];
+
+                    // тут поки все працює (до кінця не розумію як) якщо змінюється кількість кадрів в секунду, чи в delta в abs, це всьо перестане працювати
+
+                    spacecraft.abs.velocity.x = (spacecraft.phys.bodies[0].velocity.x) / 10 * 60
+                    spacecraft.abs.velocity.y = (spacecraft.phys.bodies[0].velocity.y) / 10 * 60
+
+                    Matter.Body.applyForce(spacecraft.phys.bodies[0],
+                        {
+                            x: spacecraft.phys.bodies[0].position.x,
+                            y: spacecraft.phys.bodies[0].position.y
+                        },
+                        {
+                            x: 0.0000000102 * (spacecraft.abs.grav.x),
+                            y: 0.0000000102 * (spacecraft.abs.grav.y)
+                        }
+                    );
                 }
             }
         })
@@ -413,22 +447,35 @@ export class PhysicalEnvironmentModel
 //private:
     objectsApproaching(objects)
     {
-        const groupIndex = this.#nearbyObjects.findIndex(subArray => 
-            subArray.some(obj => obj.id === objects[0].id));
-
-        let composites = Matter.Composite.allComposites(this.#mWorld);
+        const composites = Matter.Composite.allComposites(this.#mWorld);
         
-        if (groupIndex === -1)
+        if (this.#nearbyObjects.length === 0)
         {
-            let physObj1 = composites.find(item => item.id === objects[0].id);
+            let physObj1 = null;
+            if (objects[0].type === "sb")
+            {
+                let platform = Bodies.rectangle(500, 800, 1500, 50, {isStatic: true, friction: 1, master: true, type: "spacebody"});
+                
+                const angleRad = Math.atan2(objects[1].position.y, objects[1].position.x - 1000);
+                const angleDeg = angleRad * 180 / Math.PI;
+                const radians = (angleDeg + 90) * Math.PI / 180;
+                Matter.Body.setAngle(platform, radians);
+
+                physObj1 = Matter.Composite.create({
+                            bodies: [platform],
+                            id: objects[0].id
+                        });
+            }
+            else if (objects[0].type === "sc")
+            {
+                physObj1 = composites.find(item => item.id === objects[0].id);
+            }
+            
             let physObj2 = composites.find(item => item.id === objects[1].id);
 
-            this.#mObjectsTransporter.transportMasterObjectToPhysicalInteractionEnvironment(objects[0]);
+            this.#mObjectsTransporter.transportMasterObjectToPhysicalInteractionEnvironment(physObj1);
             const relativeVelocity = this.#mObjectsTransporter.
                     transportObjectToPhysicalInteractionEnvironment(objects[0], objects[1]);
-
-            console.log(relativeVelocity)
-            // тут треба підтягувати всі ініші апарати, якщо вони стиковані
             
             let newItem0 = {
                 "abs": objects[0],
@@ -442,46 +489,41 @@ export class PhysicalEnvironmentModel
                 "relVel": relativeVelocity //! поки не використовується
             }
 
-            this.#nearbyObjects.push([newItem0, newItem1]);
+            this.#nearbyObjects.push(newItem0);
+            this.#nearbyObjects.push(newItem1);
         }
         else
         {
-            let physObj = composites.find(item => item.id === objects[1].id);
+            let physObj = composites.find(item => item.id === objects[0].id);
             
             const relativeVelocity = this.#mObjectsTransporter.
-                    transportObjectToPhysicalInteractionEnvironment(objects[0],objects[1]);
+                transportObjectToPhysicalInteractionEnvironment(
+                    this.#nearbyObjects[0].abs,
+                    objects[0]);
 
             let newItem = {
-                "abs": objects[1],
+                "abs": objects[0],
                 "phys": physObj,
                 "relVel": relativeVelocity //! поки не використовується
             }
 
-            this.#nearbyObjects[groupIndex].push(newItem);
+            this.#nearbyObjects.push(newItem);
         }
     }
 
     objectsDistancing(object)
     {
-        // Тут теж потрібно враховувати стикування апаратів
-        
-        const groupIndex = this.#nearbyObjects.findIndex(subArray => 
-            subArray.some(obj => obj.abs.id === object.id));
+        let index = this.#nearbyObjects.findIndex(item => item.abs.id === object.id);
 
-        let position = this.#nearbyObjects[groupIndex].findIndex(item => item.abs.id === object.id);
-
-        //let ch = DockingTree.getAllChildIds(object.id);
-        //console.log(ch);
-
-        if (position !== -1)
+        if (index !== -1)
         {
-            this.#nearbyObjects[groupIndex].splice(position, 1);
+            this.#nearbyObjects.splice(index, 1);
 
             this.#mObjectsTransporter.transportObjectToAbstractPhysicalEnvironment(object)
 
-            if (this.#nearbyObjects[groupIndex].length === 0)
+            if (this.#nearbyObjects.length === 0)
             {
-                this.#nearbyObjects.splice(groupIndex, 1);
+                console.log("Inter env is empty");
             }
         }
     }
