@@ -154,33 +154,43 @@ export class PhysicalEnvironmentsTransporter
 
     transportObjectToAbstractPhysicalEnvironment(object)
     {
-        let physicalObject = Matter.Composite.allComposites(this.#mWorldInter)
+        if (object.type === "sb")
+        {
+            let physicalObject = Matter.Composite.allComposites(this.#mWorldInter)
                 .find(item => item.id === object.id);
 
-        let master = physicalObject.bodies.find(item => item.master === true);
+            Matter.Composite.remove(this.#mWorldInter, physicalObject);
+        }
+        else
+        {
+            let physicalObject = Matter.Composite.allComposites(this.#mWorldInter)
+                    .find(item => item.id === object.id);
 
-        Matter.Composite.remove(this.#mWorldInter, physicalObject);
-        Matter.Body.setVelocity(master, {x: 0, y: 0});
+            let master = physicalObject.bodies.find(item => item.master === true);
 
-        let relativePosition = {x: 0, y: 0}
+            Matter.Composite.remove(this.#mWorldInter, physicalObject);
+            Matter.Body.setVelocity(master, {x: 0, y: 0});
 
-        let anchor = this.findFreePosition(object.id);
+            let relativePosition = {x: 0, y: 0}
 
-        relativePosition.x = -master.position.x + anchor.x 
-        relativePosition.y = -master.position.y + anchor.y
+            let anchor = this.findFreePosition(object.id);
 
-        Matter.Composite.translate(physicalObject, relativePosition);
+            relativePosition.x = -master.position.x + anchor.x 
+            relativePosition.y = -master.position.y + anchor.y
 
-        //! створити окрему функцію для створення точки кріплення
-        const centreOfMassConstraint = Matter.Constraint.create({
-            bodyA: master,
-            pointA: {x: 0, y: 0},
-            pointB: {x: master.position.x, y: master.position.y},
-            stiffness: 1,
-            myId: object.id
-        });
+            Matter.Composite.translate(physicalObject, relativePosition);
 
-        Matter.Composite.add(this.#mWorld, [physicalObject, centreOfMassConstraint])
+            //! створити окрему функцію для створення точки кріплення
+            const centreOfMassConstraint = Matter.Constraint.create({
+                bodyA: master,
+                pointA: {x: 0, y: 0},
+                pointB: {x: master.position.x, y: master.position.y},
+                stiffness: 1,
+                myId: object.id
+            });
+
+            Matter.Composite.add(this.#mWorld, [physicalObject, centreOfMassConstraint])
+        }
     }
 
     findFreePosition(spaceCraftId)

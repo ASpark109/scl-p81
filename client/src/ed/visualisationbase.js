@@ -18,6 +18,8 @@ const DISPLAY_HEIGHT = 1170;
 
 export class VisualisationBase
 {
+    #callbacks = null;
+
     constructor()
     {
         this.application = null;
@@ -76,6 +78,49 @@ export class VisualisationBase
         this.viewScales.physical = this.displayAreaScaleConf.physicalViewScale;
 
         this.SystemStateMonitor = new SystemStateMonitor(pixiSpaceCraftsSystemStateContainer);
+    }
+
+    objectsApproaching([object0, object, radians])
+    {
+        let pos = {x: 0, y: 0};
+        function shorten(v, delta)
+        {
+            const len = Math.hypot(v.x, v.y);
+            const k = (len - delta) / len;
+
+            return {
+                x: v.x * k,
+                y: v.y * k
+            };
+        }
+        let n = shorten({x: object.position.x - object0.position.x,
+            y:object.position.y - object0.position.y
+        }, 6371000); // radius
+
+        pos.x = n.x;
+        pos.y = n.y;
+
+        const rect = new PIXI.Graphics();
+
+        rect.beginFill(0x003B0B);
+        rect.drawRect(-400, -0.25, 900, 300); // центр у (0,0)
+        rect.endFill();
+
+        rect.scale.set(100, 100);
+
+        rect.position.set(
+            (object.position.x - pos.x) * 10,
+            (object.position.y - pos.y) * 10
+        );
+
+        rect.rotation = radians;
+        this.environmentComponents[0].physical = rect;
+        this.test.addChild(rect);
+    }
+
+    objectsDistancing(data)
+    {
+        //this.test.removeChild(this.environmentComponents[0].physical);
     }
 
     addObject(item, composite, abstract)
@@ -182,13 +227,10 @@ export class VisualisationBase
                 item.visual[i].rotation = item.physical[i].angle;
             }
 
-            // console.log(item.mountingPoint.x)
             item.visualEffects.x = item.visual[0].x;
             item.visualEffects.y = item.visual[0].y;
             item.visualEffects.rotation = item.physical[0].angle
         }
-
-        
 
         // for (let i = 0; i < this.environmentComponents.length; ++i)
         // {
@@ -196,8 +238,10 @@ export class VisualisationBase
         //     this.environmentComponents[i].visual.y = (this.environmentComponents[i].abstract.position.y - this.shiftx.y) * 10;
         // }
 
-        this.test.x += (DISPLAY_WIDTH/3 - this.components[0].visual[0].x * this.test.scale.x - this.test.x) * 1;
-        this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visual[0].y * this.test.scale.y - this.test.y) * 1;
+        //console.log(this.components[0].visualEffects.x + " " + this.components[0].visualEffects.y)
+
+        this.test.x += (DISPLAY_WIDTH/3 - this.components[0].visual[0].x * this.test.scale.x - this.test.x);
+        this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visual[0].y * this.test.scale.y - this.test.y);
     }
 
     updateFunctionAbstruct()
@@ -260,6 +304,7 @@ export class VisualisationBase
 
             this.scaleLevel = this.displayAreaScaleConf.initAbstractViewScale;
             this.setScale({scale: 0});
+            this.environmentComponents[0].visual.scale.set(1);
 
             for (let item of this.components)
             {
@@ -276,8 +321,8 @@ export class VisualisationBase
             for (let item of this.components)
             {
                 this.test.removeChild(item.visualAbstruct);
-                this.test.removeChild(this.environmentComponents[0].visual);
             }
+            this.test.removeChild(this.environmentComponents[0].visual);
 
             this.scaleLevel = this.displayAreaScaleConf.initPhysicalViewScale;
             this.setScale({scale: 0});

@@ -40,6 +40,8 @@ export class PhysicalEnvironmentModel
 
     #mode = null;
 
+    #callbacks = null;
+
     testRotate = 0;
 
     constuctor(configuration, mode)
@@ -56,11 +58,17 @@ export class PhysicalEnvironmentModel
         }
     }
 
-     logTime(date = new Date()) {
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    console.log(`${minutes}:${seconds} - w`);
-}
+    logTime(date = new Date()) {
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        console.log(`${minutes}:${seconds} - w`);
+    }
+
+    setCallbacks(callbacks)
+    {
+        this.#callbacks = callbacks;
+    }
+
 
     initialize(abstractUpdate, container, containerPhys)
     {
@@ -159,9 +167,8 @@ export class PhysicalEnvironmentModel
                     let spacecraft = this.#nearbyObjects[i];
 
                     // тут поки все працює (до кінця не розумію як) якщо змінюється кількість кадрів в секунду, чи в delta в abs, це всьо перестане працювати
-
-                    spacecraft.abs.velocity.x = (spacecraft.phys.bodies[0].velocity.x) / 10 * 60
-                    spacecraft.abs.velocity.y = (spacecraft.phys.bodies[0].velocity.y) / 10 * 60
+                    spacecraft.abs.velocity.x = Number((spacecraft.phys.bodies[0].velocity.x / 10 * 60).toFixed(1))
+                    spacecraft.abs.velocity.y = Number((spacecraft.phys.bodies[0].velocity.y / 10 * 60).toFixed(1))
 
                     Matter.Body.applyForce(spacecraft.phys.bodies[0],
                         {
@@ -456,7 +463,7 @@ export class PhysicalEnvironmentModel
             {
                 let platform = Bodies.rectangle(500, 800, 1500, 50, {isStatic: true, friction: 1, master: true, type: "spacebody"});
                 
-                const angleRad = Math.atan2(objects[1].position.y, objects[1].position.x - 1000);
+                const angleRad = Math.atan2(objects[1].position.y, objects[1].position.x);
                 const angleDeg = angleRad * 180 / Math.PI;
                 const radians = (angleDeg + 90) * Math.PI / 180;
                 Matter.Body.setAngle(platform, radians);
@@ -465,6 +472,12 @@ export class PhysicalEnvironmentModel
                             bodies: [platform],
                             id: objects[0].id
                         });
+
+                let func = this.#callbacks.get("objectsApproaching");
+                if (func)
+                {
+                    func([objects[0], objects[1], radians]);
+                }
             }
             else if (objects[0].type === "sc")
             {
@@ -513,6 +526,7 @@ export class PhysicalEnvironmentModel
 
     objectsDistancing(object)
     {
+        console.log("ddddddddddiiiiiiiisssssssss " + object.id)
         let index = this.#nearbyObjects.findIndex(item => item.abs.id === object.id);
 
         if (index !== -1)

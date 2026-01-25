@@ -57,10 +57,15 @@ export class EnvironmentSubSystem
         }
 
         {
-            const callbacks = new Map();
-            callbacks.set("objectsApproaching", ((data) => this.#mPhysicalEnvironmentModel.objectsApproaching(data)));
-            callbacks.set("objectsDistancing", ((data) => this.#mPhysicalEnvironmentModel.objectsDistancing(data)));
-            this.#mAbstractEnvironmentModel.setCallbacks(callbacks);
+            const callbacksAbs = new Map();
+            callbacksAbs.set("objectsApproaching", ((data) => this.#mPhysicalEnvironmentModel.objectsApproaching(data)));
+            callbacksAbs.set("objectsDistancing", ((data) => this.#mPhysicalEnvironmentModel.objectsDistancing(data)));
+            this.#mAbstractEnvironmentModel.setCallbacks(callbacksAbs);
+
+            const callbacksVisual = new Map();
+            callbacksVisual.set("objectsApproaching", ((data) => this.#mVisualisationBase.objectsApproaching(data)));
+            callbacksVisual.set("objectsDistancing", ((data) => this.#mVisualisationBase.objectsDistancing(data)));
+            this.#mPhysicalEnvironmentModel.setCallbacks(callbacksVisual)
         }
 
         this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
