@@ -11,6 +11,8 @@ import { Receiver } from "../modules/radiocommunication/receiver.js";
 import { DockingPort } from "../modules/dockingport.js";
 import { ProximityRadar } from "../modules/rpo/proximityradar.js";
 import { LaserRangeFinder } from "../modules/rpo/laserrangefinder.js";
+import { EnginesForceSink } from "../modules/enginesforcesink.js";
+import { TurboPump } from "../modules/turbopump.js";
 
 class System
 {
@@ -79,11 +81,12 @@ class TankWrapper
 
 class FuelSystem
 {
-    constructor(tank1, tank2, pump)
+    constructor(tank1, tank2, pump, turboPump)
     {
         this.Tank1 = new TankWrapper(tank1);
         this.Tank2 = new TankWrapper(tank2);
         this.Pump = pump;
+        this.TurboPump = turboPump;
     }
 }
 
@@ -142,7 +145,7 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
     let rcsBlock1 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[0], visualEffects);
     let rcsBlock2 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[1], visualEffects);
 
-    let rcsFuelTank = new Tank(rcsConf.tank);
+    let rcsFuelTank = new Tank(rcsConf.tank, abstructModel, rocketBody);
 
     let rcs = new RCS(rcsBlock1, rcsBlock2, rcsFuelTank);
 
@@ -152,7 +155,14 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     let engineConf = conf.parts.find(item => item.name === "stage").engines;
 
-    let engines = Array.from({ length: engineConf.count }, (e, i) => (new Engine(rocketBody, abstructModel, engineConf.parameters, i)));
+    let engineForceSink = new EnginesForceSink(rocketBody, abstructModel, 3);
+
+    let engines = Array.from({ length: engineConf.count }, (e, i) => (new Engine(rocketBody,
+                                                                                 abstructModel,
+                                                                                 engineConf.parameters,
+                                                                                 i,
+                                                                                 (id, vec) => {engineForceSink.updatePhysState(id, vec)},
+                                                                                 (id, vec) => {engineForceSink.updateAbsState(id, vec)})));
 
     let engineBlock = new EngineBlock(engines);
 
@@ -160,12 +170,16 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     // *** Fuel System ***
 
-    let tank1 = new Tank({"maxCapacity": 100, "fuelWeight": 30});
-    let tank2 = new Tank({"maxCapacity": 50, "fuelWeight": 10});
+    let tankConf = conf.parts.find(item => item.name === "stage").fuelSystem;
+    let tank1 = new Tank(tankConf.fuelTank, abstructModel, rocketBody);
+    let tank2 = new Tank(tankConf.oxidiserTank, abstructModel, rocketBody);
 
-    let pump = new Pump(tank1, tank2);
+    let pump = new Pump(tank1, null);
 
-    let fuelSystem = new FuelSystem(tank1, tank2, pump);
+    let turboPumpConf = conf.parts.find(item => item.name === "stage").turboPump;
+    let turboPump = new TurboPump(engines, tank1, tank2, turboPumpConf);
+
+    let fuelSystem = new FuelSystem(tank1, tank2, pump, turboPump);
 
     // *** Fuel System ***
 

@@ -14,15 +14,12 @@ export class Pump
 
     _electricalDevice = null;
 
-    constructor(connection1, connection2)
+    constructor(connection1 = null, connection2 = null)
     {
         this.#connection1 = connection1;
         this.#connection2 = connection2;
 
-        if (connection1 === null || connection2 === null)
-            return;
-
-        this._electricalDevice = new ElectricalDevice();
+        this._electricalDevice = new ElectricalDevice(300, 5000);
 
         ModuleBase.updateList.push(this.#update.bind(this));
     }
@@ -48,11 +45,15 @@ export class Pump
 
     enable()
     {
-        if (this.#isEnabled)
-            return;
-
-        this.#isEnabled = true;
-        this._electricalDevice.setPower(5000);
+        if (!this.#isEnabled && this.#connection1 && this.#connection2)
+        {
+            this.#isEnabled = true;
+            this._electricalDevice.setPower(5000);
+        }
+        else
+        {
+            return -1
+        }
     }
 
     disable()
@@ -98,5 +99,15 @@ export class Pump
     readStatus()
     {
         return {rpm: this.#rpm, dir: this.#direction}
+    }
+
+    connect(connection)
+    {
+        this.#connection2 = connection;
+    }
+
+    disconnect()
+    {
+        this.#connection2 = null;
     }
 }

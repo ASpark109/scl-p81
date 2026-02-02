@@ -29,28 +29,34 @@
     
             "engines":
             {
-                "count": 1,
+                "count": 3,
                 "parameters":
                 {
                     "id": "eng",
-                    "thrust": 67500,
-                    "inclination": 5,
-                    "minThrust": 0.4,
-                    "maxThrust": 1
+                    "maxThrust": 845000,
+                    "inclination": 5
                 }
             },
 
-            "fuelMass": 20000,
+            "fuelMass": 390000,
             "fuelSystem":
             {
                 "fuelTank":
                 {
-                    "capacity": 1000
+                    "maxCapacity": 110000,
+                    "capacity": 110000
                 },
-                "oxidiser":
+                "oxidiserTank":
                 {
-                    "capacity": 500
+                    "maxCapacity": 280000,
+                    "capacity": 280000
                 } 
+            },
+
+            "turboPump":
+            {
+                "maxRP1PerSec": 680,
+                "maxLOXPerSec": 1750
             },
 
             "rcs":
@@ -75,6 +81,7 @@
 
                 "tank":
                 {
+                    "maxCapacity": 100,
                     "capacity": 100
                 }
             },              
@@ -296,7 +303,7 @@
             },
 
             "initPos":{
-                "x": -0,
+                "x": 0,
                 "y": -240
             },
 

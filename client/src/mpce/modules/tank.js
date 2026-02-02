@@ -1,14 +1,22 @@
+import Matter from 'matter-js';
+
 import { Sensor } from './sensor.js';
 
 export class Tank
 {
+    #abstract = null;
+    #physical = null;
+
     #maxCapacity = null;
     #fuelWeight = null;
 
-    constructor(conf)
+    constructor(conf, abstract, physical)
     {
+        this.#abstract = abstract;
+        this.#physical = physical;
+
         this.#maxCapacity = conf.maxCapacity;
-        this.#fuelWeight = conf.fuelWeight;
+        this.#fuelWeight = conf.capacity;
 
         this.FillLevelSensor = new Sensor(() => {
             return this.#fuelWeight;
@@ -25,6 +33,9 @@ export class Tank
         if (this.#fuelWeight <= this.#maxCapacity)
         {
             this.#fuelWeight += weight;
+
+            Matter.Body.setMass(this.#physical, this.#physical.mass + weight / 1000);
+
             return true;
         }
         return false;
@@ -35,7 +46,9 @@ export class Tank
         if (this.#fuelWeight > 0)
         {
             this.#fuelWeight -= weight;
-            console.log(this.#fuelWeight + " " + weight)
+            
+            Matter.Body.setMass(this.#physical, this.#physical.mass - weight / 1000);
+
             return true;
         }
         return false;
