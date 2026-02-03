@@ -26,3 +26,4 @@ yarn-error.log*
 src/mpce/deviceelements.json
 node_modules
 /server/saved
+/server/submitted

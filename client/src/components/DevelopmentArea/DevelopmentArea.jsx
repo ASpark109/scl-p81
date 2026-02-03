@@ -24,7 +24,7 @@ const initConf = [
 	}))
 ];
 
-const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, mode}) => {
+const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mode}) => {
 
 	const [scale, setScale] = useState({scale: 1});
 	const [isMapViewEnabled, setViewMode] = useState(false);
@@ -180,6 +180,7 @@ return (
 								initConf={initConf}
 								isEnvInit={isEnvInitialized}
 								saveTrigger={saveTrigger}
+								submitTrigger={submitTrigger}
 								mode={mode}>
 							</CodeEditorWindow>
 						</div>

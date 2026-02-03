@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const SAVE_DIR = path.join(__dirname, "../saved");
+const SUBMIT_DIR = path.join(__dirname, "../submitted");
 
 // if (!fs.existsSync(SAVE_DIR)) fs.mkdirSync(SAVE_DIR, { recursive: true });
 
@@ -33,6 +34,31 @@ export const saveCodeFileWithName = (req, res) => {
     });
 };
 
+export const submitCodeFileWithName = (req, res) => {
+const { filename } = req.body;
+    if (!filename) {
+        return res.status(400).json({ error: "Filename not provided" });
+    }
+
+    const safeFilename = path.basename(filename);
+
+    const sourcePath = path.join(SAVE_DIR, safeFilename);
+    const targetPath = path.join(SUBMIT_DIR, safeFilename);
+
+    if (!fs.existsSync(sourcePath)) {
+        return res.status(404).json({ error: "Source file does not exist" });
+    }
+
+    fs.copyFile(sourcePath, targetPath, (err) => {
+        if (err) {
+        console.error("Error submitting file:", err);
+        return res.status(500).json({ error: "Failed to submit file" });
+        }
+
+        res.json({ message: "File submitted successfully!" });
+    });
+};
+
 export const createNewFile = (req, res) => {
     //TODO
 };
@@ -49,8 +75,11 @@ export const getListOfFileNames = (req, res) => {
 };
 
 export const getCodeFileWithName = (req, res) => {
-    const { filename } = req.query;
-    const filePath = path.join(SAVE_DIR, filename);
+    const {filename, fileStatus} = req.query;
+    const dir = fileStatus === "saved" ? SAVE_DIR :
+                fileStatus === "submitted" ? SUBMIT_DIR : null;
+
+    const filePath = path.join(dir, filename);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: "File cannot be found or does not exist" });

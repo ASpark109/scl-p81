@@ -49,7 +49,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                         <FiSave className="icon" id="sv-btn"/>
                         <span>Save</span>
                     </button>
-                    <button className="main-panel-button">
+                    <button className="main-panel-button" onClick={() => onButtonClick("submit")}>
                         <IoRocketSharp className="icon" id="sbm-btn"/>
                         <span>Submit</span>
                     </button>

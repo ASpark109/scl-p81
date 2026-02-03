@@ -16,6 +16,7 @@ function App() {
     const [isCMDVisible, setIsCMDVisible] = useState(false);
     const [isGCSVisible, setIsGCSVisible] = useState(false);
     const [activeView, setActiveView] = useState("dev");
+    const [submitCounter, setSubmitCounter] = useState(0);
 
     const handleTrigger = (btnType) => {
         switch (btnType)
@@ -32,6 +33,9 @@ function App() {
                 break;
             case "save":
                 setSaveCounter(prev => prev + 1);
+                break;
+            case "submit":
+                setSubmitCounter(prev => prev + 1);
                 break;
             case "cmd":
                 setIsCMDVisible(prev => !prev);
@@ -61,7 +65,7 @@ function App() {
             <Navbar onButtonClick={handleTrigger} isProgramRunning={isProgramRunning} isCMDVisible={isCMDVisible}/>
             
             <div style={{ display: activeView === "dev" ? "block" : "none" }}>
-                <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter} saveTrigger={saveCounter} mode={"dev"}/>
+                <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter} saveTrigger={saveCounter} submitTrigger={submitCounter} mode={"dev"}/>
             </div>
 
             {/* <div style={{ display: activeView === 2 ? "block" : "none" }}>

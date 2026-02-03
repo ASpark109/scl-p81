@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 
-import { saveCode } from "../../api/userSrcCode";
+import { saveCode, submitCode} from "../../api/userSrcCode";
 
 function SpacecraftCodeRunner({code,
                                spaceCraftName,
@@ -10,6 +10,7 @@ function SpacecraftCodeRunner({code,
                                codeRunTrigger,
                                isEnvInit,
                                saveTrigger,
+                               submitTrigger,
                                currentSpacecraft,
                                mode}) {
     const iframeRef = useRef();
@@ -25,7 +26,18 @@ function SpacecraftCodeRunner({code,
 
             handleSave();
         }
-    }, [saveTrigger])
+    }, [saveTrigger]);
+
+    useEffect(() => {
+        if (spaceCraftName === currentSpacecraft)
+        {
+            const handleSubmit = async () => {
+                const data = await submitCode(code, `${spaceCraftName}.txt`);
+            };
+
+            handleSubmit();
+        }
+    }, [submitTrigger]);
 
     useEffect(() => 
     {

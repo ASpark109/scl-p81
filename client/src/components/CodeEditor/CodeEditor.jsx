@@ -15,6 +15,7 @@ const CodeEditorWindow = ({ initCode = "",
 							initConf,
 							isEnvInit,
 							saveTrigger,
+							submitTrigger,
 							mode}) => 
 {
   	const [userCodeList, setCodeList] = useState(() => {
@@ -40,7 +41,7 @@ const CodeEditorWindow = ({ initCode = "",
 				const spacecraft = initConf[i];
 				const filename = `${spacecraft.displayName}.txt`;
 
-				const code = await getFileByName(filename);
+				const code = await getFileByName(filename, mode);
 				codes[spacecraft.displayName] = code || `// ${spacecraft.displayName}\n // not found`;
 			}
 
@@ -107,6 +108,7 @@ const CodeEditorWindow = ({ initCode = "",
 										  codeRunTrigger={trigger}
 										  isEnvInit={isEnvInit}
 										  saveTrigger={saveTrigger}
+										  submitTrigger={submitTrigger}
 										  currentSpacecraft={currentSpacecraft}
 										  mode={mode}>
 					</SpacecraftCodeRunner>
