@@ -154,7 +154,7 @@ export class PhysicalEnvironmentModel
                             y: spacecraft.phys.bodies[0].position.y
                         },
                         {
-                            x: 0.0000100 * (spacecraft.abs.grav.x - masterSc.abs.grav.x) * 4,
+                            x: 0.0000100 * (spacecraft.abs.grav.x - masterSc.abs.grav.x) * 4, // ще раз перевірити цю формулу
                             y: 0.0000100 * (spacecraft.abs.grav.y - masterSc.abs.grav.y) * 4
                         }
                     );
@@ -526,7 +526,6 @@ export class PhysicalEnvironmentModel
 
     objectsDistancing(object)
     {
-        console.log("ddddddddddiiiiiiiisssssssss " + object.id)
         let index = this.#nearbyObjects.findIndex(item => item.abs.id === object.id);
 
         if (index !== -1)

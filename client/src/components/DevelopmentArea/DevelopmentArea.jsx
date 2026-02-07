@@ -132,6 +132,13 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 		}
 	}
 
+	// left side
+	const handleNewFocusObject = (newObject) =>
+	{
+		environmentRef.current.onSetFocusObj(newObject)
+	}
+
+	//right side
 	const handleNewSelectedSpacecraft = (item) =>
 	{
 		setCurrentSpacecraft(item);
@@ -149,7 +156,8 @@ return (
 				<div className="displayobjectfuncpanel">
 					<FunctionalDisplayObjectAreaPanel onClick = {handleClick}
 													  scale = {scale.scale}
-													  isMapViewEnabled = {isMapViewEnabled}>
+													  isMapViewEnabled = {isMapViewEnabled}
+													  onFocusObjectChanged = {handleNewFocusObject}>
 					</FunctionalDisplayObjectAreaPanel>
  				</div>
 				<div className="DisplayObjectArea">

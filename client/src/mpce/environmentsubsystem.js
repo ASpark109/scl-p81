@@ -99,7 +99,7 @@ export class EnvironmentSubSystem
             this.addGroundCommunicationSystem(item)
         }
 
-        this.onSetFocusObj(0); // Id може починатися не з 0
+        // this.onSetFocusObj(0); // Id може починатися не з 0
     }
 
     async addObject(item)
@@ -134,9 +134,9 @@ export class EnvironmentSubSystem
         this.#mPhysicalEnvironmentModel.reset();
     }
 
-    onSetFocusObj(id)
+    onSetFocusObj(name)
     {
-        this.#mVisualisationBase.setFocusObject(id)
+        this.#mVisualisationBase.setFocusObject(name)
     }
 
     start()

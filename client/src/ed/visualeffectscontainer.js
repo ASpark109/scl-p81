@@ -12,7 +12,6 @@ export class VisualEffectsContainer extends PIXI.Container
 
         this.#configuration = Configurationsfactory.getConfiguration(spaceCraftName, "visualEffects").effects;
 
-        
         this.#init();
     }
 

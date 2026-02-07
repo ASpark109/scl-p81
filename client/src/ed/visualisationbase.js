@@ -12,6 +12,7 @@ import rcsThruster from '../assets/images/rcs.png';
 import { Configurationsfactory } from "../mpce/configurationsfactory";
 import { SystemStateMonitor } from './systemstatemonitor';
 import { VisualEffectsContainer } from './visualeffectscontainer';
+import { InformationOverlay } from './informationoverlay';
 
 const DISPLAY_WIDTH = 2300;
 const DISPLAY_HEIGHT = 1170;
@@ -57,11 +58,15 @@ export class VisualisationBase
             width: DISPLAY_WIDTH,
             height: DISPLAY_HEIGHT,
             backgroundColor: 0x020D19,
-            antialias: true
+            antialias: true,
+            resolution: window.devicePixelRatio || 1,
             });
 
         this.test = new PIXI.Container();
         this.application.stage.addChild(this.test);
+
+        this.informationOverlay = new InformationOverlay()
+        this.application.stage.addChild(this.informationOverlay);
 
         //! scale = 1, 1m = 10px
         // 40km / 1px
@@ -158,7 +163,8 @@ export class VisualisationBase
                     "physical": composite.bodies,
                     "abstract": abstract,
                     "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
-                    "id": composite.id
+                    "id": composite.id,
+                    "name": item.displayName
                 }
 
                 this.test.addChild(...object);
@@ -205,6 +211,7 @@ export class VisualisationBase
     {
         this.application.ticker.add(() => {
             this.updateFunc();
+            this.informationOverlay.update();
         });
     }
 
@@ -240,8 +247,8 @@ export class VisualisationBase
 
         //console.log(this.components[0].visualEffects.x + " " + this.components[0].visualEffects.y)
 
-        this.test.x += (DISPLAY_WIDTH/3 - this.components[0].visual[0].x * this.test.scale.x - this.test.x);
-        this.test.y += (DISPLAY_HEIGHT/2 - this.components[0].visual[0].y * this.test.scale.y - this.test.y);
+        this.test.x = (DISPLAY_WIDTH/3 - this.components[0].visual[0].x * this.test.scale.x);
+        this.test.y = (DISPLAY_HEIGHT/2 - this.components[0].visual[0].y * this.test.scale.y);
     }
 
     updateFunctionAbstruct()
@@ -280,15 +287,46 @@ export class VisualisationBase
         this.test.scale.y += (this.currentScale - this.test.scale.y) * 0.02;
     }
 
-    setFocusObject(id)
+    setFocusObject(name)
     {
-        let index = this.components.findIndex(item => item.id === id)
+        let index = this.components.findIndex(item => item.name === name)
+
+        if (index === -1)
+            return;
+
         let temp = this.components[index]
         this.components[index] = this.components[0];
         this.components[0] = temp;
 
         this.prevPos.x = this.components[0].abstract.position.x;
         this.prevPos.y = this.components[0].abstract.position.y;
+
+        this.informationOverlay.setSpacecraft(this.components[0]);
+
+        this.informationOverlay.setTargetObject(this.#findClosest());
+    }
+
+    #findClosest()
+    {
+        let closest = null;
+        let minDistSq = Infinity;
+
+        for (let i = 1; i < this.components.length; i++)
+        {
+            const dx = this.components[i].abstract.position.x - this.components[0].abstract.position.x;
+            const dy = this.components[i].abstract.position.y - this.components[0].abstract.position.y;
+
+            // квадрат відстані (швидше, ніж sqrt)
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq < minDistSq)
+            {
+                minDistSq = distSq;
+                closest = this.components[i];
+            }
+        }
+
+        return closest;
     }
 
     setViewMode(isMapViewEnabled)
@@ -313,6 +351,7 @@ export class VisualisationBase
             }
     
             this.updateFunc = this.updateFunctionAbstruct;
+            this.informationOverlay.setVisibleFrame(false);
         }
         else
         {
@@ -348,8 +387,17 @@ export class VisualisationBase
             {
                 this.scaleLevel = this.scaleLevel + scale;
 
-                this.test.scale.x = this.displayAreaScaleConf.physicalViewScale[this.scaleLevel];
-                this.test.scale.y = this.displayAreaScaleConf.physicalViewScale[this.scaleLevel];
+                const s = this.displayAreaScaleConf.physicalViewScale[this.scaleLevel]
+
+                this.test.scale.x = s;
+                this.test.scale.y = s;
+
+                console.log(this.test.scale)
+
+                if (s < 0.1)
+                    this.informationOverlay.setVisibleFrame(true, s);
+                else
+                    this.informationOverlay.setVisibleFrame(false);
             }
         }
         else if (this.abstructCameraView)
@@ -379,6 +427,9 @@ export class VisualisationBase
 
     start()
     {
+        this.informationOverlay.setSpacecraft(this.components[0])
+        this.informationOverlay.setTargetObject(this.components[1]);
+
         this.application.ticker.start();
         this.SystemStateMonitor.start();
     }
