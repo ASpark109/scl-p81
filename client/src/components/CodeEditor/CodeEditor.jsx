@@ -9,7 +9,6 @@ import { getFileByName } from "../../api/userSrcCode";
 const CodeEditorWindow = ({ initCode = "",
 							language = "javascript",
 							theme = "vs-dark",
-							onOutput,
 							trigger,
 							currentSpacecraft,
 							initConf,
@@ -57,21 +56,6 @@ const CodeEditorWindow = ({ initCode = "",
       		[currentSpacecraft]: newCode
     	}));
   	};
-
-  	useEffect(() =>
-	{
-    	const listener = (event) =>
-		{
-      		if (event.data?.type === "log" && onOutput)
-			{
-        		onOutput(event.data.payload);
-      		}
-    	};
-
-		window.addEventListener("message", listener);
-		
-		return () => window.removeEventListener("message", listener);
-	}, [onOutput]);
 
 	// потрібно переробити, це поки не працює як потрібно
 	// useEffect(() => {

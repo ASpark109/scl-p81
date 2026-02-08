@@ -113,10 +113,6 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 		}
 	}, [resetTrigger]);
 
-	const handleOutput = (msg) => {
-		OutputWindow.receiveLog(msg);
-	};
-
 	const handleClick = (buttonType) => {
 		switch (buttonType)
 		{
@@ -182,7 +178,6 @@ return (
 								initCode={``}
 								language={"javascript"}
 								theme={"vs-dark"}
-								onOutput={handleOutput}
 								trigger={trigger}
 								currentSpacecraft={currentSpacecraft}
 								initConf={initConf}

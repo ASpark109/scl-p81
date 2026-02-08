@@ -6,7 +6,6 @@ import { saveCode, submitCode} from "../../api/userSrcCode";
 function SpacecraftCodeRunner({code,
                                spaceCraftName,
                                config,
-                               onOutput,
                                codeRunTrigger,
                                isEnvInit,
                                saveTrigger,
@@ -49,7 +48,7 @@ function SpacecraftCodeRunner({code,
         {
             setOutputDoc("");
         }
-    }, [codeRunTrigger, code]);
+    }, [codeRunTrigger]);
 
     const handleRunCode = () => {
         if (!code)
@@ -63,11 +62,23 @@ function SpacecraftCodeRunner({code,
                 <body>
                     <pre id="output"></pre>
                     <script type="module">
-                        console.log = function(...args) {
-                        const formatted = args.map(arg =>
-                            typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
-                        ).join(" ");
-                        window.parent.postMessage({ type: "log", payload: formatted }, "*");
+                        console.log = function (...args) {
+                            if ("${spaceCraftName}" === "${currentSpacecraft}")
+                            {
+                                let isError = false
+                                const formatted = args.map(arg => {
+                                    if (arg instanceof Error) {
+                                        isError = true
+                                        return arg.stack;
+                                    }
+                                    else if (typeof arg === "object") {
+                                        return JSON.stringify(arg, null, 2);
+                                    }
+                                    return String(arg);
+                                }).join(" ");
+
+                                window.parent.postMessage({ type: "log", isError: isError, payload: formatted }, "*");
+                            }
                         };
 
                         class CommandInterface
@@ -94,7 +105,6 @@ function SpacecraftCodeRunner({code,
                                         const cmd = this.#commands.find(f => f.name === functionName);
                                         if (cmd)
                                         {
-                                            console.log("qqqqqq")
                                             try {
                                                 const result = cmd(...params);
                                                 
@@ -297,7 +307,7 @@ function SpacecraftCodeRunner({code,
                         }
                         catch (err)
                         {
-                            console.log("Error:", err);
+                            console.log(err);
                         }
                     </script>
                 </body>
