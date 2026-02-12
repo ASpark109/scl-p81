@@ -52,7 +52,111 @@ export class VisualisationBase
         rcs: rcsThruster
     }
 
-    initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView)
+    createStarTexture(app, count = 400)
+    {
+        const g = new PIXI.Graphics();
+
+        const colors = [0xffffff, 0xfaf2e7, 0x2a82da, 0xf87e6d, 0x81b8ee];
+
+        for (let i = 0; i < count; i++) {
+            const x = Math.random() * 1000;
+            const y = Math.random() * 1000;
+            const r = Math.random() * 1.8 + 0.5;
+
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            g.beginFill(color, Math.random() * 0.8 + 0.2); // альфа 0.2-1
+            g.drawCircle(x, y, r);
+            g.endFill();
+        }
+
+        const texture = app.renderer.generateTexture(g, PIXI.SCALE_MODES.LINEAR);
+
+        return texture;
+    }
+
+    createSpaceBackground(app, width, height, noiseDensity = 0.04)
+    {
+        const g = new PIXI.Graphics();
+
+        g.beginFill(0x020D19);
+        g.drawRect(0, 0, width, height);
+        g.endFill();
+
+        const totalPixels = Math.floor(width * height * noiseDensity);
+        for (let i = 0; i < totalPixels; i++) {
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            const alpha = Math.random() * 0.05;
+            const color = 0xdfefff; 
+
+            g.beginFill(color, alpha);
+            g.drawRect(x, y, 1, 1);
+            g.endFill();
+        }
+
+        const texture = app.renderer.generateTexture(g);
+        const bg = new PIXI.Sprite(texture);
+        bg.width = width;
+        bg.height = height;
+
+        return bg;
+    }
+
+    addGalaxies(app, count = 100) {
+
+        const galaxySprites = [
+            "../assets/images/g1.png",
+            "../assets/images/g2.png",
+            "../assets/images/g3.png",
+            "../assets/images/g4.png",
+            "../assets/images/g5.png",
+            "../assets/images/g6.png",
+            "../assets/images/g7.png",
+            "../assets/images/g8.png",
+            "../assets/images/g9.png",
+        ];
+
+        let galaxyL = new PIXI.Container();
+
+        for (let i = 0; i < count; i++) {
+            const tex = galaxySprites[Math.floor(Math.random() * galaxySprites.length)];;
+            const galaxy = PIXI.Sprite.from(tex);
+
+            galaxy.x = Math.random() * app.screen.width;
+            galaxy.y = Math.random() * app.screen.height;
+
+            const scale = 0.08
+            galaxy.scale.set(scale);
+
+            galaxy.alpha = 0.4;
+            galaxy.rotation = Math.random()
+
+            galaxyL.addChild(galaxy);
+        }
+
+        app.stage.addChildAt(galaxyL, 1);
+    }
+
+    #createBackground()
+    {
+        const starTexture = this.createStarTexture(this.application);
+        const stars = new PIXI.TilingSprite(
+            starTexture,
+            DISPLAY_WIDTH,
+            DISPLAY_HEIGHT
+        );
+        this.application.stage.addChildAt(stars, 0);
+        stars.filters = [new PIXI.BlurFilter()];
+        stars.filters[0].blur = 0.8;
+
+        const bg = this.createSpaceBackground(this.application, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        this.application.stage.addChildAt(bg, 0);
+
+        this.addGalaxies(this.application, 10);
+    }
+
+    initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView, mode)
     {
         this.application = new PIXI.Application({
             width: DISPLAY_WIDTH,
@@ -83,6 +187,11 @@ export class VisualisationBase
         this.viewScales.physical = this.displayAreaScaleConf.physicalViewScale;
 
         this.SystemStateMonitor = new SystemStateMonitor(pixiSpaceCraftsSystemStateContainer);
+
+        // if (mode === "rt")
+        {
+            this.#createBackground();
+        }
     }
 
     objectsApproaching([object0, object, radians])
