@@ -26,8 +26,6 @@ class Spacecraft
         this.dockedSpacecrafts = [];
         this.callback = isInSector;
         this.type = "sc";
-
-        console.log(physicalObj.bodies[0].mass)
     }
 
     isInView(dis, viewAngle)
@@ -90,7 +88,7 @@ export class AbstractEnvironmentModel
     #mSpacecrafts = [];
     #mDockedSpaceCrafts = [];
 
-    #deltaTime = 0.01666;
+    #deltaTime = 1; // 0.01666
 
     #closeGroupCount = 0;
     #isGroupExists = false;
@@ -178,7 +176,7 @@ export class AbstractEnvironmentModel
 
     update()
     {
-        this.#calculateNewSystemState();
+        this.integratePhysics()
 
         if (this.count === 30)
         {
@@ -201,7 +199,7 @@ export class AbstractEnvironmentModel
 
     calculateDistances1()
     {
-        const closeDis = 200;
+        const closeDis = 100;
 
         if (!this.#isGroupExists)
         {
@@ -329,62 +327,33 @@ export class AbstractEnvironmentModel
     }
 
     //: private
-    #calculateNewSystemState()
+    integratePhysics(dt)
     {
         for (let i = 0; i < this.#mSpacecrafts.length; i++)
         {
-            let state =
-                    [
-                        this.#mSpacecrafts[i].position.x,
-                        this.#mSpacecrafts[i].position.y,
-                        this.#mSpacecrafts[i].velocity.x,
-                        this.#mSpacecrafts[i].velocity.y 
-                    ];
-            
-            let newState = this.#rk4Step(state, this.#mSpacecrafts[i], this.#deltaTime);
-        
-            this.#mSpacecrafts[i].position = {x: newState[0], y: newState[1]};
-            this.#mSpacecrafts[i].velocity = {x: newState[2], y: newState[3]};
+            let spacecraft = this.#mSpacecrafts[i];
+
+            const r2 = spacecraft.position.x ** 2 + spacecraft.position.y ** 2;
+            const r = Math.sqrt(r2);
+
+            if (r < 1e4) return;
+
+            const factor = -this.#mSpaceBodies[0].mass * this.G_CONST / (r2 * r); // -μ / r³
+
+            const ax = spacecraft.position.x * factor;
+            const ay = spacecraft.position.y * factor;
+
+            const tx = spacecraft.force.x / (spacecraft.physicalObj.bodies[0].mass * 1000)
+            const ty = spacecraft.force.y / (spacecraft.physicalObj.bodies[0].mass * 1000)
+
+            const accX = ax + tx;
+            const accY = ay + ty;
+
+            spacecraft.velocity.x += accX * this.#deltaTime;
+            spacecraft.velocity.y += accY * this.#deltaTime;
+
+            spacecraft.position.x += spacecraft.velocity.x * this.#deltaTime;
+            spacecraft.position.y += spacecraft.velocity.y * this.#deltaTime;
         }
-    }
-
-    #rk4Step(state, spacecraft, dt) {
-        const k1 = this.#derivatives(state, spacecraft);
-        const k2 = this.#derivatives(state.map((v, i) => v + dt / 2 * k1[i]), spacecraft);
-        const k3 = this.#derivatives(state.map((v, i) => v + dt / 2 * k2[i]), spacecraft);
-        const k4 = this.#derivatives(state.map((v, i) => v + dt * k3[i]), spacecraft);
-    
-        return state.map((v, i) => v + dt / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
-    }
-
-    #derivatives(state, spacecraft) {
-        const [x, y, vx, vy] = state;
-        const acc = this.#force(spacecraft, x, y);
-
-        const ax = acc.x;
-        const ay = acc.y;
-    
-        return [vx, vy, ax, ay];
-    }
-
-    #force(spacecraft, x, y)
-    {
-        let fv = {x: 0, y: 0};
-    
-        const spacecraftMass = spacecraft.physicalObj.bodies[0].mass * 1000;
-
-        for (let i = 0; i < this.#mSpaceBodies.length; i++)
-        {
-            let v = Vector.sub(this.#mSpaceBodies[i].position, {x: x, y: y});
-            let f = this.G_CONST * spacecraftMass * this.#mSpaceBodies[i].mass / Math.pow(Vector.magnitude(v), 2);
-    
-            fv = Vector.add(Vector.mult(Vector.normalise(v), f), fv);
-        }
-    
-        spacecraft.grav = fv; // free fall ac
-
-        fv = Vector.add(spacecraft.force, fv);
-
-        return Vector.div(fv, spacecraftMass);
     }
 }
