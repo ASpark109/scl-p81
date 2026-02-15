@@ -125,6 +125,12 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 		case "viewMode":
 			setViewMode(!isMapViewEnabled);
 			break;
+		case "orbits":
+			environmentRef.current.setOrbitsVisible();
+			break;
+		case "info":
+			environmentRef.current.setInfoOverlayVisible();
+			break;
 		}
 	}
 

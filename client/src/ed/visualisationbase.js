@@ -20,6 +20,20 @@ const DISPLAY_HEIGHT = 1170;
 export class VisualisationBase
 {
     #callbacks = null;
+    #orbits = new PIXI.Container();
+    #scIcons = new PIXI.Container();
+    #orbitColors = [
+        0x5CC0FF,
+        0xFF5B1F,
+        0xFFFFFF,
+        0xA43BFF,
+        0x3DFF51,
+        0xFFFF3D,
+        0xFFB21F,
+        0xED3ED0,
+        0x617EFF,
+        0xDB7A00,
+    ]
 
     constructor()
     {
@@ -37,9 +51,13 @@ export class VisualisationBase
         this.scaleLevel = 1;
         this.displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
         this.currentScale = 0;
+        this.orbitUpdateCounter = 0;
 
         this.SystemStateMonitor = null;
             
+        this.orb = new PIXI.Graphics();
+
+        this.#orbits.addChild(this.orb)
     }
 
     images = 
@@ -56,7 +74,7 @@ export class VisualisationBase
     {
         const g = new PIXI.Graphics();
 
-        const colors = [0xffffff, 0xfaf2e7, 0x2a82da, 0xf87e6d, 0x81b8ee];
+        const colors = [0xffffff, 0xfaf2e7, 0x2a82da, 0xf0f0f0, 0x81b8ee];
 
         for (let i = 0; i < count; i++) {
             const x = Math.random() * 1000;
@@ -153,7 +171,7 @@ export class VisualisationBase
         const bg = this.createSpaceBackground(this.application, DISPLAY_WIDTH, DISPLAY_HEIGHT);
         this.application.stage.addChildAt(bg, 0);
 
-        this.addGalaxies(this.application, 10);
+        //this.addGalaxies(this.application, 10);
     }
 
     initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView, mode)
@@ -187,6 +205,10 @@ export class VisualisationBase
         this.viewScales.physical = this.displayAreaScaleConf.physicalViewScale;
 
         this.SystemStateMonitor = new SystemStateMonitor(pixiSpaceCraftsSystemStateContainer);
+
+
+        this.application.stage.addChild(this.#orbits)
+        this.application.stage.addChild(this.#scIcons)
 
         // if (mode === "rt")
         {
@@ -261,6 +283,12 @@ export class VisualisationBase
 
                 let icon = PIXI.Sprite.from(this.images["rocketIcon"])
                 icon.anchor.set(0.5, 0.5);
+                icon.visible = false;
+
+                let icont = PIXI.Sprite.from('../assets/images/satellite.png')
+                icont.scale.set(0.2, 0.2);
+                icont.anchor.set(0.5, 0.5);
+                this.#scIcons.addChild(icont)
 
                 const visualEffectsContainer = new VisualEffectsContainer(item.Name);
                 this.test.addChild(visualEffectsContainer);
@@ -285,30 +313,57 @@ export class VisualisationBase
             }
             else if (item.type == "spaceobject")
             {
-                // let icon1 = PIXI.Sprite.from(this.images["planet"]);
-                // icon1.anchor.set(0.5,0.5);
+                const radiusPx = Math.max(2, Math.round(item.Radius * this.metersPerPixelAbstruct));
+                const outerRadius = Math.round(radiusPx * 1.03);
 
-                // icon1.scale.set(300000)
+                let cnv = this.craateGradientCanvas(outerRadius, radiusPx);
+
+                const atmosphereTex = PIXI.Texture.from(cnv);
+                const atmosphere = new PIXI.Sprite(atmosphereTex);
+                atmosphere.anchor.set(0.5);
+                atmosphere.x = 0;
+                atmosphere.y = 0;
+
                 const circle = new PIXI.Graphics();
                 circle.beginFill(0x011591);
-                circle.drawCircle(0, 0, item.Radius * this.metersPerPixelAbstruct);
+                circle.drawCircle(0, 0, radiusPx);
                 circle.endFill();
 
-                circle.pivot.set(0.5, 0.5)
-
-                //circle.scale.set(1/this.#scale)
-
+                const planetContainer = new PIXI.Container();
+                planetContainer.addChild(atmosphere);
+                planetContainer.addChild(circle);
 
                 let obj = {
-                    "visual": circle,
+                    "visual": planetContainer,
                     "physical": null,
                     "abstract": abstract
                 }
 
-                this.test.addChild(circle);
+                this.test.addChild(planetContainer);
                 this.environmentComponents.push(obj);
             }
         });
+    }
+
+    craateGradientCanvas(outerRadius, radiusPx)
+    {
+        const canvas = document.createElement('canvas');
+        canvas.width = outerRadius * 2;
+        canvas.height = outerRadius * 2;
+        const ctx = canvas.getContext('2d');
+        const cx = outerRadius;
+        const cy = outerRadius;
+        const grad = ctx.createRadialGradient(cx, cy, Math.max(1, Math.round(radiusPx * 0.6)), cx, cy, outerRadius);
+        grad.addColorStop(0, 'rgb(255, 255, 255)');
+        grad.addColorStop(0.5, 'rgba(135, 206, 250, 0.82)');
+        grad.addColorStop(1, 'rgba(8, 67, 104, 0.29)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        return canvas
     }
 
     setMonitoringInterfaceForId(id, monitorinterface)
@@ -321,7 +376,62 @@ export class VisualisationBase
         this.application.ticker.add(() => {
             this.updateFunc();
             this.informationOverlay.update();
+
+            this.orbitUpdateCounter++
+            if (this.orbitUpdateCounter === 50)
+            {
+                this.updateOrbits()            
+            }
         });
+    }
+
+    updateOrbits()
+    {
+        this.orb.clear();
+        let colorCounter = 0;
+
+        for (let spacecraft of this.components)
+        {
+            let pos = spacecraft.abstract.position;
+            let vel = spacecraft.abstract.velocity;
+            let mu = 5.972e24 * 6.67430e-11;
+
+            const x = pos.x;
+            const y = pos.y;
+            const vx = vel.x, vy = vel.y;
+
+            const r = Math.hypot(x, y);
+            const v2 = vx*vx + vy*vy;
+
+            const h = x * vy - y * vx;
+            const energy = v2 / 2 - mu / r;
+
+            if (energy >= 0) return null; // не еліпс
+
+            const a = -mu / (2 * energy);
+            const e = Math.sqrt(1 + (2 * energy * h * h) / (mu * mu));
+
+            const ex = (vy * h) / mu - x / r;
+            const ey = (-vx * h) / mu - y / r;
+            const theta = Math.atan2(ey, ex);
+
+            this.drawOrbit(a, e, theta, this.#orbitColors[colorCounter])
+            colorCounter++
+            if (colorCounter === this.#orbitColors.length)
+                colorCounter = 0;
+        }
+
+        this.orbitUpdateCounter = 0;
+    }
+
+    setOrbitsVisible()
+    {
+        this.#orbits.visible = !this.#orbits.visible;
+    }
+
+    setOverlayInfoVisible()
+    {
+        this.informationOverlay.visible = !this.informationOverlay.visible;
     }
 
     updateFunctionPhysical()
@@ -375,6 +485,11 @@ export class VisualisationBase
             item.visualAbstruct.x = (item.abstract.position.x) * this.metersPerPixelAbstruct
             item.visualAbstruct.y = (item.abstract.position.y) * this.metersPerPixelAbstruct
             item.visualAbstruct.rotation = item.physical[0].angle;
+
+            let t = this.#scIcons.children[q]
+            t.x = (item.abstract.position.x) * (this.metersPerPixelAbstruct * this.currentScale) + this.test.x;
+            t.y = (item.abstract.position.y) * (this.metersPerPixelAbstruct * this.currentScale) + this.test.y;
+            t.rotation = item.physical[0].angle;
         }
 
         //this.environmentComponents[0].visual.position.set((0 - this.shiftx.x) * 10,
@@ -394,6 +509,29 @@ export class VisualisationBase
 
         this.test.scale.x += (this.currentScale - this.test.scale.x) * 0.02;
         this.test.scale.y += (this.currentScale - this.test.scale.y) * 0.02;
+
+
+        this.#orbits.position.set(this.test.x, this.test.y);
+    }
+
+    drawOrbit(a, e, theta, color)
+    {
+        this.orb.lineStyle(1, color, 0.7);
+
+        const steps = 200;
+        for (let i = 0; i <= steps; i++)
+        {
+            const phi = (i / steps) * Math.PI * 2;
+            const r = a * (1 - e * e) / (1 + e * Math.cos(phi));
+
+            const x = r * Math.cos(phi);
+            const y = r * Math.sin(phi);
+
+            const xr = ((x * Math.cos(theta) - y * Math.sin(theta)) * this.metersPerPixelAbstruct * this.currentScale)
+            const yr = ((x * Math.sin(theta) + y * Math.cos(theta)) * this.metersPerPixelAbstruct * this.currentScale)
+            if (i === 0) this.orb.moveTo(xr, yr);
+            else this.orb.lineTo(xr, yr);
+        }
     }
 
     setFocusObject(name)
@@ -458,7 +596,14 @@ export class VisualisationBase
                 this.test.addChild(item.visualAbstruct);
                 this.test.addChild(this.environmentComponents[0].visual);
             }
+
+            for (let item of this.#scIcons.children)
+            {
+                item.visible = true;
+            }
     
+            this.#orbits.visible = true;
+
             this.updateFunc = this.updateFunctionAbstruct;
             this.informationOverlay.setVisibleFrame(false);
         }
@@ -480,6 +625,12 @@ export class VisualisationBase
                 this.test.addChild(...item.visual);
             }
 
+            for (let item of this.#scIcons.children)
+            {
+                item.visible = false;
+            }
+
+            this.#orbits.visible = false;
             this.updateFunc = this.updateFunctionPhysical;
         }
 
@@ -526,6 +677,9 @@ export class VisualisationBase
                 // this.test.scale.y = newScale;
             }
         }
+
+        this.updateOrbits()
+        console.log(this.currentScale)
     }
 
     stop()

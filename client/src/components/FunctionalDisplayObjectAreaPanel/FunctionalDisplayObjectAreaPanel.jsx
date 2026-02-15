@@ -19,11 +19,11 @@ const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled, onF
             <button className="panel-button">
                 <span>button2</span>
             </button>
-            <button className="panel-button">
-                <span>button3</span>
+            <button className="panel-button" onClick={() => onClick("info")}>
+                <span>info</span>
             </button>
-            <button className="panel-button">
-                <span>button4</span>
+            <button className="panel-button" onClick={() => onClick("orbits")}>
+                <span>orbits</span>
             </button>
 
             <div className="groupBorder"></div>

@@ -13,14 +13,14 @@
 
     "fuelTank": {
         "name": "Fuel",
-        "dimensions": {"x": 70, "y": 200},
-        "position": {"x": 0, "y": 220}
+        "dimensions": {"x": 70, "y": 280},
+        "position": {"x": 0, "y": 200}
     },
 
     "oxidiserTank": {
         "name": "Oxid.",
-        "dimensions": {"x": 70, "y": 120},
-        "position": {"x": 0, "y": -30}
+        "dimensions": {"x": 70, "y": 330},
+        "position": {"x": 0, "y": -120}
     },
 
     "pressureSensorLeftLeg": {
@@ -43,5 +43,28 @@
 
     "pump": {
         "position": {"x": 50, "y":35}
+    },
+
+    "radio": {
+        "position": {"x": 20, "y":35},
+        "dimensions": {"x": 170, "y": 210}
+    },
+
+    "turboPump":
+    {
+        "position": {"x": 20, "y":260},
+        "dimensions": {"x": 170, "y": 100}
+    },
+
+    "engines":
+    {
+        "position": {"x": 20, "y": 370},
+        "dimensions": {"x": 170, "y": 220},
+        "engines": 9
+    },
+
+    "rpoMonitor":
+    {
+        "dimensions": {"x": 450, "y": 700}
     }
 }

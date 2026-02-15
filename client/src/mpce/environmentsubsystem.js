@@ -73,7 +73,7 @@ export class EnvironmentSubSystem
                                                    containerM,
                                                    matterContainerPhys);
 
-        this.#mVisualisationBase.initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView);
+        this.#mVisualisationBase.initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView, this.mode);
 
         this.createInitialConfiguration();
 
@@ -159,5 +159,15 @@ export class EnvironmentSubSystem
     onViewModeChanged(isMapViewEnabled)
     {
         this.#mVisualisationBase.setViewMode(isMapViewEnabled)
+    }
+
+    setOrbitsVisible()
+    {
+        this.#mVisualisationBase.setOrbitsVisible();
+    }
+
+    setInfoOverlayVisible()
+    {
+        this.#mVisualisationBase.setOverlayInfoVisible();
     }
 }
