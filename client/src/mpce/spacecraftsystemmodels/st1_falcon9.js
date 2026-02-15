@@ -255,6 +255,28 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
     monitorInter.set("Tank2", () => spaceCraft.FuelSystem.Tank2.FillLevelSensor.readValue());
     monitorInter.set("PSSInfo", () => spaceCraft.PowerSupplySystem.info());
     monitorInter.set("PumpStatus", () => spaceCraft.FuelSystem.Pump.readStatus());
+    monitorInter.set("radioCommunicationStatus", () => {
+        return {
+            transmitter: spaceCraft.RadioCommunication.Transmitter.status(),
+            receiver: spaceCraft.RadioCommunication.Receiver.status()
+        }
+    });
+    monitorInter.set("turboPump", () => spaceCraft.FuelSystem.TurboPump.status());
+    monitorInter.set("enginesStatus", () => {
+        let statusInfo = [];
+        for (let engine of spaceCraft.EngineBlock.Engine)
+        {
+            statusInfo.push(engine.isActive())
+        }
+        return statusInfo;
+    });
+    monitorInter.set("proximityRadar", () => {
+        return {
+           proximityRadar: spaceCraft.RPO.ProximityRadar.scan(),
+           laserRangeFinder: spaceCraft.RPO.LaserRangeFinder.scan(),
+           angle: physicalModel.angle
+        }
+    });
 
     return {spaceCraft, monitorInter};
 }
