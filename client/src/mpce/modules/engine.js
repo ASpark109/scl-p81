@@ -32,7 +32,7 @@ export class Engine
         this.#updateForceInter();
         this.#updateForceAbs();
 
-        console.log(this.#thrust)
+        //console.log(this.#thrust)
     }
 
     #updateForceInter()
@@ -56,7 +56,7 @@ export class Engine
         let forceV = {x: Math.cos(angle * Math.PI / 180) * f,
                                      y: -Math.sin(angle * Math.PI / 180) * f}
         
-        console.log(forceV)
+        //console.log(forceV)
         this.#updateStateAbsCallback(this.#id, forceV);
     }
 
@@ -64,7 +64,7 @@ export class Engine
 
     _setFuelFlow(flow)
     {
-        console.log("FLOW FOR ENGINE: " + flow)
+        //console.log("FLOW FOR ENGINE: " + flow)
         if (flow === this.#fuelFlow)
         {
             return;
@@ -79,7 +79,7 @@ export class Engine
         else
         {
             this.#thrust = this.#fuelFlow * this.#maxThrust / 270;
-            console.log(this.#thrust + " OOOOO ")
+            //console.log(this.#thrust + " OOOOO ")
         }
         
         this.#updateState()

@@ -20,10 +20,10 @@ export class PowerSuplySystemInfo extends PIXI.Container
 
 
 
-        this.create();
+        this.#create();
     }
 
-    create()
+    #create()
     {
         const pssInfo = new PIXI.Graphics();
 
@@ -40,7 +40,7 @@ export class PowerSuplySystemInfo extends PIXI.Container
         const sensorName = new PIXI.Text(this.#conf.name, {
             fontFamily: "B612 Mono, monospace",
             fontSize: styles.fontSizeDefault,
-            fill: styles.blue,   // зелений колір тексту
+            fill: styles.green,   // зелений колір тексту
             align: "center"
         });
 

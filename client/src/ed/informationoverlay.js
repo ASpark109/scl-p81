@@ -9,8 +9,8 @@ class InformationField extends PIXI.Container
     {
         super();
 
-        this.labelStyle = { fill: 0x04db29, fontSize: 17 };
-        this.valueStyle = { fill: 0x04db29, fontSize: 17 };
+        this.labelStyle = { fill: 0x04db29, fontSize: 17, fontFamily: 'B612 Mono, monospace'};
+        this.valueStyle = { fill: 0x04db29, fontSize: 17, fontFamily: 'B612 Mono, monospace'};
         this.space = 8;
 
         this.labelText = new PIXI.Text(`${label}:`, this.labelStyle);

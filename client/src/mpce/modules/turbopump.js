@@ -58,7 +58,7 @@ export class TurboPump
         this.#fuelFlowRP1 = this.#MAXRP1PerSec * newValue / 100;
         this.#fuelFlowLOX = this.#MAXLOXPerSec * newValue / 100;
 
-        console.log("Set Valve Throttle: " + this.#fuelFlowRP1 + " : " + this.#fuelFlowLOX)
+        //console.log("Set Valve Throttle: " + this.#fuelFlowRP1 + " : " + this.#fuelFlowLOX)
 
         if (this.#isEnabled)
         {
@@ -66,11 +66,20 @@ export class TurboPump
         }
     }
 
+    status()
+    {
+        return {
+            active: this.#isEnabled,
+            flowRP1: this.#fuelFlowRP1,
+            flowLOX: this.#fuelFlowLOX
+        };
+    }
+
     enable()
     {
         if (!this.#isEnabled)
         {
-            console.log("Trubopump enabled")
+            //console.log("Trubopump enabled")
             this.#isEnabled = true;
             this.#updateEnginesState(this.#fuelFlowRP1 + this.#fuelFlowLOX);
         }
@@ -80,7 +89,7 @@ export class TurboPump
     {
         if (this.#isEnabled)
         {
-            console.log("Trubopump disabled")
+            //console.log("Trubopump disabled")
             this.#isEnabled = false;
             this.#updateEnginesState(0);
         }

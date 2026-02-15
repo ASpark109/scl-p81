@@ -29,10 +29,13 @@ export class ProximityRadar
         {
             return this.#abstract.isInView(this.#distance, this.#viewAngle);
         }
-        else
-        {
-            return false;
-        }
+        
+        return false;
+    }
+
+    viewAngle()
+    {
+        return this.#viewAngle;
     }
 
     enable()

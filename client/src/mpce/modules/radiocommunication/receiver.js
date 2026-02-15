@@ -46,6 +46,16 @@ export class Receiver
         return this.#signalsStorage;
     }
 
+    status()
+    {
+        return {
+            freq: this.#carrierFreq,
+            state: this.#isEnabled,
+            power: "N/A"
+        };
+    }
+
+
     enable()
     {
         if (!this.#isEnabled)

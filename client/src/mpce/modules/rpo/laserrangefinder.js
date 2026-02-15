@@ -14,7 +14,10 @@ export class LaserRangeFinder
 
     scan()
     {
-        return this.#physicalModel.scanArea(this.#distance, this.#dockingPort);
+        if (this.#isEnabled)
+        {
+            return this.#physicalModel.scanArea(this.#distance, this.#dockingPort);
+        }
     }
 
     setDockongPort(id)

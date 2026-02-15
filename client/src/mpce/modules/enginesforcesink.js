@@ -54,7 +54,7 @@ export class EnginesForceSink
 
     updatePhysState(engineId, forceV)
     {
-        console.log("hello " + engineId + " " + forceV.y + " " + forceV.x)
+        //console.log("hello " + engineId + " " + forceV.y + " " + forceV.x)
         if (this.#enginesPhys[engineId] !== undefined)
         {
             this.#enginesPhys[engineId] = forceV;
@@ -68,7 +68,7 @@ export class EnginesForceSink
                 { x: 0, y: 0 }
             );
 
-            console.log(this.#forcePhysV)
+            //console.log(this.#forcePhysV)
         }
     }
 
@@ -76,9 +76,9 @@ export class EnginesForceSink
     {
         if (this.#enginesAbs[engineId] !== undefined)
         {
-            console.log(forceV)
+            //console.log(forceV)
             this.#enginesAbs[engineId] = forceV;
-            console.log(this.#enginesAbs)
+            //console.log(this.#enginesAbs)
 
             this.#forceAbsV = this.#enginesAbs.reduce(
                 (acc, { x, y }) => {
@@ -89,7 +89,7 @@ export class EnginesForceSink
                 { x: 0, y: 0 }
             );
 
-            console.log(this.#forceAbsV.x + " " + this.#forceAbsV.y + " <<<<<<<<<<<<<<<")
+            //console.log(this.#forceAbsV.x + " " + this.#forceAbsV.y + " <<<<<<<<<<<<<<<")
         }
     }
 }

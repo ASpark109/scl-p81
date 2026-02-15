@@ -44,7 +44,7 @@ export class SystemStateMonitor
 
         this.#runner = setInterval(() => {
             this.#update()
-        }, 200);
+        }, 500);
     }
 
     stop()

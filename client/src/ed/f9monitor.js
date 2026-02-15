@@ -6,12 +6,19 @@ import { Sensor } from './systemmonitorcomponents/sensor';
 import { Tank } from './systemmonitorcomponents/tank';
 import { PowerSuplySystemInfo } from './systemmonitorcomponents/powersuplysysteminfo';
 import { Pump } from './systemmonitorcomponents/pump';
+import { Radio } from './systemmonitorcomponents/radio';
+import { TurboPump } from './systemmonitorcomponents/turbopump';
+import { Engines } from './systemmonitorcomponents/engines';
+import { RPO } from './systemmonitorcomponents/rpo';
 
 export class F9Monitor extends PIXI.Container
 {
     #config = null;
     #monitorInterface = null;
     #updateList = new Map();
+    #currentPageIndex = 0;
+
+    #pages = []
 
     constructor(configuration)
     {
@@ -19,11 +26,21 @@ export class F9Monitor extends PIXI.Container
 
         this.#config = configuration;
 
-        this.#create();
+        this.#createMainPage();
+        this.#createRPOPage();
+        this.#createNavigationButtons();
+
+        if (this.#pages.length > 0)
+        {
+            this.#pages[0].visible = true;
+            this.#currentPageIndex = 0;
+        }
     }
 
-    #create()
+    #createMainPage()
     {
+        let mainPageContainer = new PIXI.Container();
+
         // *** MAIN FRAME ***
         const mainFrame = new PIXI.Graphics();
 
@@ -37,7 +54,7 @@ export class F9Monitor extends PIXI.Container
         mainFrame.moveTo(this.#config.mainFrameDimensions.x, 0);
         mainFrame.lineTo(this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y);
 
-        this.addChild(mainFrame);
+        mainPageContainer.addChild(mainFrame);
 
 
         // *** MAIN STAGE ***
@@ -53,7 +70,7 @@ export class F9Monitor extends PIXI.Container
         mainStage.drawRect(0, 0, this.#config.mainStageDimensions.x,
                                  this.#config.mainStageDimensions.y);
 
-        this.addChild(mainStage);
+        mainPageContainer.addChild(mainStage);
 
 
         // *** LEGS ***
@@ -69,7 +86,7 @@ export class F9Monitor extends PIXI.Container
         leftLeg.x = mainStage.x + this.#config.legs.position.x1;
         leftLeg.y = mainStage.y + this.#config.legs.position.y1;
         
-        this.addChild(leftLeg);
+        mainPageContainer.addChild(leftLeg);
 
         
         const righttLeg = new PIXI.Graphics();
@@ -84,7 +101,7 @@ export class F9Monitor extends PIXI.Container
         righttLeg.x = mainStage.x + this.#config.legs.position.x2;
         righttLeg.y = mainStage.y + this.#config.legs.position.y2;
 
-        this.addChild(righttLeg);
+        mainPageContainer.addChild(righttLeg);
 
         
         // *** Fuel Tank ***
@@ -96,7 +113,7 @@ export class F9Monitor extends PIXI.Container
         fuelTank.x = this.#config.fuelTank.position.x + mainStage.x;
         fuelTank.y = this.#config.fuelTank.position.y + mainStage.y;
 
-        this.addChild(fuelTank);
+        mainPageContainer.addChild(fuelTank);
 
         this.#updateList.set("Tank1", fuelTank);
 
@@ -110,7 +127,7 @@ export class F9Monitor extends PIXI.Container
         oxidiserTank.x = this.#config.oxidiserTank.position.x + mainStage.x;
         oxidiserTank.y = this.#config.oxidiserTank.position.y + mainStage.y;
 
-        this.addChild(oxidiserTank)
+        mainPageContainer.addChild(oxidiserTank)
 
         this.#updateList.set("Tank2", oxidiserTank);
 
@@ -123,7 +140,7 @@ export class F9Monitor extends PIXI.Container
         pneumSensorLeftLeg.x = mainStage.x + this.#config.pressureSensorLeftLeg.position.x;
         pneumSensorLeftLeg.y = mainStage.y + this.#config.pressureSensorLeftLeg.position.y;
 
-        this.addChild(pneumSensorLeftLeg);
+        mainPageContainer.addChild(pneumSensorLeftLeg);
 
         this.#updateList.set("Leg1PneumPress", pneumSensorLeftLeg);
 
@@ -136,7 +153,7 @@ export class F9Monitor extends PIXI.Container
         pneumSensorRightLeg.x = mainStage.x + this.#config.pressureSensorRightLeg.position.x;
         pneumSensorRightLeg.y = mainStage.y + this.#config.pressureSensorRightLeg.position.y;
 
-        this.addChild(pneumSensorRightLeg);
+        mainPageContainer.addChild(pneumSensorRightLeg);
 
         this.#updateList.set("Leg2PneumPress", pneumSensorRightLeg);
 
@@ -144,7 +161,7 @@ export class F9Monitor extends PIXI.Container
 
         let powerSuplySystemInfo = new PowerSuplySystemInfo(this.#config.powerSuplySystem);
 
-        this.addChild(powerSuplySystemInfo);
+        mainPageContainer.addChild(powerSuplySystemInfo);
 
         this.#updateList.set("PSSInfo", powerSuplySystemInfo);
 
@@ -155,7 +172,7 @@ export class F9Monitor extends PIXI.Container
         pump.x = this.#config.pump.position.x + mainStage.x;
         pump.y = this.#config.pump.position.y + mainStage.y;
         
-        this.addChild(pump);
+        mainPageContainer.addChild(pump);
         this.#updateList.set("PumpStatus", pump);
         // *** Pipe ***
 
@@ -173,8 +190,135 @@ export class F9Monitor extends PIXI.Container
         line2.lineTo(fuelTank.x + 100, fuelTank.y);
         line2.lineTo(fuelTank.x + 100, pump.y + 50);
 
-        this.addChild(line1);
-        this.addChild(line2);
+        mainPageContainer.addChild(line1);
+        mainPageContainer.addChild(line2);
+
+        // *** Radio ***
+        let radio = new Radio(this.#config.radio);
+
+        radio.x = this.#config.radio.position.x;
+        radio.y = this.#config.radio.position.y;
+        
+        mainPageContainer.addChild(radio);
+
+        this.#updateList.set("radioCommunicationStatus", radio);
+
+        // *** TurboPump ***
+        let turboPump = new TurboPump(this.#config.turboPump)
+        turboPump.x = this.#config.turboPump.position.x;
+        turboPump.y = this.#config.turboPump.position.y;
+        
+        mainPageContainer.addChild(turboPump);
+
+        this.#updateList.set("turboPump", turboPump);
+
+        // *** Engines ***
+        let enginesInfo = new Engines(this.#config.engines)
+        enginesInfo.x = this.#config.engines.position.x;
+        enginesInfo.y = this.#config.engines.position.y;
+
+        mainPageContainer.addChild(enginesInfo);
+
+        this.#updateList.set("enginesStatus", enginesInfo);
+
+        // ******
+        mainPageContainer.visible = false;
+        this.addChild(mainPageContainer)
+        this.#pages.push(mainPageContainer);
+    }
+
+    #createRPOPage()
+    {
+        let rpoPageContainer = new PIXI.Container();
+
+        // *** MAIN FRAME ***
+        const mainFrame = new PIXI.Graphics();
+
+        mainFrame.lineStyle(1, styles.blue, 1);
+
+        // ліва сторона
+        mainFrame.moveTo(0, 0);
+        mainFrame.lineTo(0, this.#config.mainFrameDimensions.y);
+
+        // права сторона
+        mainFrame.moveTo(this.#config.mainFrameDimensions.x, 0);
+        mainFrame.lineTo(this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y);
+
+        rpoPageContainer.addChild(mainFrame);
+
+        // *** monitor ***
+        let monitor = new RPO(this.#config.rpoMonitor)
+        rpoPageContainer.addChild(monitor);
+        // monitor.pivot.set(225, 250)
+        monitor.x = this.#config.mainFrameDimensions.x / 2;
+        monitor.y = this.#config.mainFrameDimensions.y / 2;
+
+        this.#updateList.set("proximityRadar", monitor);
+
+        // ******
+        rpoPageContainer.visible = false;
+        this.addChild(rpoPageContainer);
+        this.#pages.push(rpoPageContainer);
+    }
+
+    #createNavigationButtons()
+    {
+        let left = new PIXI.Text(" < ", {
+                    fontFamily: "B612 Mono, monospace",
+                    fontSize: 30,
+                    fill: styles.yellow,
+                    align: "center"
+        });
+
+        let right = new PIXI.Text(" > ", {
+                    fontFamily: "B612 Mono, monospace",
+                    fontSize: 30,
+                    fill: styles.yellow,
+                    align: "center"
+        });
+
+        left.anchor.set(0.5);
+        right.anchor.set(0.5);
+
+        left.x = this.#config.mainFrameDimensions.x / 2 - 20;
+        left.y = this.#config.mainFrameDimensions.y;
+
+        right.x = this.#config.mainFrameDimensions.x / 2 + 20;
+        right.y = this.#config.mainFrameDimensions.y;
+
+        left.eventMode = 'static';
+        left.on('pointerdown', () => {
+            if (this.#currentPageIndex - 1 === -1)
+            {
+                this.#pages[this.#currentPageIndex].visible = false;
+                this.#currentPageIndex = this.#pages.length - 1;
+                this.#pages[this.#currentPageIndex].visible = true;
+            }
+            else
+            {
+                this.#pages[this.#currentPageIndex].visible = false;
+                this.#currentPageIndex--;
+                this.#pages[this.#currentPageIndex].visible = true;
+            }
+        });
+
+        right.eventMode = 'static';
+        right.on('pointerdown', () => {
+            if (this.#currentPageIndex + 1 === this.#pages.length)
+            {
+                this.#pages[this.#currentPageIndex].visible = false;
+                this.#currentPageIndex = 0;
+                this.#pages[this.#currentPageIndex].visible = true;
+            }
+            else
+            {
+                this.#pages[this.#currentPageIndex].visible = false;
+                this.#currentPageIndex++;
+                this.#pages[this.#currentPageIndex].visible = true;
+            }
+        });
+
+        this.addChild(left, right)
     }
 
     update()

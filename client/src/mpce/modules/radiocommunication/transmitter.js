@@ -51,6 +51,11 @@ export class Transmitter
         this.#carrierFreq = Math.max(this.#minCarrierFreq, Math.min(cf, this.#maxCarrierFreq));
     }
 
+    frequency()
+    {
+        return this.#carrierFreq;
+    }
+
     setBitRate(newBitRate)
     {
         this.#bitRate = Math.max(this.#minBr, Math.min(newBitRate, this.#maxBr));
@@ -81,6 +86,15 @@ export class Transmitter
         return true;
     }
 
+    status()
+    {
+        return {
+            freq: this.#carrierFreq,
+            state: this.#isEnabled,
+            power: this.power()
+        };
+    }
+
     enable()
     {
         if (!this.#isEnabled)
@@ -92,7 +106,6 @@ export class Transmitter
 
     disable()
     {
-        console.log("AAAAAAAAAAAAAAAAAA")
         if (this.#isEnabled)
         {
             this._electricalDevice.setPower(0);
