@@ -1,0 +1,256 @@
+{
+    "_comment": "master always in top",
+    
+    "parts":
+    [
+        {
+            "name": "stage",
+            "master": true,
+            "objectType": "rectangle",
+            "image_dev": "sat1",
+            "image_main": "",
+
+            "componentMass": 4000,
+
+            "dimensions":
+            {
+                "width": 30,
+                "height": 30
+            },
+
+            "initPos":
+            {
+                "x": 0,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0,
+
+            "rcs":
+            {
+                "units":
+                [
+                    {
+                        "id": "lRCR",
+                        "position": {"x": 0, "y": -15},
+                        "thrust": 2000,
+                        "direction": "left",
+                        "fuel": 10
+                    }
+                ],
+
+                "tank":
+                {
+                    "maxCapacity": 100,
+                    "capacity": 100
+                }
+            },              
+
+            "batteries":
+            [
+                {
+                    "capacity": 50000,
+                    "maxInput": 2000,
+                    "maxOutput": 2000
+                }
+            ],
+
+            "solarPanels":
+            [
+                {
+                    "maxPowerGenerationPerSec": 3000
+                }
+            ],
+
+            "radioCommunication":
+            {
+                "transmitter":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0,
+                    "maxBitRate": 0,
+                    "minBitRate": 0
+                },
+
+                "receiver":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0
+                }
+            },
+
+            "dockingSystem":
+            {
+                "ports": [
+                    {
+                        "id": 1,
+                        "type": ""
+                    }
+                ]
+            }
+        },
+
+        {
+            "name": "leftSolarPanel",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "satSp",
+            "image_main": "",
+
+            "mass": 0.1,
+
+            "dimensions":
+            {
+                "width": 5,
+                "height": 35
+            },
+
+            "initPos":
+            {
+                "x": -20,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0
+        },
+
+        {
+            "name": "rightSolarPanel",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "satSp",
+            "image_main": "",
+
+            "mass": 0.1,
+
+            "dimensions":
+            {
+                "width": 5,
+                "height": 35
+            },
+
+            "initPos":
+            {
+                "x": 20,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0
+        },
+
+        {
+            "name": "constraint_left_solarPanel_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "leftSolarPanel",
+
+            "pointA": {"x": -15, "y": -10},
+            "pointB": {"x": 0, "y": -10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_left_solarPanel_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "leftSolarPanel",
+
+            "pointA": {"x": -15, "y": -10},
+            "pointB": {"x": 0, "y": 10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_left_solarPanel_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "leftSolarPanel",
+
+            "pointA": {"x": -15, "y": 10},
+            "pointB": {"x": 0, "y": 10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_right_solarPanel_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "rightSolarPanel",
+
+            "pointA": {"x": 15, "y": -10},
+            "pointB": {"x": 0, "y": -10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_right_solarPanel_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "rightSolarPanel",
+
+            "pointA": {"x": 15, "y": 10},
+            "pointB": {"x": 0, "y": 10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_right_solarPanel_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "rightSolarPanel",
+
+            "pointA": {"x": 15, "y": -10},
+            "pointB": {"x": 0, "y": 10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        }
+    ]
+}

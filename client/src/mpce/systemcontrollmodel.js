@@ -5,6 +5,7 @@ import { UserInteractionInterface } from "./userinteractioninterface.js"
 import { SignalsHub } from "./modules/radiocommunication/signalhub.js";
 
 import { buildSt1_falcon9 } from "./spacecraftsystemmodels/st1_falcon9.js";
+import { build_sat1 } from "./spacecraftsystemmodels/sat1.js";
 import { buildGCM } from "./spacecraftsystemmodels/gcm.js";
 
 /* eslint-disable no-useless-constructor */
@@ -38,29 +39,41 @@ export class SystemControllModel
         switch(spacecraftName)
         {
         case "FALCON9_ST1":
-            {
-                let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf, render);
-                this.#spacecrafts.push(spaceCraft);
+        {
+            let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf, render);
+            this.#spacecrafts.push(spaceCraft);
 
-                let {obj, map} = this.generateAbsModel(spaceCraft);
+            let {obj, map} = this.generateAbsModel(spaceCraft);
 
-                UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
-                Configurationsfactory.addGeneratedAbsConfiguration("FALCON9_ST1", obj);
-                
-                return monitorInter;
-            }
+            UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
+            Configurationsfactory.addGeneratedAbsConfiguration("FALCON9_ST1", obj);
+            
+            return monitorInter;
+        }
+        case "SAT1":
+        {
+            let {spaceCraft, monitorInter} = build_sat1(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf, render);
+            this.#spacecrafts.push(spaceCraft);
+
+            let {obj, map} = this.generateAbsModel(spaceCraft);
+
+            UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
+            Configurationsfactory.addGeneratedAbsConfiguration("SAT1", obj);
+            
+            return monitorInter;
+        }
         case "GCS":
-            {
-                let {GCM, monitorInter} = buildGCM(physicalmodel, abstructModel, this.#signalHub, conf);
-                this.#spacecrafts.push(GCM);
+        {
+            let {GCM, monitorInter} = buildGCM(physicalmodel, abstructModel, this.#signalHub, conf);
+            this.#spacecrafts.push(GCM);
 
-                let {obj, map} = this.generateAbsModel(GCM);
+            let {obj, map} = this.generateAbsModel(GCM);
 
-                UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
-                Configurationsfactory.addGeneratedAbsConfiguration("GCS", obj);
-                
-                break;
-            }
+            UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
+            Configurationsfactory.addGeneratedAbsConfiguration("GCS", obj);
+            
+            break;
+        }
         default:
             break;
         }

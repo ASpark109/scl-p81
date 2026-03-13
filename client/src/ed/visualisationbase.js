@@ -4,6 +4,9 @@ import * as PIXI from 'pixi.js';
 import falcon9fs from '../assets/images/rectangle.png';
 import falcon9leg from '../assets/images/falcon9leg.png';
 
+import sat1 from '../assets/images/sat1.png';
+import sat_sp from '../assets/images/sat_sp.png';
+
 import satellite from '../assets/images/satelliteicon.png';
 import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
@@ -67,7 +70,9 @@ export class VisualisationBase
         rocketIcon: satellite,
         planet: planet,
         dockingPort: dockingPort,
-        rcs: rcsThruster
+        rcs: rcsThruster,
+        sat1: sat1,
+        satSp: sat_sp
     }
 
     createStarTexture(app, count = 400)
@@ -269,6 +274,7 @@ export class VisualisationBase
                 for (const body of composite.bodies)
                 {
                     let rectangle = PIXI.Sprite.from(this.images[body.imageDev]);
+
                     rectangle.anchor.set(0.5, 0.5);
 
                     //! Напевно треба зробити мап
@@ -285,10 +291,10 @@ export class VisualisationBase
                 icon.anchor.set(0.5, 0.5);
                 icon.visible = false;
 
-                let icont = PIXI.Sprite.from('../assets/images/satellite.png')
-                icont.scale.set(0.2, 0.2);
-                icont.anchor.set(0.5, 0.5);
-                this.#scIcons.addChild(icont)
+                // let icont = PIXI.Sprite.from('../assets/images/satellite.png')
+                // icont.scale.set(0.2, 0.2);
+                // icont.anchor.set(0.5, 0.5);
+                // this.#scIcons.addChild(icont)
 
                 const visualEffectsContainer = new VisualEffectsContainer(item.Name);
                 this.test.addChild(visualEffectsContainer);
