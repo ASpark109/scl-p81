@@ -29,7 +29,7 @@ export class SystemControllModel
 
     }
 
-    addObject(physicalmodel, abstructModel, visualEffects, configuration)
+    addObject(physicalmodel, abstructModel, visualEffects, configuration, render)
     {
         let spacecraftName = configuration.Name;
 
@@ -39,7 +39,7 @@ export class SystemControllModel
         {
         case "FALCON9_ST1":
             {
-                let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf);
+                let {spaceCraft, monitorInter} = buildSt1_falcon9(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf, render);
                 this.#spacecrafts.push(spaceCraft);
 
                 let {obj, map} = this.generateAbsModel(spaceCraft);

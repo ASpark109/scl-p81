@@ -327,7 +327,7 @@ function SpacecraftCodeRunner({code,
 
             if (type === "call-interface-method" && event.source === iframeRef.current?.contentWindow)
             {
-                console.log("call-inter-method " + spaceCraftName)
+                // console.log("call-inter-method " + spaceCraftName)
                 try
                 {
                     const result = model.get(messageId)(...args)

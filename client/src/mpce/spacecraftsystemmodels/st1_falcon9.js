@@ -116,7 +116,7 @@ class RPO
     }
 }
 
-export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, signalHub, conf)
+export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, signalHub, conf, render)
 {
     // *** shared objects ***
 
@@ -155,7 +155,7 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     let engineConf = conf.parts.find(item => item.name === "stage").engines;
 
-    let engineForceSink = new EnginesForceSink(rocketBody, abstructModel, 3);
+    let engineForceSink = new EnginesForceSink(rocketBody, abstructModel, 3, render);
 
     let engines = Array.from({ length: engineConf.count }, (e, i) => (new Engine(rocketBody,
                                                                                  abstructModel,

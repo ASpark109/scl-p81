@@ -68,7 +68,7 @@ export class EnvironmentSubSystem
             this.#mPhysicalEnvironmentModel.setCallbacks(callbacksVisual)
         }
 
-        this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
+        this.testRender = this.#mPhysicalEnvironmentModel.initialize(this.#mAbstractEnvironmentModel.update.bind(
                                                        this.#mAbstractEnvironmentModel),
                                                    containerM,
                                                    matterContainerPhys);
@@ -108,7 +108,7 @@ export class EnvironmentSubSystem
         let abstractObj = this.#mAbstractEnvironmentModel.addObject(item, physicalObj);
         let visualObj   = await this.#mVisualisationBase.addObject(item, physicalObj, abstractObj);
 
-        let monitorInter = this.#mSystemControllModel.addObject(physicalObj, abstractObj, visualObj.visualEffects, item)
+        let monitorInter = this.#mSystemControllModel.addObject(physicalObj, abstractObj, visualObj.visualEffects, item, this.testRender)
         if (monitorInter !== null)
         {
             this.#mVisualisationBase.setMonitoringInterfaceForId(physicalObj.id, monitorInter);
