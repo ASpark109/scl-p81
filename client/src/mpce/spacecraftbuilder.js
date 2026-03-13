@@ -100,8 +100,8 @@ class ConfigurableBuilder
                                                 isStatic: conf.isStatic,
                                                 friction: 1,
                                                 frictionAir: 0,
-                                                mass: conf.componentMass / 1000 + conf.fuelMass / 1000, // Kg -> T
                                                 isSensor: conf.isSensor,
+                                                mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1, // Kg -> T
                                                 dockId: conf.name === "dockingPort" ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 location: conf.isSensor ? conf.location : null,
@@ -110,9 +110,9 @@ class ConfigurableBuilder
                                                 type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
                                                 imageDev: conf.image_dev,
-                                                imageMain: conf.image_main
+                                                imageMain: conf.image_main,
                                             });
-        
+
         return part;
     }
 

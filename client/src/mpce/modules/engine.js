@@ -1,8 +1,8 @@
-const AC = 0.0000000102;
+const AC = 0.0000000095 // маса тіла при цьому має бути в тоннах;
 
 export class Engine
 {
-    #inclination = null;
+    #maxInclination = null;
 
     #body = null;
     #updateStatePhysCallback = null;
@@ -13,13 +13,14 @@ export class Engine
     #maxThrust = null;
     #isActive = false;
     #fuelFlow = 0;
+    #currentInclination = 0;
 
     constructor(rocketBody, abstructModel, conf, engId, physCallback, absCallback)
     {
         this.#id = engId; // "eng" + endId
         this.#maxThrust = conf.maxThrust;
 
-        this.#inclination = conf.inclination;
+        this.#maxInclination = conf.inclination;
 
         this.#body = rocketBody;
 
@@ -31,22 +32,21 @@ export class Engine
     {
         this.#updateForceInter();
         this.#updateForceAbs();
-
-        //console.log(this.#thrust)
     }
 
     #updateForceInter()
     {
+        console.log(this.#thrust)
         let engineForce = this.#isActive ? AC * this.#thrust : 0;
 
         //console.log((acceleration * this.#body.mass * 1000) + " " + this.#thrust)
 
-        let forceAngle = -this.#body.angle * 180 / Math.PI + 90
+        let forceVecX = Math.cos(this.#currentInclination * Math.PI / 180) * engineForce;
+        let forceVecY = Math.sin(this.#currentInclination * Math.PI / 180) * engineForce;
 
-        let forceVecX = Math.cos(forceAngle * Math.PI / 180) * engineForce;
-        let forceVecY = -Math.sin(forceAngle * Math.PI / 180) * engineForce;
+        console.log(forceVecX / AC + " " + forceVecY / AC + " " + engineForce);
 
-        this.#updateStatePhysCallback(this.#id, {x: forceVecX, y: forceVecY});
+        this.#updateStatePhysCallback(this.#id, {x: forceVecX, y: forceVecY / 5}); // ділим на 5 бо ракета дуже швидко розручується
     }
 
     #updateForceAbs()
@@ -83,6 +83,21 @@ export class Engine
         }
         
         this.#updateState()
+    }
+
+    setInclination(newInclination)
+    {
+        if (newInclination <= this.#maxInclination && newInclination >= -this.#maxInclination)
+        {
+            this.#currentInclination = newInclination;
+            this.#updateState()
+        }
+    }
+
+    inclination()
+    {
+        console.log("hello " + this.#currentInclination)
+        return this.#currentInclination;
     }
 
     start()

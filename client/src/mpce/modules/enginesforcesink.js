@@ -14,7 +14,7 @@ export class EnginesForceSink
     #forceAbsV = {x: 0, y: 0};
     #id = null;
 
-    constructor(physical, abstract, enginesNr)
+    constructor(physical, abstract, enginesNr, render)
     {
         this.#physical = physical
         this.#abstract = abstract;
@@ -24,7 +24,56 @@ export class EnginesForceSink
 
         this.#abstract.addNewVector(this.#id);
 
+        this.render = render
         ModuleBase.updateList.push(this.#update.bind(this));
+
+        this.forceX = 0;
+        this.forceY = 0;
+
+        Matter.Events.on(this.render, "afterRender", () => {
+            const ctx = this.render.context;
+            ctx.beginPath();
+            ctx.arc(this.forceX,
+                    this.forceY,
+                    3, 0, 2 * Math.PI);
+            ctx.fillStyle = "green";
+            ctx.fill();
+
+            let forceAngle = this.#physical.angle * 180 / Math.PI
+
+            let a = Math.cos((forceAngle - 90) * Math.PI / 180) * this.#forcePhysV.x
+            let b = Math.sin((forceAngle - 90) * Math.PI / 180) * this.#forcePhysV.x
+
+            let c = Math.cos((forceAngle) * Math.PI / 180) * this.#forcePhysV.y
+            let d = Math.sin((forceAngle) * Math.PI / 180) * this.#forcePhysV.y
+
+            ctx.beginPath();
+            ctx.moveTo(this.forceX,
+                       this.forceY);
+            ctx.lineTo(this.forceX + a * 100000,
+                       this.forceY + b *  100000);
+            ctx.strokeStyle = "blue";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(this.forceX,
+                       this.forceY);
+            ctx.lineTo(this.forceX + c * 100000,
+                       this.forceY + d * 100000);
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(this.forceX,
+                       this.forceY);
+            ctx.lineTo(this.forceX + (a + c) * 100000,
+                       this.forceY + (b + d) * 100000);
+            ctx.strokeStyle = "yellow";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        });
     }
 
     #update()
@@ -41,12 +90,25 @@ export class EnginesForceSink
 
     #applyForceInter()
     {
-        Matter.Body.applyForce(this.#physical, {x: this.#physical.position.x, 
-                                                y: this.#physical.position.y},
-                                               {x: this.#forcePhysV.x,
-                                                y: this.#forcePhysV.y});
-    }
+        let angle = (90 - this.#physical.angle * 180 / Math.PI);
+        
+        this.forceX = this.#physical.position.x + Math.cos(angle * Math.PI / 180) * -240;
+        this.forceY = this.#physical.position.y - Math.sin(angle * Math.PI / 180) * -240;
 
+        let forceAngle = this.#physical.angle * 180 / Math.PI
+
+        let a = Math.cos((forceAngle - 90) * Math.PI / 180) * this.#forcePhysV.x
+        let b = Math.sin((forceAngle - 90) * Math.PI / 180) * this.#forcePhysV.x
+
+        let c = Math.cos((forceAngle) * Math.PI / 180) * this.#forcePhysV.y
+        let d = Math.sin((forceAngle) * Math.PI / 180) * this.#forcePhysV.y
+
+        Matter.Body.applyForce(this.#physical, {x: this.forceX, 
+                                                y: this.forceY},
+                                               {x: (a + c),
+                                                y: (b + d)});
+    }
+    
     #applyForceAbs()
     {
         this.#abstract.setVectorForId(this.#id, this.#forceAbsV);
@@ -68,7 +130,7 @@ export class EnginesForceSink
                 { x: 0, y: 0 }
             );
 
-            //console.log(this.#forcePhysV)
+            // console.log(this.#forcePhysV)
         }
     }
 
