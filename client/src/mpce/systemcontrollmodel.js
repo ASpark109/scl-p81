@@ -6,6 +6,7 @@ import { SignalsHub } from "./modules/radiocommunication/signalhub.js";
 
 import { buildSt1_falcon9 } from "./spacecraftsystemmodels/st1_falcon9.js";
 import { build_sat1 } from "./spacecraftsystemmodels/sat1.js";
+import { build_harmony_module } from "./spacecraftsystemmodels/harmony_module.js";
 import { buildGCM } from "./spacecraftsystemmodels/gcm.js";
 
 /* eslint-disable no-useless-constructor */
@@ -60,6 +61,17 @@ export class SystemControllModel
             UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
             Configurationsfactory.addGeneratedAbsConfiguration("SAT1", obj);
             
+            return monitorInter;
+        }
+        case "HARMONY_MODULE":
+        {
+            let {spaceCraft, monitorInter} = build_harmony_module(physicalmodel, abstructModel, visualEffects, this.#signalHub, conf, render);
+            this.#spacecrafts.push(spaceCraft);
+
+            let {obj, map} = this.generateAbsModel(spaceCraft);
+
+            UserInteractionInterface.addControlModel(map, configuration.displayName, this.#mode);
+            Configurationsfactory.addGeneratedAbsConfiguration("HARMONY_MODULE", obj);
             return monitorInter;
         }
         case "GCS":

@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Configurationsfactory } from "../mpce/configurationsfactory";
 import { F9Monitor } from './f9monitor';
 import { Sat1Monitor } from './sat1monitor';
+import { HarmonyModuleMonitor } from './harmonymodulemonitor';
 
 const DISPLAY_WIDTH = 2000;
 const DISPLAY_HEIGHT = 1170;
@@ -69,6 +70,9 @@ export class SystemStateMonitor
                 break;
             case "SAT1":
                 newMonitor = new Sat1Monitor(configuration);
+                break;
+            case "HARMONY_MODULE":
+                newMonitor = new HarmonyModuleMonitor(configuration);
                 break;
             default:
                 break;

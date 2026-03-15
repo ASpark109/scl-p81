@@ -4,7 +4,7 @@
     ],
 
     "physicalViewScale": [
-        0.01, 0.02, 0.1, 0.5, 1, 2, 4
+        0.01, 0.02, 0.1, 0.5, 1, 2, 4, 10
     ],
 
     "initAbstractViewScale": 3,

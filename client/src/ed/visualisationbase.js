@@ -7,6 +7,8 @@ import falcon9leg from '../assets/images/falcon9leg.png';
 import sat1 from '../assets/images/sat1.png';
 import sat_sp from '../assets/images/sat_sp.png';
 
+import harmonyModule from '../assets/images/harmonyModule.png';
+
 import satellite from '../assets/images/satelliteicon.png';
 import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
@@ -72,7 +74,8 @@ export class VisualisationBase
         dockingPort: dockingPort,
         rcs: rcsThruster,
         sat1: sat1,
-        satSp: sat_sp
+        satSp: sat_sp,
+        harmonyModule: harmonyModule
     }
 
     createStarTexture(app, count = 400)
