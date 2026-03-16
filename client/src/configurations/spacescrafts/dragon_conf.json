@@ -1,0 +1,235 @@
+{
+    "_comment": "master always in top",
+    
+    "parts":
+    [
+        {
+            "name": "stage",
+            "master": true,
+            "objectType": "vertices",
+            "image_dev": "dragon",
+            "image_main": "",
+
+            "componentMass": 9000,
+
+            "vertices":
+            [
+                {"x":0, "y":0},
+                {"x":35, "y":15},
+                {"x":35, "y":25},
+                {"x":0, "y":40}
+            ],
+
+            "initPos":
+            {
+                "x": 0,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0,          
+
+            "batteries":
+            [
+                {
+                    "capacity": 50000,
+                    "maxInput": 2000,
+                    "maxOutput": 2000
+                }
+            ],
+
+            "solarPanels":
+            [
+                {
+                    "maxPowerGenerationPerSec": 3000
+                }
+            ],
+
+            "radioCommunication":
+            {
+                "transmitter":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0,
+                    "maxBitRate": 0,
+                    "minBitRate": 0
+                },
+
+                "receiver":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0
+                }
+            },
+
+            "dockingSystem":
+            {
+                "ports": [
+                    {
+                        "id": 1,
+                        "type": ""
+                    }
+                ]
+            }
+        },
+
+        {
+            "name": "dragonTrunk",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "dragonTrunk",
+            "image_main": "",
+
+            "mass": 3000,
+
+            "dimensions":{
+                "width": 36,
+                "height": 37
+            },
+
+            "initPos":{
+                "x": -35,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0
+        },
+
+        {
+            "name": "constraint_trunk_1",
+            "objectType": "constraint",
+
+            "bodyA": "dragonTrunk",
+            "bodyB": "stage",
+
+            "pointA": {"x": 15, "y": -10},
+            "pointB": {"x": -10, "y": -10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_trunk_2",
+            "objectType": "constraint",
+
+            "bodyA": "dragonTrunk",
+            "bodyB": "stage",
+
+            "pointA": {"x": 15, "y": 10},
+            "pointB": {"x": -10, "y": 10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_trunk_3",
+            "objectType": "constraint",
+
+            "bodyA": "dragonTrunk",
+            "bodyB": "stage",
+
+            "pointA": {"x": 15, "y": -10},
+            "pointB": {"x": -10, "y": 10},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "id": 1,
+            "name": "dockingPort",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "dockingPort",
+            "image_main": "",
+
+            "mass": 0.1,
+            "dimensions":{
+                "width": 14,
+                "height": 10
+            },
+
+            "initPos":{
+                "x": 21,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "constraint_dockingPort_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort",
+
+            "pointA": {"x": 10, "y": -5},
+            "pointB": {"x": -7, "y": -5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort",
+
+            "pointA": {"x": 10, "y": 5},
+            "pointB": {"x": -7, "y": 5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort",
+
+            "pointA": {"x": 10, "y": 5},
+            "pointB": {"x": -7, "y": -5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        }
+    ]
+}

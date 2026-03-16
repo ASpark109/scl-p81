@@ -3,18 +3,21 @@ import FALCON9_ST1 from "../configurations/spacescrafts/st1_falcon9_conf.json";
 import SAT1 from "../configurations/spacescrafts/sat1_conf.json";
 import HARMONY_MODULE from "../configurations/spacescrafts/harmony_module_conf.json";
 import UNITY_MODULE from "../configurations/spacescrafts/unity_module_conf.json";
+import DRAGON from "../configurations/spacescrafts/dragon_conf.json";
 
 // SPACECRAFTS MONITOR DISPLAY
 import FALCON9_ST1_MONITOR from "../configurations/spacescrafts/st1_falcon9_monitor_view_conf.json";
 import SAT1_MONITOR from "../configurations/spacescrafts/sat1_monitor_view_conf.json";
 import HARMONY_MODULE_MONITOR from "../configurations/spacescrafts/harmony_module_monitor_view_conf.json";
 import UNITY_MODULE_MONITOR from "../configurations/spacescrafts/unity_module_monitor_view_conf.json";
+import DRAGON_MONITOR from "../configurations/spacescrafts/dragon_monitor_view_conf.json";
 
 // SPACECRAFTS VISUAL EFFECTS
 import FALCON9_ST1_VISUAL from "../configurations/spacescrafts/st1_falcon9_visual_effects_conf.json";
 import SAT1_VISUAL from "../configurations/spacescrafts/sat1_visual_effects_conf.json";
 import HARMONY_MODULE_VISUAL from "../configurations/spacescrafts/harmony_module_visual_effects_conf.json";
 import UNITY_MODULE_VISUAL from "../configurations/spacescrafts/unity_module_visual_effects_conf.json";
+import DRAGON_VISUAL from "../configurations/spacescrafts/dragon_visual_effects_conf.json";
 
 // INITIAL ENVIRONMENTS -----
 import TEST_ENVIRONMENT from "../configurations/initial_environments/test_conf.json";
@@ -85,6 +88,14 @@ let configurations =
             spaceCraftData: UNITY_MODULE,
             monitorDisplayData: UNITY_MODULE_MONITOR,
             visualEffects: UNITY_MODULE_VISUAL,
+            abstractSystemInterfaceData: null
+        },
+        
+        DRAGON:
+        {
+            spaceCraftData: DRAGON,
+            monitorDisplayData: DRAGON_MONITOR,
+            visualEffects: DRAGON_VISUAL,
             abstractSystemInterfaceData: null
         },
 

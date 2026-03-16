@@ -11,6 +11,9 @@ import harmonyModule from '../assets/images/harmonyModule.png';
 
 import unityModule from '../assets/images/unityModule.png';
 
+import dragon from '../assets/images/dragon.png';
+import dragonTrunk from '../assets/images/dragonTrunk.png';
+
 import satellite from '../assets/images/satelliteicon.png';
 import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
@@ -87,7 +90,9 @@ export class VisualisationBase
         canadarm1: canadarm1,
         canadarm2: canadarm2,
         canadarm3: canadarm3,
-        canadarm4: canadarm4
+        canadarm4: canadarm4,
+        dragon: dragon,
+        dragonTrunk: dragonTrunk
     }
 
     createStarTexture(app, count = 400)
