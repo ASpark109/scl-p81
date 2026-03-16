@@ -1,0 +1,390 @@
+{
+    "_comment": "master always in top",
+    
+    "parts":
+    [
+        {
+            "name": "stage",
+            "master": true,
+            "objectType": "rectangle",
+            "image_dev": "unityModule",
+            "image_main": "",
+
+            "componentMass": 11600,
+
+            "dimensions":
+            {
+                "width": 54,
+                "height": 45
+            },
+
+            "initPos":
+            {
+                "x": 0,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0,          
+
+            "batteries":
+            [
+                {
+                    "capacity": 50000,
+                    "maxInput": 2000,
+                    "maxOutput": 2000
+                }
+            ],
+
+            "solarPanels":
+            [
+                {
+                    "maxPowerGenerationPerSec": 3000
+                }
+            ],
+
+            "radioCommunication":
+            {
+                "transmitter":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0,
+                    "maxBitRate": 0,
+                    "minBitRate": 0
+                },
+
+                "receiver":
+                {
+                    "maxCarrierFrequency": 0,
+                    "minCarrierFrequency": 0,
+                    "maxPower": 0,
+                    "minPower": 0
+                }
+            },
+
+            "dockingSystem":
+            {
+                "ports": [
+                    {
+                        "id": 1,
+                        "type": ""
+                    }
+                ]
+            }
+        },
+
+        {
+            "id": 1,
+            "name": "dockingPort",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "dockingPort",
+            "image_main": "",
+
+            "mass": 0.1,
+            "dimensions":{
+                "width": 14,
+                "height": 10
+            },
+
+            "initPos":{
+                "x": 27,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "constraint_dockingPort1_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort",
+
+            "pointA": {"x": 18, "y": -5},
+            "pointB": {"x": -7, "y": -5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort1_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort",
+
+            "pointA": {"x": 18, "y": 5},
+            "pointB": {"x": -7, "y": 5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort1_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort",
+
+            "pointA": {"x": 18, "y": -5},
+            "pointB": {"x": -7, "y": 5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "id": 2,
+            "name": "dockingPort2",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "dockingPort",
+            "image_main": "",
+
+            "mass": 0.1,
+            "dimensions":{
+                "width": 14,
+                "height": 10
+            },
+
+            "initPos":{
+                "x": -27,
+                "y": 0
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "constraint_dockingPort2_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort2",
+
+            "pointA": {"x": -18, "y": -5},
+            "pointB": {"x": 7, "y": -5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort2_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort2",
+
+            "pointA": {"x": -18, "y": 5},
+            "pointB": {"x": 7, "y": 5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort2_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort2",
+
+            "pointA": {"x": -18, "y": -5},
+            "pointB": {"x": 7, "y": 5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "id": 3,
+            "name": "dockingPort3",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "dockingPort",
+            "image_main": "",
+
+            "mass": 0.1,
+            "dimensions":{
+                "width": 10,
+                "height": 14
+            },
+
+            "initPos":{
+                "x": 0,
+                "y": 22
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "constraint_dockingPort3_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort3",
+
+            "pointA": {"x": 5, "y": 5},
+            "pointB": {"x": 5, "y": -7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort3_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort3",
+
+            "pointA": {"x": -5, "y": 5},
+            "pointB": {"x": -5, "y": -7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort3_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort3",
+
+            "pointA": {"x": -5, "y": 5},
+            "pointB": {"x": 5, "y": -7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "id": 4,
+            "name": "dockingPort4",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "dockingPort",
+            "image_main": "",
+
+            "mass": 0.1,
+            "dimensions":{
+                "width": 10,
+                "height": 14
+            },
+
+            "initPos":{
+                "x": 0,
+                "y": -22
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "constraint_dockingPort4_1",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort4",
+
+            "pointA": {"x": 5, "y": -5},
+            "pointB": {"x": 5, "y": 7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort4_2",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort4",
+
+            "pointA": {"x": -5, "y": -5},
+            "pointB": {"x": -5, "y": 7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort4_3",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort4",
+
+            "pointA": {"x": 5, "y": -5},
+            "pointB": {"x": -5, "y": 7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        }
+    ]
+}

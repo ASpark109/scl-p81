@@ -307,6 +307,156 @@
             "damping": 1,
             "angularStiffness": 1,
             "angularDamping": 1
+        },
+
+        {
+            "name": "canadarm1",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "canadarm1",
+            "image_main": "",
+
+            "mass": 0.05,
+
+            "dimensions":{
+                "width": 10,
+                "height": 20
+            },
+
+            "initPos":{
+                "x": 0,
+                "y": 30
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "canadarm2",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "canadarm2",
+            "image_main": "",
+
+            "mass": 0.05,
+
+            "dimensions":{
+                "width": 60,
+                "height": 10
+            },
+
+            "initPos":{
+                "x": 30,
+                "y": 40
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "canadarm3",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "canadarm3",
+            "image_main": "",
+
+            "mass": 0.05,
+
+            "dimensions":{
+                "width": 60,
+                "height": 10
+            },
+
+            "initPos":{
+                "x": 90,
+                "y": 40
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "canadarm4",
+            "objectType": "rectangle",
+            "master": false,
+            "image_dev": "canadarm4",
+            "image_main": "",
+
+            "mass": 0.05,
+
+            "dimensions":{
+                "width": 20,
+                "height": 10
+            },
+
+            "initPos":{
+                "x": 130,
+                "y": 40
+            },
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+        {
+            "name": "constraint_canadarm_1",
+            "objectType": "constraint",
+
+            "bodyA": "canadarm1",
+            "bodyB": "canadarm2",
+
+            "pointA": {"x": 0, "y": 10},
+            "pointB": {"x": -30, "y": 0},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_canadarm_2",
+            "objectType": "constraint",
+
+            "bodyA": "canadarm2",
+            "bodyB": "canadarm3",
+
+            "pointA": {"x": 30, "y": 0},
+            "pointB": {"x": -30, "y": 0},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_canadarm_3",
+            "objectType": "constraint",
+
+            "bodyA": "canadarm3",
+            "bodyB": "canadarm4",
+
+            "pointA": {"x": 30, "y": 0},
+            "pointB": {"x": -10, "y": 0},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
         }
     ]
 }

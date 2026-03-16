@@ -9,10 +9,17 @@ import sat_sp from '../assets/images/sat_sp.png';
 
 import harmonyModule from '../assets/images/harmonyModule.png';
 
+import unityModule from '../assets/images/unityModule.png';
+
 import satellite from '../assets/images/satelliteicon.png';
 import planet from '../assets/images/planet.png';
 import dockingPort from '../assets/images/dockingPort.png';
 import rcsThruster from '../assets/images/rcs.png';
+
+import canadarm1 from '../assets/images/canadarm1.png';
+import canadarm2 from '../assets/images/canadarm2.png';
+import canadarm3 from '../assets/images/canadarm3.png';
+import canadarm4 from '../assets/images/canadarm4.png';
 
 import { Configurationsfactory } from "../mpce/configurationsfactory";
 import { SystemStateMonitor } from './systemstatemonitor';
@@ -75,7 +82,12 @@ export class VisualisationBase
         rcs: rcsThruster,
         sat1: sat1,
         satSp: sat_sp,
-        harmonyModule: harmonyModule
+        harmonyModule: harmonyModule,
+        unityModule: unityModule,
+        canadarm1: canadarm1,
+        canadarm2: canadarm2,
+        canadarm3: canadarm3,
+        canadarm4: canadarm4
     }
 
     createStarTexture(app, count = 400)
