@@ -29,12 +29,12 @@
     
             "engines":
             {
-                "count": 3,
+                "count": 9,
                 "parameters":
                 {
                     "id": "eng",
-                    "maxThrust": 845000,
-                    "inclination": 5
+                    "maxThrust": 84500,
+                    "inclination": 70
                 }
             },
 
@@ -292,6 +292,7 @@
             "id": 1,
             "name": "dockingPort",
             "objectType": "rectangle",
+            "isDockingPort": true,
             "master": false,
             "image_dev": "dockingPort",
             "image_main": "",
@@ -306,6 +307,8 @@
                 "x": 0,
                 "y": -240
             },
+
+            "docDir": "up",
 
             "isStatic": false,
             "friction": 0,

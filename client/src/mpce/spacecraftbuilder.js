@@ -105,8 +105,9 @@ class ConfigurableBuilder
                                                 frictionAir: 0,
                                                 isSensor: conf.isSensor,
                                                 mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1, // Kg -> T
-                                                dockId: conf.name === "dockingPort" ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
+                                                dockId: conf.isDockingPort ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
+                                                docDir: conf.isDockingPort ? conf.docDir : null,
                                                 location: conf.isSensor ? conf.location : null,
 
                                                 name: conf.name,
@@ -182,8 +183,9 @@ class ConfigurableBuilder
                                                 frictionAir: 0,
                                                 isSensor: conf.isSensor,
                                                 mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1, // Kg -> T
-                                                dockId: conf.name === "dockingPort" ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
+                                                dockId: conf.isDockingPort ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
+                                                docDir: conf.isDockingPort ? conf.docDir : null,
                                                 location: conf.isSensor ? conf.location : null,
 
                                                 name: conf.name,

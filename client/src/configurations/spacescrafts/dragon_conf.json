@@ -158,6 +158,7 @@
             "id": 1,
             "name": "dockingPort",
             "objectType": "rectangle",
+            "isDockingPort": true,
             "master": false,
             "image_dev": "dockingPort",
             "image_main": "",
@@ -172,6 +173,8 @@
                 "x": 21,
                 "y": 0
             },
+
+            "docDir": "right",
 
             "isStatic": false,
             "friction": 0,
@@ -223,6 +226,87 @@
 
             "pointA": {"x": 10, "y": 5},
             "pointB": {"x": -7, "y": -5},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "id": 2,
+            "name": "dockingPort2",
+            "objectType": "rectangle",
+            "isDockingPort": true,
+            "master": false,
+            "image_dev": "dockingPort",
+            "image_main": "",
+
+            "mass": 0.1,
+            "dimensions":{
+                "width": 10,
+                "height": 12
+            },
+
+            "initPos":{
+                "x": 0,
+                "y": -10
+            },
+
+            "docDir": "up",
+
+            "isStatic": false,
+            "friction": 0,
+            "isSensor": true
+        },
+
+                {
+            "name": "constraint_dockingPort_12",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort2",
+
+            "pointA": {"x": -5, "y": 0},
+            "pointB": {"x": -5, "y": 7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort_22",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort2",
+
+            "pointA": {"x": 5, "y": 0},
+            "pointB": {"x": 5, "y": 7},
+
+            "visible": true,
+
+            "stiffness": 1,
+            "damping": 1,
+            "angularStiffness": 1,
+            "angularDamping": 1
+        },
+
+        {
+            "name": "constraint_dockingPort_32",
+            "objectType": "constraint",
+
+            "bodyA": "stage",
+            "bodyB": "dockingPort2",
+
+            "pointA": {"x": -5, "y": 0},
+            "pointB": {"x": 5, "y": 7},
 
             "visible": true,
 

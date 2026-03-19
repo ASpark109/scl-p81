@@ -78,6 +78,7 @@
         {
             "id": 1,
             "name": "dockingPort",
+            "isDockingPort": true,
             "objectType": "rectangle",
             "master": false,
             "image_dev": "dockingPort",
@@ -93,6 +94,8 @@
                 "x": 27,
                 "y": 0
             },
+
+            "docDir": "right",
 
             "isStatic": false,
             "friction": 0,
@@ -157,6 +160,7 @@
             "id": 2,
             "name": "dockingPort2",
             "objectType": "rectangle",
+            "isDockingPort": true,
             "master": false,
             "image_dev": "dockingPort",
             "image_main": "",
@@ -171,6 +175,8 @@
                 "x": -27,
                 "y": 0
             },
+
+            "docDir": "left",
 
             "isStatic": false,
             "friction": 0,
@@ -235,6 +241,7 @@
             "id": 3,
             "name": "dockingPort3",
             "objectType": "rectangle",
+            "isDockingPort": true,
             "master": false,
             "image_dev": "dockingPort",
             "image_main": "",
@@ -249,6 +256,8 @@
                 "x": 0,
                 "y": 22
             },
+
+            "docDir": "down",
 
             "isStatic": false,
             "friction": 0,
@@ -313,6 +322,7 @@
             "id": 4,
             "name": "dockingPort4",
             "objectType": "rectangle",
+            "isDockingPort": true,
             "master": false,
             "image_dev": "dockingPort",
             "image_main": "",
@@ -327,6 +337,8 @@
                 "x": 0,
                 "y": -22
             },
+
+            "docDir": "up",
 
             "isStatic": false,
             "friction": 0,

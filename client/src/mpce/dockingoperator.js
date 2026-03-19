@@ -26,8 +26,7 @@ export class DockingOperator
 
     initialize()
     {
-        Matter.Events.on(this.#mEngine, 'collisionStart', (event) =>
-        {
+        const collisionEventHandler = (event) => {
             var pairs = event.pairs;
 
             for (var i = 0, j = pairs.length; i != j; ++i)
@@ -36,15 +35,16 @@ export class DockingOperator
 
                 if (pair.bodyA.dockId == null || pair.bodyB.dockId == null)
                 {
-                    //console.log("Not valid ids " + pair.bodyA.dockId + " " + pair.bodyB.dockId)
-                    return;
+                    continue;
                 }
 
                 this.doDock(pair.bodyA, pair.bodyB)
 
                 console.log("welcome!")
             }
-        });
+        }
+
+        Matter.Events.on(this.#mEngine, 'collisionStart', collisionEventHandler);
     }
 
     doDock(first, second)
@@ -58,12 +58,106 @@ export class DockingOperator
             return;
         }
 
-        let dockConstraint1 = Matter.Constraint.create({
-            bodyA: second,
-            bodyB: first,
+        let localPoint1_1;
+        let localPoint2_1;
 
-            pointA: {x: 12, y: -10},
-            pointB: {x: -12, y: -10},
+        console.log(first.id + " " + second.id)
+        console.log(first.docDir + " " + second.docDir)
+
+        switch (first.docDir)
+        {
+        case "up":
+            localPoint1_1 = {x:-10, y:-5}
+            localPoint2_1 = {x:10, y:-5}
+            break;
+        case "right":
+            localPoint1_1 = {x:5, y:-10}
+            localPoint2_1 = {x:5, y:10}
+            break;
+        case "down":
+            localPoint1_1 = {x:-10, y:5}
+            localPoint2_1 = {x:10, y:5}
+            break;
+        case "left":
+            localPoint1_1 = {x:-5, y:-10}
+            localPoint2_1 = {x:-5, y:10}
+            break;
+        }
+
+        let localPoint1_2;
+        let localPoint2_2;
+
+        switch (second.docDir)
+        {
+        case "up":
+            localPoint1_2 = {x:-10, y:-5}
+            localPoint2_2 = {x:10, y:-5}
+            break;
+        case "right":
+            localPoint1_2 = {x:5, y:-10}
+            localPoint2_2 = {x:5, y:10}
+            break;
+        case "down":
+            localPoint1_2 = {x:-10, y:5}
+            localPoint2_2 = {x:10, y:5}
+            break;
+        case "left":
+            localPoint1_2 = {x:-5, y:-10}
+            localPoint2_2 = {x:-5, y:10}
+            break;
+        }
+
+        const cos1 = Math.cos(first.angle);
+        const sin1 = Math.sin(first.angle);
+
+        const cos2 = Math.cos(second.angle);
+        const sin2 = Math.sin(second.angle);
+
+        const worldPoint1 = {
+            x1:  (localPoint1_1.x * cos1 - localPoint1_1.y * sin1),
+            y1:  (localPoint1_1.x * sin1 + localPoint1_1.y * cos1),
+            x2: (localPoint2_1.x * cos1 - localPoint2_1.y * sin1),
+            y2:  (localPoint2_1.x * sin1 + localPoint2_1.y * cos1)
+        };
+
+        const worldPoint2 = {
+            x1: (localPoint1_2.x * cos2 - localPoint1_2.y * sin2),
+            y1:  (localPoint1_2.x * sin2 + localPoint1_2.y * cos2),
+            x2:  (localPoint2_2.x * cos2 - localPoint2_2.y * sin2),
+            y2:  (localPoint2_2.x * sin2 + localPoint2_2.y * cos2)
+        };
+
+        console.log(Math.hypot(worldPoint1.x1 - worldPoint2.x1, worldPoint1.y1 - worldPoint2.y1))
+        console.log(Math.hypot(worldPoint1.x2 - worldPoint2.x2, worldPoint1.y2 - worldPoint2.y2))
+
+        let pair1 = {
+            A: {x: worldPoint1.x1, y: worldPoint1.y1},
+            B: {x: worldPoint2.x1, y: worldPoint2.y1}
+        }
+
+        let pair2 = {
+            A: {x: worldPoint1.x2, y: worldPoint1.y2},
+            B: {x: worldPoint2.x2, y: worldPoint2.y2}
+        }
+
+        if (Math.hypot(worldPoint1.x1 - worldPoint2.x1, worldPoint1.y1 - worldPoint2.y1) < Math.hypot(worldPoint1.x1 - worldPoint2.x2, worldPoint1.y1 - worldPoint2.y2))
+        {
+            //console.log("OK")
+        }
+        else
+        {
+            let temp
+            temp = pair1.B
+            pair1.B = pair2.B
+            pair2.B = temp
+        }
+
+        let dockConstraint1 = Matter.Constraint.create({
+            bodyA: first,
+            bodyB: second,
+
+            pointA: pair1.A,
+            pointB: pair1.B,
 
             length: 0,
 
@@ -72,19 +166,18 @@ export class DockingOperator
         });
 
         let dockConstraint2 = Matter.Constraint.create({
-            bodyA: second,
-            bodyB: first,
+            bodyA: first,
+            bodyB: second,
 
-            pointA: {x: 12, y: 10},
-            pointB: {x: -12, y: 10},
+
+            pointA: pair2.A,
+            pointB: pair2.B,
 
             length: 0,
 
             stiffness: this.#mStif,
             damping: this.#mDemp
         });
-
-        console.log("dock!");
 
         const newConnection = {
             scA: first.dockId.parent,
@@ -104,9 +197,10 @@ export class DockingOperator
 
         SignalSlotDispatcher.emit("updateNearbyObjects", null);
 
+        console.log("dock!");
+
         setTimeout(() => {
-            dockConstraint1.stiffness = 1;
-            dockConstraint2.stiffness = 1;
+            this.dockingFinalizing(dockConstraint1, dockConstraint2)
 
             const iframe1 = UserInteractionInterface.getIframeWithId(first.dockId.parent, this.#mode);
             const iframe2 = UserInteractionInterface.getIframeWithId(second.dockId.parent, this.#mode);
@@ -122,6 +216,12 @@ export class DockingOperator
 
         }, 3000)
     }
+
+    dockingFinalizing(dockConstraint1, dockConstraint2)
+    {
+        dockConstraint1.stiffness = 1;
+        dockConstraint2.stiffness = 1;
+    } 
 
     doUndock(spaceCraftId, portId)
     {
