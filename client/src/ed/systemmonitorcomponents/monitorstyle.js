@@ -4,7 +4,7 @@ export const styles = {
     red: 0xff0000,
     yellow: 0xffff00,
 
-    fontSizeDefault: 14,
+    fontSizeDefault: 15,
 
     sensorFrameWidth: 100,
     sensorFrameHeight: 50
