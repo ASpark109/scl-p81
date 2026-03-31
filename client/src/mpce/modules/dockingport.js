@@ -2,9 +2,9 @@ export class DockingPort
 {
     #id = null;
     #type = null;
-    #info = "test info"
-    #undockf = null;
     #spacecraftId = null;
+    #undockf = null;
+    #dockedSpacraftName = null;
 
     constructor(conf, undockf, spacecraftId)
     {
@@ -16,11 +16,22 @@ export class DockingPort
 
     info()
     {
-        return this.#info;
+        return {id: this.#id, name: this.#dockedSpacraftName};
     }
 
     undockPort()
     {
         this.#undockf(this.#spacecraftId, this.#id);
+        this.#dockedSpacraftName = null;
+    }
+
+    onPortDocked(spacecraftName)
+    {
+        this.#dockedSpacraftName = spacecraftName;
+    }
+
+    onSeparationRequested()
+    {
+        this.#dockedSpacraftName = null;
     }
 }

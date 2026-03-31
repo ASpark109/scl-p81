@@ -37,9 +37,9 @@ export class RCSBlock extends ModuleBase
         super()
 
         this.#unitsState = {
-            A: new Unit("rcsThrusterA" + (conf.direction === "left" ? "L" : "R")),
-            B: new Unit("rcsThrusterB" + (conf.direction === "left" ? "L" : "R")),
-            C: new Unit("rcsThrusterC" + (conf.direction === "left" ? "L" : "R"))
+            A: new Unit("rcsThrusterA" + (conf.direction === "left" ? "L" : "R") + (conf.count ? conf.count : "")),
+            B: new Unit("rcsThrusterB" + (conf.direction === "left" ? "L" : "R") + (conf.count ? conf.count : "")),
+            C: new Unit("rcsThrusterC" + (conf.direction === "left" ? "L" : "R") + (conf.count ? conf.count : ""))
         };
 
         this.#body = rocketBody;
@@ -146,8 +146,8 @@ export class RCSBlock extends ModuleBase
 
             this.#abstructModel.setVectorForId(this.#id, {x: 0, y: 0});
 
-            console.log(this.#body.angularVelocity * 60 * (180 / Math.PI))
-            console.log(this.#abstructModel.velocity.x)
+            // console.log(this.#body.angularVelocity * 60 * (180 / Math.PI))
+            // console.log(this.#abstructModel.velocity.x)
         }, duration)
 
         return true;
