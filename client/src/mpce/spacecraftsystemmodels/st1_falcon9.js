@@ -13,6 +13,7 @@ import { ProximityRadar } from "../modules/rpo/proximityradar.js";
 import { LaserRangeFinder } from "../modules/rpo/laserrangefinder.js";
 import { EnginesForceSink } from "../modules/enginesforcesink.js";
 import { TurboPump } from "../modules/turbopump.js";
+import { Navigation } from "../modules/navigation.js";
 
 class System
 {
@@ -23,7 +24,8 @@ class System
                 electricalPowerSystem,
                 radioCommunication,
                 dockingSystem,
-                rpo)
+                rpo,
+                nav)
     {
         this.LandingLegs = landingLegs;
         this.RCS = rcs;
@@ -33,6 +35,7 @@ class System
         this.RadioCommunication = radioCommunication;
         this.DockingSystem = dockingSystem;
         this.RPO = rpo;
+        this.Navigation = nav;
     }
 }
 
@@ -200,7 +203,7 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
     const solarPanelsConf = conf.parts.find(item => item.name === "stage").solarPanels;
 
     let batteries = batteriesConf.map(b => new Battery(b.capacity, b.maxInput, b.maxOutput));
-    let solarPanels = solarPanelsConf.map(sp => new SolarPanel(sp.maxPowerGenerationPerSec));
+    let solarPanels = solarPanelsConf.map(sp => new SolarPanel(sp, null));
 
     let electricalPowerSystem = new ElectricalPowerSystem([pump._electricalDevice,
                                                            tank1.FillLevelSensor._electricalDevice,
@@ -232,6 +235,12 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
     let rpo = new RPO(proximityRadar, laserRangeFinder); 
 
     // *** Rendezvous and Proximity Operations system ***
+    
+    // *** Navigation ***
+
+    let nav = new Navigation(abstructModel, rocketBody);
+
+    // *** Navigation ***
 
     // *** final assembly ***
     let spaceCraft = new System(landingLegs,
@@ -241,7 +250,8 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
                                 electricalPowerSystem,
                                 rc,
                                 dockingSystem,
-                                rpo); // не забудь розширити System
+                                rpo,
+                                nav); // не забудь розширити System
 
     // *** system monitoring inteface ***
 
@@ -277,6 +287,7 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
            angle: physicalModel.angle
         }
     });
+    monitorInter.set("navInfo", () => spaceCraft.Navigation.info());
 
     return {spaceCraft, monitorInter};
 }

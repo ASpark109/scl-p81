@@ -13,43 +13,24 @@ import { ProximityRadar } from "../modules/rpo/proximityradar.js";
 import { LaserRangeFinder } from "../modules/rpo/laserrangefinder.js";
 import { EnginesForceSink } from "../modules/enginesforcesink.js";
 import { TurboPump } from "../modules/turbopump.js";
+import { TCS } from "../modules/tcs.js";
+import { Navigation } from "../modules/navigation.js";
 
 class System
 {
-    constructor(landingLegs,
-                rcs,
-                engineBlock,
-                fuelSystem,
+    constructor(rcs,
                 electricalPowerSystem,
                 radioCommunication,
-                dockingSystem,
-                rpo)
+                solarPanels,
+                tcs,
+                nav)
     {
-        this.LandingLegs = landingLegs;
         this.RCS = rcs;
-        this.EngineBlock = engineBlock;
-        this.FuelSystem = fuelSystem;
         this.PowerSupplySystem = electricalPowerSystem;
         this.RadioCommunication = radioCommunication;
-        this.DockingSystem = dockingSystem;
-        this.RPO = rpo;
-    }
-}
-
-class Leg
-{
-    constructor(pneumaticActuator)
-    {
-        this.PneumaticBlock = pneumaticActuator;
-    }
-}
-
-class LandingLegs
-{
-    constructor(leg1, leg2)
-    {
-        this.Leg1 = leg1;
-        this.Leg2 = leg2;
+        this.SolarPanels = solarPanels;
+        this.TCS = tcs;
+        this.Navigation = nav;
     }
 }
 
@@ -63,33 +44,6 @@ class RCS
     }
 }
 
-class EngineBlock
-{
-    constructor(engines)
-    {
-        this.Engine = engines;
-    }
-}
-
-class TankWrapper
-{
-    constructor(tank)
-    {
-        this.FillLevelSensor = tank.FillLevelSensor;
-    }
-}
-
-class FuelSystem
-{
-    constructor(tank1, tank2, pump, turboPump)
-    {
-        this.Tank1 = new TankWrapper(tank1);
-        this.Tank2 = new TankWrapper(tank2);
-        this.Pump = pump;
-        this.TurboPump = turboPump;
-    }
-}
-
 class RadioCommunication
 {
     constructor(transmitter, receiver)
@@ -99,30 +53,89 @@ class RadioCommunication
     }
 }
 
-class DockingSystem
-{
-    constructor(ports)
-    {
-        this.Ports = ports;
-    }
-}
-
-class RPO
-{
-    constructor(proximityRadar, laserRangeFinder)
-    {
-        this.ProximityRadar = proximityRadar;
-        this.LaserRangeFinder = laserRangeFinder;
-    }
-}
-
 export function build_sat1(physicalModel, abstructModel, visualEffects, signalHub, conf, render)
 {
     // *** shared objects ***
 
-    let spaceCraft = new System(); // не забудь розширити System
+    // *** RCS System ***
+
+    let rocketBody = physicalModel.bodies.find(item => item.name === "stage");
+    let rcsConf = conf.parts.find(item => item.name === "stage").rcs;
+
+    let rcsBlock1 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[0], visualEffects);
+    let rcsBlock2 = new RCSBlock(rocketBody, abstructModel, rcsConf.units[1], visualEffects);
+
+    let rcsFuelTank = new Tank(rcsConf.tank, abstructModel, rocketBody);
+
+    let rcs = new RCS(rcsBlock1, rcsBlock2, rcsFuelTank);
+
+    // *** RCS System ***
+
+    // *** Radio Communication ***
+    
+    let t = new Transmitter(1, 1, 100, 1, 400, 200, abstructModel);
+    let r = new Receiver(1, 1, 1, 1, abstructModel);
+    let rc = new RadioCommunication(t, r);
+
+    signalHub.registerRadioModule(t);
+    signalHub.registerRadioModule(r);
+
+    // *** Radio Communication ***
+
+    // *** Electrical Power System ***
+
+    const batteriesConf = conf.parts.find(item => item.name === "stage").batteries;
+    const solarPanelsConf = conf.parts.find(item => item.name === "stage").solarPanels;
+
+    let batteries = batteriesConf.map(b => new Battery(b.capacity, b.maxInput, b.maxOutput));
+    let solarPanels = solarPanelsConf.map(conf => new SolarPanel(conf, visualEffects));
+
+    let electricalPowerSystem = new ElectricalPowerSystem([t._electricalDevice,
+                                                           r._electricalDevice],
+                                                           solarPanels,
+                                                           batteries); // consumers, suppliers, batteries
+
+    // *** Electrical Power System ***
+
+    // *** TCS ***
+
+    let tcs = new TCS();
+
+    // *** TCS ***
+
+    // *** Navigation ***
+
+    let nav = new Navigation(abstructModel, rocketBody);
+
+    // *** Navigation ***
+
+    let spaceCraft = new System(rcs,
+                                electricalPowerSystem,
+                                rc,
+                                solarPanels,
+                                tcs,
+                                nav); // не забудь розширити System
 
     let monitorInter = new Map();
+
+    monitorInter.set("PSSInfo", () => spaceCraft.PowerSupplySystem.info());
+    monitorInter.set("radioCommunicationStatus", () => {
+        return {
+            transmitter: spaceCraft.RadioCommunication.Transmitter.status(),
+            receiver: spaceCraft.RadioCommunication.Receiver.status()
+        }
+    });
+
+    monitorInter.set("proximityRadar", () => {
+        return {
+           proximityRadar: spaceCraft.RPO.ProximityRadar.scan(),
+           laserRangeFinder: spaceCraft.RPO.LaserRangeFinder.scan(),
+           angle: physicalModel.angle
+        }
+    });
+
+    monitorInter.set("tcsInfo", () => spaceCraft.TCS.info());
+    monitorInter.set("navInfo", () => spaceCraft.Navigation.info());
 
     return {spaceCraft, monitorInter};
 }
