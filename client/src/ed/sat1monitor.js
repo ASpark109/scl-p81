@@ -10,6 +10,11 @@ import { Radio } from './systemmonitorcomponents/radio';
 import { TurboPump } from './systemmonitorcomponents/turbopump';
 import { Engines } from './systemmonitorcomponents/engines';
 import { RPO } from './systemmonitorcomponents/rpo';
+import { ECLSS } from './systemmonitorcomponents/eclss';
+import { DockingSystem } from './systemmonitorcomponents/dockingsystem';
+import { Canadarm } from './systemmonitorcomponents/canadarm';
+import { Telemetry } from './systemmonitorcomponents/telemetry';
+import { Indicator } from './systemmonitorcomponents/indicator';
 
 export class Sat1Monitor extends PIXI.Container
 {
@@ -53,7 +58,69 @@ export class Sat1Monitor extends PIXI.Container
         mainFrame.moveTo(this.#config.mainFrameDimensions.x, 0);
         mainFrame.lineTo(this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y);
 
+        mainFrame.lineStyle(1, styles.green, 1);
+
+        mainFrame.moveTo(250, 420);
+        mainFrame.lineTo(250, 500);
+
+        mainFrame.moveTo(250, 380);
+        mainFrame.lineTo(250, 300);
+
+        mainFrame.moveTo(270, 400);
+        mainFrame.lineTo(350, 400);
+
+        mainFrame.moveTo(230, 400);
+        mainFrame.lineTo(150, 400);
+
         mainPageContainer.addChild(mainFrame);
+
+        // *** MODULE ***
+        const module = new PIXI.Graphics();
+
+        module.pivot.set(this.#config.moduleDimensions.x / 2,
+                            this.#config.moduleDimensions.y / 2);
+
+        module.x = this.#config.mainFrameDimensions.x / 2;
+        module.y = this.#config.mainFrameDimensions.y / 2;
+
+        module.lineStyle(1, 0x00FF00, 1);
+        module.drawRect(0, 0, this.#config.moduleDimensions.x,
+                                    this.#config.moduleDimensions.y);
+
+        mainPageContainer.addChild(module);
+
+        let powerSuplySystemInfo = new PowerSuplySystemInfo(this.#config.powerSuplySystem);
+
+        mainPageContainer.addChild(powerSuplySystemInfo);
+
+        this.#updateList.set("PSSInfo", powerSuplySystemInfo);
+
+        // *** Radio ***
+        let radio = new Radio(this.#config.radio);
+
+        radio.x = this.#config.radio.position.x;
+        radio.y = this.#config.radio.position.y;
+        
+        mainPageContainer.addChild(radio);
+
+        this.#updateList.set("radioCommunicationStatus", radio);
+
+        // *** Telemetry ***
+        let telemetry = new Telemetry(this.#config.telemetry)
+        
+        telemetry.x = this.#config.telemetry.position.x;
+        telemetry.y = this.#config.telemetry.position.y;
+        
+        this.#updateList.set("navInfo", telemetry);
+
+        mainPageContainer.addChild(telemetry);
+
+        // *** Temperatures ***
+        let indicator = new Indicator(this.#config.temperature)
+
+        this.#updateList.set("tcsInfo", indicator);
+
+        mainPageContainer.addChild(indicator);
 
         // ******
         mainPageContainer.visible = false;

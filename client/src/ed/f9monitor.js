@@ -10,6 +10,7 @@ import { Radio } from './systemmonitorcomponents/radio';
 import { TurboPump } from './systemmonitorcomponents/turbopump';
 import { Engines } from './systemmonitorcomponents/engines';
 import { RPO } from './systemmonitorcomponents/rpo';
+import { Telemetry } from './systemmonitorcomponents/telemetry';
 
 export class F9Monitor extends PIXI.Container
 {
@@ -220,6 +221,16 @@ export class F9Monitor extends PIXI.Container
         mainPageContainer.addChild(enginesInfo);
 
         this.#updateList.set("enginesStatus", enginesInfo);
+
+        // *** Telemetry ***
+        let telemetry = new Telemetry(this.#config.telemetry)
+        
+        telemetry.x = this.#config.telemetry.position.x;
+        telemetry.y = this.#config.telemetry.position.y;
+        
+        this.#updateList.set("navInfo", telemetry);
+
+        mainPageContainer.addChild(telemetry);
 
         // ******
         mainPageContainer.visible = false;

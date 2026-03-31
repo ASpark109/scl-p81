@@ -37,6 +37,8 @@ export class SystemStateMonitor
 
         this.systemStateContainer = new PIXI.Container(); // main container
 
+        this.systemStateContainer.scale.set(0.8)
+
         this.systemStateApplication.stage.addChild(this.systemStateContainer);
 
         this.#pixiContainter.current.appendChild(this.systemStateApplication.view);
@@ -88,8 +90,8 @@ export class SystemStateMonitor
 
         let totalWidth = this.systemStateContainer.children.reduce((sum, child) => sum + child.width + 30, 0);
 
-        newMonitor.x = 100 + totalWidth;
-        newMonitor.y = 150;
+        newMonitor.x = 20 + totalWidth;
+        newMonitor.y = 70;
 
         newMonitor.id = id;
 

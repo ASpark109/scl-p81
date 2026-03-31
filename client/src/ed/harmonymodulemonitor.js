@@ -10,6 +10,10 @@ import { Radio } from './systemmonitorcomponents/radio';
 import { TurboPump } from './systemmonitorcomponents/turbopump';
 import { Engines } from './systemmonitorcomponents/engines';
 import { RPO } from './systemmonitorcomponents/rpo';
+import { ECLSS } from './systemmonitorcomponents/eclss';
+import { DockingSystem } from './systemmonitorcomponents/dockingsystem';
+import { Canadarm } from './systemmonitorcomponents/canadarm';
+import { Telemetry } from './systemmonitorcomponents/telemetry';
 
 export class HarmonyModuleMonitor extends PIXI.Container
 {
@@ -27,6 +31,7 @@ export class HarmonyModuleMonitor extends PIXI.Container
         this.#config = configuration;
 
         this.#createMainPage();
+        this.#createRPOPage();
         this.#createNavigationButtons();
 
         if (this.#pages.length > 0)
@@ -55,10 +60,106 @@ export class HarmonyModuleMonitor extends PIXI.Container
 
         mainPageContainer.addChild(mainFrame);
 
+        // *** MODULE ***
+        const module = new PIXI.Graphics();
+
+        module.pivot.set(this.#config.moduleDimensions.x / 2,
+                            this.#config.moduleDimensions.y / 2);
+
+        module.x = this.#config.mainFrameDimensions.x / 2;
+        module.y = this.#config.mainFrameDimensions.y / 2;
+
+        module.lineStyle(1, 0x00FF00, 1);
+        module.drawRect(0, 0, this.#config.moduleDimensions.x,
+                                    this.#config.moduleDimensions.y);
+
+        mainPageContainer.addChild(module);
+
+        let powerSuplySystemInfo = new PowerSuplySystemInfo(this.#config.powerSuplySystem);
+
+        mainPageContainer.addChild(powerSuplySystemInfo);
+
+        this.#updateList.set("PSSInfo", powerSuplySystemInfo);
+
+        // *** Radio ***
+        let radio = new Radio(this.#config.radio);
+
+        radio.x = this.#config.radio.position.x;
+        radio.y = this.#config.radio.position.y;
+        
+        mainPageContainer.addChild(radio);
+
+        this.#updateList.set("radioCommunicationStatus", radio);
+
+        // *** Docking Ports ***
+        let dockingSystem = new DockingSystem(this.#config.dockingPorts);
+        mainPageContainer.addChild(dockingSystem);
+        this.#updateList.set("dockInfo", dockingSystem);
+
+        // *** ECLSS ***
+        let eclss = new ECLSS(this.#config.ECLSS)
+
+        mainPageContainer.addChild(eclss);
+
+        this.#updateList.set("ECLSSInfo", eclss);
+
+        // *** Canadarm ***
+        let canadarm = new Canadarm(this.#config.canadarm)
+        
+        canadarm.x = this.#config.canadarm.position.x;
+        canadarm.y = this.#config.canadarm.position.y;
+
+        mainPageContainer.addChild(canadarm);
+        this.#updateList.set("canadarmInfo", canadarm);
+
+        // *** Telemetry ***
+        let telemetry = new Telemetry(this.#config.telemetry)
+        
+        telemetry.x = this.#config.telemetry.position.x;
+        telemetry.y = this.#config.telemetry.position.y;
+        
+        this.#updateList.set("navInfo", telemetry);
+
+        mainPageContainer.addChild(telemetry);
+
         // ******
         mainPageContainer.visible = false;
         this.addChild(mainPageContainer)
         this.#pages.push(mainPageContainer);
+    }
+
+    #createRPOPage()
+    {
+        let rpoPageContainer = new PIXI.Container();
+
+        // *** MAIN FRAME ***
+        const mainFrame = new PIXI.Graphics();
+
+        mainFrame.lineStyle(1, styles.blue, 1);
+
+        // ліва сторона
+        mainFrame.moveTo(0, 0);
+        mainFrame.lineTo(0, this.#config.mainFrameDimensions.y);
+
+        // права сторона
+        mainFrame.moveTo(this.#config.mainFrameDimensions.x, 0);
+        mainFrame.lineTo(this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y);
+
+        rpoPageContainer.addChild(mainFrame);
+
+        // *** monitor ***
+        let monitor = new RPO(this.#config.rpoMonitor)
+        rpoPageContainer.addChild(monitor);
+        // monitor.pivot.set(225, 250)
+        monitor.x = this.#config.mainFrameDimensions.x / 2;
+        monitor.y = this.#config.mainFrameDimensions.y / 2;
+
+        //this.#updateList.set("proximityRadar", monitor);
+
+        // ******
+        rpoPageContainer.visible = false;
+        this.addChild(rpoPageContainer);
+        this.#pages.push(rpoPageContainer);
     }
 
     #createNavigationButtons()

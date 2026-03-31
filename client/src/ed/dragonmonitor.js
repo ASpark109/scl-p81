@@ -10,6 +10,10 @@ import { Radio } from './systemmonitorcomponents/radio';
 import { TurboPump } from './systemmonitorcomponents/turbopump';
 import { Engines } from './systemmonitorcomponents/engines';
 import { RPO } from './systemmonitorcomponents/rpo';
+import { DockingSystem } from './systemmonitorcomponents/dockingsystem';
+import { Telemetry } from './systemmonitorcomponents/telemetry';
+import { Indicator } from './systemmonitorcomponents/indicator';
+import { ECLSS } from './systemmonitorcomponents/eclss';
 
 export class DragonMonitor extends PIXI.Container
 {
@@ -27,6 +31,7 @@ export class DragonMonitor extends PIXI.Container
         this.#config = configuration;
 
         this.#createMainPage();
+        this.#createRPOPage();
         this.#createNavigationButtons();
 
         if (this.#pages.length > 0)
@@ -54,6 +59,86 @@ export class DragonMonitor extends PIXI.Container
         mainFrame.lineTo(this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y);
 
         mainPageContainer.addChild(mainFrame);
+
+        // *** Module ***
+        const module = new PIXI.Graphics();
+
+        module.lineStyle(1, 0x00ff00, 1);
+
+        module.moveTo(this.#config.moduleVertices[0].x * 5, this.#config.moduleVertices[0].y * 5);
+        module.lineTo(this.#config.moduleVertices[1].x * 5, this.#config.moduleVertices[1].y * 5);
+        module.lineTo(this.#config.moduleVertices[2].x * 5, this.#config.moduleVertices[2].y * 5);
+        module.lineTo(this.#config.moduleVertices[3].x * 5, this.#config.moduleVertices[3].y * 5);
+
+        module.closePath();
+
+        module.pivot.set(100, -80);
+        module.position.set(250, 400);
+
+        mainPageContainer.addChild(module);
+
+        // -------
+        const trunc = new PIXI.Graphics();
+
+        trunc.pivot.set(95, 95);
+
+        trunc.x = this.#config.trunc.position.x;
+        trunc.y = this.#config.trunc.position.y;
+
+        trunc.lineStyle(1, 0x00FF00, 1);
+        trunc.drawRect(0, 0, this.#config.trunc.dimensions.x,
+                             this.#config.trunc.dimensions.y);
+
+        mainPageContainer.addChild(trunc);
+
+        // *** Docking Ports ***
+        let dockingSystem = new DockingSystem(this.#config.dockingPorts);
+        mainPageContainer.addChild(dockingSystem);
+        this.#updateList.set("dockInfo", dockingSystem);
+
+        // *** Temperatures ***
+        let indicator = new Indicator(this.#config.temperature)
+        
+        indicator.y = 180
+
+        this.#updateList.set("tcsInfo", indicator);
+
+        mainPageContainer.addChild(indicator);
+
+        // *** Radio ***
+        let radio = new Radio(this.#config.radio);
+
+        radio.x = this.#config.radio.position.x;
+        radio.y = this.#config.radio.position.y;
+        
+        mainPageContainer.addChild(radio);
+
+        this.#updateList.set("radioCommunicationStatus", radio);
+
+        // *** Power supply system ***
+
+        let powerSuplySystemInfo = new PowerSuplySystemInfo(this.#config.powerSuplySystem);
+
+        mainPageContainer.addChild(powerSuplySystemInfo);
+
+        this.#updateList.set("PSSInfo", powerSuplySystemInfo);
+
+        // *** Telemetry ***
+        let telemetry = new Telemetry(this.#config.telemetry)
+        
+        telemetry.x = this.#config.telemetry.position.x;
+        telemetry.y = this.#config.telemetry.position.y;
+
+        mainPageContainer.addChild(telemetry);
+        
+        this.#updateList.set("navInfo", telemetry);
+
+        // *** ECLSS ***
+        let eclss = new ECLSS(this.#config.ECLSS)
+
+        mainPageContainer.addChild(eclss);
+
+        this.#updateList.set("ECLSSInfo", eclss);
 
         // ******
         mainPageContainer.visible = false;
@@ -119,6 +204,40 @@ export class DragonMonitor extends PIXI.Container
         });
 
         this.addChild(left, right)
+    }
+
+    #createRPOPage()
+    {
+        let rpoPageContainer = new PIXI.Container();
+
+        // *** MAIN FRAME ***
+        const mainFrame = new PIXI.Graphics();
+
+        mainFrame.lineStyle(1, styles.blue, 1);
+
+        // ліва сторона
+        mainFrame.moveTo(0, 0);
+        mainFrame.lineTo(0, this.#config.mainFrameDimensions.y);
+
+        // права сторона
+        mainFrame.moveTo(this.#config.mainFrameDimensions.x, 0);
+        mainFrame.lineTo(this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y);
+
+        rpoPageContainer.addChild(mainFrame);
+
+        // *** monitor ***
+        let monitor = new RPO(this.#config.rpoMonitor)
+        rpoPageContainer.addChild(monitor);
+        // monitor.pivot.set(225, 250)
+        monitor.x = this.#config.mainFrameDimensions.x / 2;
+        monitor.y = this.#config.mainFrameDimensions.y / 2;
+
+        // this.#updateList.set("proximityRadar", monitor);
+
+        // ******
+        rpoPageContainer.visible = false;
+        this.addChild(rpoPageContainer);
+        this.#pages.push(rpoPageContainer);
     }
 
     update()

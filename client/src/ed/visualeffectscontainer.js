@@ -25,8 +25,8 @@ export class VisualEffectsContainer extends PIXI.Container
             effect.x = item.position.x;
             effect.y = item.position.y;
             effect.rotation = item.angle * Math.PI / 180;
-            effect.scale.set(item.scale);
-            effect.visible = false;
+            effect.scale.set(item.scale.x, item.scale.y);
+            effect.visible = item.visible;
 
             this.addChild(effect);
         }
@@ -54,5 +54,11 @@ export class VisualEffectsContainer extends PIXI.Container
                 effect.visible = !visible;
             }, timeout);
         }
+    }
+
+    setEffectScale(id, data)
+    {
+        const effect = this.getChildByName(id);
+        effect.scale.set(data.x, data.y)
     }
 }
