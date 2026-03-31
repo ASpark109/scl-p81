@@ -6,7 +6,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": -20, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": -90
         },
         {
@@ -14,7 +14,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": -20, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": 90
         },
         {
@@ -22,7 +22,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": -15, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": 180
         },
         {
@@ -30,7 +30,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": 20, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": -90
         },
         {
@@ -38,7 +38,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": 20, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": 90
         },
         {
@@ -46,7 +46,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": 15, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": 0
         }
     ]

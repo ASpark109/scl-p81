@@ -11,6 +11,7 @@
             "image_main": "",
 
             "componentMass": 4000,
+            "fuelMass": 0,
 
             "dimensions":
             {
@@ -33,9 +34,17 @@
                 [
                     {
                         "id": "lRCR",
-                        "position": {"x": 0, "y": -15},
-                        "thrust": 2000,
+                        "position": {"x": -15, "y": 0},
+                        "thrust": 10,
                         "direction": "left",
+                        "fuel": 10
+                    },
+
+                    {
+                        "id": "rRCR",
+                        "position": {"x": 15, "y": 0},
+                        "thrust": 10,
+                        "direction": "right",
                         "fuel": 10
                     }
                 ],
@@ -59,7 +68,16 @@
             "solarPanels":
             [
                 {
-                    "maxPowerGenerationPerSec": 3000
+                    "maxPowerGenerationPerSec": 3000,
+                    "length": 12,
+                    "direction": "left",
+                    "visualEffectId":  "solarPanelL"
+                },
+                {
+                    "maxPowerGenerationPerSec": 3000,
+                    "length": 12,
+                    "direction": "right",
+                    "visualEffectId":  "solarPanelR"
                 }
             ],
 
@@ -82,16 +100,6 @@
                     "maxPower": 0,
                     "minPower": 0
                 }
-            },
-
-            "dockingSystem":
-            {
-                "ports": [
-                    {
-                        "id": 1,
-                        "type": ""
-                    }
-                ]
             }
         },
 

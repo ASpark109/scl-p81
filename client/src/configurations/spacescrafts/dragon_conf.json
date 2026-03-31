@@ -11,13 +11,14 @@
             "image_main": "",
 
             "componentMass": 9000,
+            "fuelMass": 0,
 
             "vertices":
             [
                 {"x":0, "y":0},
-                {"x":35, "y":15},
-                {"x":35, "y":25},
-                {"x":0, "y":40}
+                {"x":15, "y":-35},
+                {"x":25, "y":-35},
+                {"x":40, "y":0}
             ],
 
             "initPos":
@@ -45,6 +46,33 @@
                 }
             ],
 
+            "rcs":
+            {
+                "units":
+                [
+                    {
+                        "id": "lRCR",
+                        "position": {"x": -5, "y": -10},
+                        "thrust": 1000,
+                        "direction": "left",
+                        "fuel": 10
+                    },
+                    {
+                        "id": "rRCR",
+                        "position": {"x": 5, "y": -10},
+                        "thrust": 1000,
+                        "direction": "right",
+                        "fuel": 10
+                    }
+                ],
+
+                "tank":
+                {
+                    "maxCapacity": 100,
+                    "capacity": 100
+                }
+            },   
+
             "radioCommunication":
             {
                 "transmitter":
@@ -66,9 +94,31 @@
                 }
             },
 
+            "rpo":
+            {
+                "proximityRadar":
+                {
+                    "distance": 20000,
+                    "viewAngle": 40,
+                    "maxP": 1000,
+                    "minP": 200
+                },
+
+                "laserRangeFinder":
+                {
+                    "distance": 100,
+                    "maxP": 500,
+                    "minP": 100
+                }
+            },
+
             "dockingSystem":
             {
                 "ports": [
+                    {
+                        "id": 1,
+                        "type": ""
+                    },
                     {
                         "id": 1,
                         "type": ""
@@ -92,8 +142,8 @@
             },
 
             "initPos":{
-                "x": -35,
-                "y": 0
+                "x": 0,
+                "y": 36
             },
 
             "isStatic": false,
@@ -107,8 +157,8 @@
             "bodyA": "dragonTrunk",
             "bodyB": "stage",
 
-            "pointA": {"x": 15, "y": -10},
-            "pointB": {"x": -10, "y": -10},
+            "pointA": {"x": -10, "y": -15},
+            "pointB": {"x": -10, "y": 10},
 
             "visible": true,
 
@@ -125,8 +175,8 @@
             "bodyA": "dragonTrunk",
             "bodyB": "stage",
 
-            "pointA": {"x": 15, "y": 10},
-            "pointB": {"x": -10, "y": 10},
+            "pointA": {"x": 10, "y": -15},
+            "pointB": {"x": 10, "y": 10},
 
             "visible": true,
 
@@ -143,8 +193,8 @@
             "bodyA": "dragonTrunk",
             "bodyB": "stage",
 
-            "pointA": {"x": 15, "y": -10},
-            "pointB": {"x": -10, "y": 10},
+            "pointA": {"x": -10, "y": -15},
+            "pointB": {"x": 10, "y": 10},
 
             "visible": true,
 
@@ -165,16 +215,16 @@
 
             "mass": 0.1,
             "dimensions":{
-                "width": 14,
-                "height": 10
+                "width": 10,
+                "height": 14
             },
 
             "initPos":{
-                "x": 21,
-                "y": 0
+                "x": 0,
+                "y": -21
             },
 
-            "docDir": "right",
+            "docDir": "up",
 
             "isStatic": false,
             "friction": 0,
@@ -188,8 +238,8 @@
             "bodyA": "stage",
             "bodyB": "dockingPort",
 
-            "pointA": {"x": 10, "y": -5},
-            "pointB": {"x": -7, "y": -5},
+            "pointA": {"x": -5, "y": -7},
+            "pointB": {"x": -5, "y": 7},
 
             "visible": true,
 
@@ -206,8 +256,8 @@
             "bodyA": "stage",
             "bodyB": "dockingPort",
 
-            "pointA": {"x": 10, "y": 5},
-            "pointB": {"x": -7, "y": 5},
+            "pointA": {"x": 5, "y": -7},
+            "pointB": {"x": 5, "y": 7},
 
             "visible": true,
 
@@ -224,8 +274,8 @@
             "bodyA": "stage",
             "bodyB": "dockingPort",
 
-            "pointA": {"x": 10, "y": 5},
-            "pointB": {"x": -7, "y": -5},
+            "pointA": {"x": -5, "y": -7},
+            "pointB": {"x": 5, "y": 7},
 
             "visible": true,
 
@@ -234,7 +284,7 @@
             "angularStiffness": 1,
             "angularDamping": 1
         },
-
+        
         {
             "id": 2,
             "name": "dockingPort2",
@@ -246,31 +296,31 @@
 
             "mass": 0.1,
             "dimensions":{
-                "width": 10,
-                "height": 12
+                "width": 14,
+                "height": 10
             },
 
             "initPos":{
-                "x": 0,
-                "y": -10
+                "x": -15,
+                "y": 0
             },
 
-            "docDir": "up",
+            "docDir": "left",
 
             "isStatic": false,
             "friction": 0,
             "isSensor": true
         },
 
-                {
+        {
             "name": "constraint_dockingPort_12",
             "objectType": "constraint",
 
             "bodyA": "stage",
             "bodyB": "dockingPort2",
 
-            "pointA": {"x": -5, "y": 0},
-            "pointB": {"x": -5, "y": 7},
+            "pointA": {"x": 0, "y": -5},
+            "pointB": {"x": 6, "y": -5},
 
             "visible": true,
 
@@ -287,8 +337,8 @@
             "bodyA": "stage",
             "bodyB": "dockingPort2",
 
-            "pointA": {"x": 5, "y": 0},
-            "pointB": {"x": 5, "y": 7},
+            "pointA": {"x": 0, "y": 5},
+            "pointB": {"x": 6, "y": 5},
 
             "visible": true,
 
@@ -305,8 +355,8 @@
             "bodyA": "stage",
             "bodyB": "dockingPort2",
 
-            "pointA": {"x": -5, "y": 0},
-            "pointB": {"x": 5, "y": 7},
+            "pointA": {"x": 0, "y": -5},
+            "pointB": {"x": 6, "y": 5},
 
             "visible": true,
 

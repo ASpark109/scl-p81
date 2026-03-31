@@ -1,4 +1,66 @@
 {
     "mainFrameDimensions": {"x": 500, "y": 800},
-    "mainStageDimensions": {"x": 90, "y": 720}
+    "moduleVertices": [
+        {"x":0, "y":0},
+        {"x":15, "y":-35},
+        {"x":25, "y":-35},
+        {"x":40, "y":0}
+    ],
+
+    "trunc":
+    {
+        "position": {"x": 250, "y": 585},
+        "dimensions": {"x": 190, "y": 190}
+    },
+
+    "powerSuplySystem": {
+        "name": "Power suply system",
+        "position": {"x": 250, "y": 0},
+        "dimensions": {"x": 400, "y": 55}
+    },
+
+    "dockingPorts": [
+        {
+            "position": {"x": 235, "y": 290},
+            "dimensions": {"x": 30, "y": 15},
+            "idPosition": {"x": 250, "y": 270, "r": 0}
+        },
+        {
+            "position": {"x": 190, "y": 360},
+            "dimensions": {"x": 15, "y": 30},
+            "idPosition": {"x": 140, "y": 360, "r": -90}
+        }
+    ],
+
+    "temperature":
+    [
+        {"x": 210, "y":349},
+        {"x": 290, "y":349},
+        {"x": 210, "y":441},
+        {"x": 290, "y":441}
+    ],
+
+    "radio": {
+        "position": {"x": 50, "y":45},
+        "dimensions": {"x": 170, "y": 210}
+    },
+
+    "telemetry":
+    {
+        "position": {"x": 280, "y":45},
+        "dimensions": {"x": 170, "y": 125}
+    },
+
+    "rpoMonitor":
+    {
+        "dimensions": {"x": 450, "y": 700}
+    },
+
+    "ECLSS":
+    {
+        "position": {"x": 400, "y": 350},
+        "positionT": {"x": 360, "y": 370},
+        "positionP": {"x": 360, "y": 400},
+        "positionH": {"x": 360, "y": 430}
+    }
 }

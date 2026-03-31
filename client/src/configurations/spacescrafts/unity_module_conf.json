@@ -11,6 +11,7 @@
             "image_main": "",
 
             "componentMass": 11600,
+            "fuelMass": 0,
 
             "dimensions":
             {
@@ -64,11 +65,41 @@
                 }
             },
 
+            "rpo":
+            {
+                "proximityRadar":
+                {
+                    "distance": 20000,
+                    "viewAngle": 40,
+                    "maxP": 1000,
+                    "minP": 200
+                },
+
+                "laserRangeFinder":
+                {
+                    "distance": 100,
+                    "maxP": 500,
+                    "minP": 100
+                }
+            },
+
             "dockingSystem":
             {
                 "ports": [
                     {
                         "id": 1,
+                        "type": ""
+                    },
+                    {
+                        "id": 2,
+                        "type": ""
+                    },
+                    {
+                        "id": 3,
+                        "type": ""
+                    },
+                    {
+                        "id": 4,
                         "type": ""
                     }
                 ]
@@ -109,7 +140,7 @@
             "bodyA": "stage",
             "bodyB": "dockingPort",
 
-            "pointA": {"x": 18, "y": -5},
+            "pointA": {"x": 10, "y": -5},
             "pointB": {"x": -7, "y": -5},
 
             "visible": true,
@@ -127,7 +158,7 @@
             "bodyA": "stage",
             "bodyB": "dockingPort",
 
-            "pointA": {"x": 18, "y": 5},
+            "pointA": {"x": 10, "y": 5},
             "pointB": {"x": -7, "y": 5},
 
             "visible": true,
@@ -145,7 +176,7 @@
             "bodyA": "stage",
             "bodyB": "dockingPort",
 
-            "pointA": {"x": 18, "y": -5},
+            "pointA": {"x": 10, "y": -5},
             "pointB": {"x": -7, "y": 5},
 
             "visible": true,
@@ -190,7 +221,7 @@
             "bodyA": "stage",
             "bodyB": "dockingPort2",
 
-            "pointA": {"x": -18, "y": -5},
+            "pointA": {"x": -10, "y": -5},
             "pointB": {"x": 7, "y": -5},
 
             "visible": true,
@@ -208,7 +239,7 @@
             "bodyA": "stage",
             "bodyB": "dockingPort2",
 
-            "pointA": {"x": -18, "y": 5},
+            "pointA": {"x": -10, "y": 5},
             "pointB": {"x": 7, "y": 5},
 
             "visible": true,
@@ -226,7 +257,7 @@
             "bodyA": "stage",
             "bodyB": "dockingPort2",
 
-            "pointA": {"x": -18, "y": -5},
+            "pointA": {"x": -10, "y": -5},
             "pointB": {"x": 7, "y": 5},
 
             "visible": true,

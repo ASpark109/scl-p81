@@ -2,12 +2,106 @@
     "effects":
     [
         {
-            "id": "rcsThrusterAL",
+            "id": "rcsThrusterAL1",
             "path": "../assets/images/rcs.png",
-            "position": {"x": -20, "y": -150},
+            "position": {"x": -36, "y": -22},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 0.1, "y": 0.1},
             "angle": -90
+        },
+        {
+            "id": "rcsThrusterBL1",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": -36, "y": -22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 90
+        },
+        {
+            "id": "rcsThrusterCL1",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": -36, "y": -22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 180
+        },
+        {
+            "id": "rcsThrusterAL2",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": -36, "y": 22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": -90
+        },
+        {
+            "id": "rcsThrusterBL2",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": -36, "y": 22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 90
+        },
+        {
+            "id": "rcsThrusterCL2",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": -36, "y": 22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 180
+        },
+
+
+
+
+
+
+        {
+            "id": "rcsThrusterAR1",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": 36, "y": -22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": -90
+        },
+        {
+            "id": "rcsThrusterBR1",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": 36, "y": -22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 90
+        },
+        {
+            "id": "rcsThrusterCR1",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": 36, "y": -22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 0
+        },
+        {
+            "id": "rcsThrusterAR2",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": 36, "y": 22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": -90
+        },
+        {
+            "id": "rcsThrusterBR2",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": 36, "y": 22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 90
+        },
+        {
+            "id": "rcsThrusterCR2",
+            "path": "../assets/images/rcs.png",
+            "position": {"x": 36, "y": 22},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "angle": 0
         }
     ]
 }

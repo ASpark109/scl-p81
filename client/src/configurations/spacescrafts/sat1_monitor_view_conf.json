@@ -1,4 +1,29 @@
 {
     "mainFrameDimensions": {"x": 500, "y": 800},
-    "mainStageDimensions": {"x": 90, "y": 720}
+    "moduleDimensions": {"x": 250, "y": 250},
+
+    "powerSuplySystem": {
+        "name": "Power suply system",
+        "position": {"x": 250, "y": 0},
+        "dimensions": {"x": 400, "y": 55}
+    },
+
+    "radio": {
+        "position": {"x": 50, "y":45},
+        "dimensions": {"x": 170, "y": 210}
+    },
+
+    "telemetry":
+    {
+        "position": {"x": 280, "y":45},
+        "dimensions": {"x": 170, "y": 125}
+    },
+
+    "temperature":
+    [
+        {"x": 188, "y":338},
+        {"x": 312, "y":338},
+        {"x": 188, "y":462},
+        {"x": 312, "y":462}
+    ]
 }

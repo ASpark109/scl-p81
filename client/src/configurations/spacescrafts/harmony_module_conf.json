@@ -11,6 +11,7 @@
             "image_main": "",
 
             "componentMass": 14300,
+            "fuelMass": 0,
 
             "dimensions":
             {
@@ -39,7 +40,10 @@
             "solarPanels":
             [
                 {
-                    "maxPowerGenerationPerSec": 3000
+                    "maxPowerGenerationPerSec": 3000,
+                    "length": 8,
+                    "direction": "up",
+                    "visualEffectId":  "solarPanelU"
                 }
             ],
 
@@ -64,11 +68,86 @@
                 }
             },
 
+            "rcs":
+            {
+                "units":
+                [
+                    {
+                        "id": "lRCR1",
+                        "position": {"x": -36, "y": -22},
+                        "thrust": 1000,
+                        "direction": "left",
+                        "count": 1,
+                        "fuel": 10
+                    },
+                    {
+                        "id": "lRCR2",
+                        "position": {"x": -36, "y": 22},
+                        "thrust": 1000,
+                        "direction": "left",
+                        "count": 2,
+                        "fuel": 10
+                    },
+                    {
+                        "id": "rRCR1",
+                        "position": {"x": 36, "y": -22},
+                        "thrust": 1000,
+                        "direction": "right",
+                        "count": 1,
+                        "fuel": 10
+                    },
+                    {
+                        "id": "rRCR2",
+                        "position": {"x": 36, "y": 22},
+                        "thrust": 1000,
+                        "direction": "right",
+                        "count": 2,
+                        "fuel": 10
+                    }
+                ],
+
+                "tank":
+                {
+                    "maxCapacity": 100,
+                    "capacity": 100
+                }
+            },
+
+            "rpo":
+            {
+                "proximityRadar":
+                {
+                    "distance": 20000,
+                    "viewAngle": 40,
+                    "maxP": 1000,
+                    "minP": 200
+                },
+
+                "laserRangeFinder":
+                {
+                    "distance": 100,
+                    "maxP": 500,
+                    "minP": 100
+                }
+            },
+
             "dockingSystem":
             {
                 "ports": [
                     {
                         "id": 1,
+                        "type": ""
+                    },
+                    {
+                        "id": 2,
+                        "type": ""
+                    },
+                    {
+                        "id": 3,
+                        "type": ""
+                    },
+                    {
+                        "id": 4,
                         "type": ""
                     }
                 ]
@@ -319,6 +398,7 @@
         },
 
         {
+            "id": 4,
             "name": "canadarm1",
             "objectType": "rectangle",
             "isDockingPort": true,
@@ -330,7 +410,7 @@
 
             "dimensions":{
                 "width": 10,
-                "height": 14
+                "height": 20
             },
 
             "initPos":{
@@ -394,6 +474,7 @@
         },
 
         {
+            "id": 5,
             "name": "canadarm4",
             "objectType": "rectangle",
             "isDockingPort": true,
@@ -404,7 +485,7 @@
             "mass": 0.05,
 
             "dimensions":{
-                "width": 16,
+                "width": 20,
                 "height": 10
             },
 

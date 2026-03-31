@@ -66,5 +66,11 @@
     "rpoMonitor":
     {
         "dimensions": {"x": 450, "y": 700}
+    },
+
+    "telemetry":
+    {
+        "position": {"x": 310, "y":35},
+        "dimensions": {"x": 170, "y": 125}
     }
 }

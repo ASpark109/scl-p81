@@ -4,49 +4,73 @@
         {
             "id": "rcsThrusterAL",
             "path": "../assets/images/rcs.png",
-            "position": {"x": -20, "y": -150},
+            "position": {"x": -15, "y": -15},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
             "angle": -90
         },
         {
             "id": "rcsThrusterBL",
             "path": "../assets/images/rcs.png",
-            "position": {"x": -20, "y": -150},
+            "position": {"x": -15, "y": 15},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
             "angle": 90
         },
         {
             "id": "rcsThrusterCL",
             "path": "../assets/images/rcs.png",
-            "position": {"x": -15, "y": -150},
+            "position": {"x": -15, "y": 0},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
             "angle": 180
         },
         {
             "id": "rcsThrusterAR",
             "path": "../assets/images/rcs.png",
-            "position": {"x": 20, "y": -150},
+            "position": {"x": 15, "y": -15},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
             "angle": -90
         },
         {
             "id": "rcsThrusterBR",
             "path": "../assets/images/rcs.png",
-            "position": {"x": 20, "y": -150},
+            "position": {"x": 15, "y": 15},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
             "angle": 90
         },
         {
             "id": "rcsThrusterCR",
             "path": "../assets/images/rcs.png",
-            "position": {"x": 15, "y": -150},
+            "position": {"x": 15, "y": 0},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0
+        },
+        {
+            "id": "solarPanelL",
+            "path": "../assets/images/solarPanel1L.png",
+            "position": {"x": -18, "y": 0},
+            "center": {"x": 1, "y": 0.5},
+            "scale": {"x":0.001, "y": 0.1},
+            "visible": true,
+            "angle": 0
+        },
+        {
+            "id": "solarPanelR",
+            "path": "../assets/images/solarPanel1R.png",
+            "position": {"x": 18, "y": 0},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x":0.001, "y": 0.1},
+            "visible": true,
             "angle": 0
         }
     ]

@@ -6,7 +6,7 @@
             "path": "../assets/images/rcs.png",
             "position": {"x": -20, "y": -150},
             "center": {"x": 0, "y": 0.5},
-            "scale": 1,
+            "scale": {"x": 1, "y": 1},
             "angle": -90
         }
     ]
