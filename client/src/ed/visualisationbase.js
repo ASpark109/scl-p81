@@ -297,32 +297,47 @@ export class VisualisationBase
 
                     rectangle.anchor.set(0.5, 0.5);
 
-                    //! Напевно треба зробити мап
+                    //! Напевно треба зробити мап щоб могти скривати спрайти
                     object.push(rectangle);
                 }
-
-                // const visualEffectsContainer = new PIXI.Container();
-                // const testEffect = PIXI.Sprite.from(this.images["rcs"])
-
-                // visualEffectsContainer.addChild(testEffect);
-                // this.test.addChild(visualEffectsContainer);
 
                 let icon = PIXI.Sprite.from(this.images["rocketIcon"])
                 icon.anchor.set(0.5, 0.5);
                 icon.visible = false;
 
-                // let icont = PIXI.Sprite.from('../assets/images/satellite.png')
-                // icont.scale.set(0.2, 0.2);
-                // icont.anchor.set(0.5, 0.5);
-                // this.#scIcons.addChild(icont)
+                let icont = PIXI.Sprite.from('../assets/images/satellite.png')
+                icont.scale.set(0.2, 0.2);
+                icont.anchor.set(0.5, 0.5);
+                
+
+                const absInfo = new PIXI.Container();
+
+                const circle = new PIXI.Graphics();
+                circle.beginFill(0x08a337);
+                circle.drawCircle(0, 0, 3);
+                circle.endFill();
+                circle.pivot.set(-1.5, 1.5);
+
+                const spacecraftName = new PIXI.Text(item.displayName, {
+                    fontFamily: "B612 Mono, monospace",
+                    fontSize: 13,
+                    fill: 0x08a337,
+                    align: "center"
+                });
+                spacecraftName.pivot.set(-10, 10);
+
+                absInfo.addChild(circle)
+                absInfo.addChild(spacecraftName)
+
+                this.#scIcons.addChild(absInfo)
 
                 const visualEffectsContainer = new VisualEffectsContainer(item.Name);
-                this.test.addChild(visualEffectsContainer);
 
                 let obj = {
                     "visual": object,
                     "visualEffects": visualEffectsContainer,
                     "visualAbstruct": icon,
+                    "info": absInfo,
                     "physical": composite.bodies,
                     "abstract": abstract,
                     "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
@@ -334,6 +349,8 @@ export class VisualisationBase
                 this.components.push(obj);
 
                 this.SystemStateMonitor.addObject(item.Name, composite.id)
+
+                this.test.addChild(visualEffectsContainer);
 
                 resolve(obj);
             }
@@ -512,10 +529,8 @@ export class VisualisationBase
             item.visualAbstruct.y = (item.abstract.position.y) * this.metersPerPixelAbstruct
             item.visualAbstruct.rotation = item.physical[0].angle;
 
-            let t = this.#scIcons.children[q]
-            t.x = (item.abstract.position.x) * (this.metersPerPixelAbstruct * this.currentScale) + this.test.x;
-            t.y = (item.abstract.position.y) * (this.metersPerPixelAbstruct * this.currentScale) + this.test.y;
-            t.rotation = item.physical[0].angle;
+            item.info.x = (item.abstract.position.x) * (this.metersPerPixelAbstruct * this.currentScale) + this.test.x;
+            item.info.y = (item.abstract.position.y) * (this.metersPerPixelAbstruct * this.currentScale) + this.test.y;
         }
 
         //this.environmentComponents[0].visual.position.set((0 - this.shiftx.x) * 10,
@@ -576,30 +591,18 @@ export class VisualisationBase
 
         this.informationOverlay.setSpacecraft(this.components[0]);
 
-        this.informationOverlay.setTargetObject(this.#findClosest());
+        this.informationOverlay.setTargetObject(index === 0 ? this.components[1] : this.components[index]);
+        this.informationOverlay.updateSpacecrafts(this.components);
     }
 
-    #findClosest()
+    setTargetObject(name)
     {
-        let closest = null;
-        let minDistSq = Infinity;
+        let index = this.components.findIndex(item => item.name === name)
 
-        for (let i = 1; i < this.components.length; i++)
-        {
-            const dx = this.components[i].abstract.position.x - this.components[0].abstract.position.x;
-            const dy = this.components[i].abstract.position.y - this.components[0].abstract.position.y;
+        if (index === -1 || index === 0)
+            return;
 
-            // квадрат відстані (швидше, ніж sqrt)
-            const distSq = dx * dx + dy * dy;
-
-            if (distSq < minDistSq)
-            {
-                minDistSq = distSq;
-                closest = this.components[i];
-            }
-        }
-
-        return closest;
+        this.informationOverlay.setTargetObject(this.components[index]);
     }
 
     setViewMode(isMapViewEnabled)
@@ -619,7 +622,7 @@ export class VisualisationBase
 
             for (let item of this.components)
             {
-                this.test.addChild(item.visualAbstruct);
+                //this.test.addChild(item.visualAbstruct);
                 this.test.addChild(this.environmentComponents[0].visual);
             }
 
@@ -637,10 +640,10 @@ export class VisualisationBase
         {
             this.abstructCameraView = false;
 
-            for (let item of this.components)
-            {
-                this.test.removeChild(item.visualAbstruct);
-            }
+            // for (let item of this.components)
+            // {
+            //     this.test.removeChild(item.visualAbstruct);
+            // }
             this.test.removeChild(this.environmentComponents[0].visual);
 
             this.scaleLevel = this.displayAreaScaleConf.initPhysicalViewScale;
@@ -648,7 +651,10 @@ export class VisualisationBase
 
             for (let item of this.components)
             {
-                this.test.addChild(...item.visual);
+                for (let v of item.visual)
+                {
+                    this.test.addChildAt(v, 0);
+                }
             }
 
             for (let item of this.#scIcons.children)
@@ -678,12 +684,10 @@ export class VisualisationBase
                 this.test.scale.x = s;
                 this.test.scale.y = s;
 
-                console.log(this.test.scale)
-
-                if (s < 0.1)
+                if (s <= 0.1)
                     this.informationOverlay.setVisibleFrame(true, s);
                 else
-                    this.informationOverlay.setVisibleFrame(false);
+                    this.informationOverlay.setVisibleFrame(false, s);
             }
         }
         else if (this.abstructCameraView)

@@ -9,7 +9,7 @@ import { FiMinus } from "react-icons/fi";
 import { FiPlus } from "react-icons/fi";
 import { LuOrbit } from "react-icons/lu";
 
-const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled, onFocusObjectChanged}) => {
+const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled, onFocusObjectChanged, onTargetObjectChanged}) => {
 
     return (
         <div className='functionalDisplayObjectAreaPanel'>
@@ -44,6 +44,7 @@ const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled, onF
             <div className="groupBorder"></div>
 
             <EditorPanelButtonGroup onSelectChange={(newObject) => {onFocusObjectChanged(newObject)}} className="testBtn"></EditorPanelButtonGroup>
+            <EditorPanelButtonGroup onSelectChange={(newObject) => {onTargetObjectChanged(newObject)}} className="testBtn"></EditorPanelButtonGroup>
         </div>        
     );
 

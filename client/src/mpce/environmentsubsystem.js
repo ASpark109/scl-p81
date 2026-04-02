@@ -136,7 +136,12 @@ export class EnvironmentSubSystem
 
     onSetFocusObj(name)
     {
-        this.#mVisualisationBase.setFocusObject(name)
+        this.#mVisualisationBase.setFocusObject(name);
+    }
+
+    onSetTargetObject(name)
+    {
+        this.#mVisualisationBase.setTargetObject(name)
     }
 
     start()

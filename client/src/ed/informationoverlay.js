@@ -31,7 +31,8 @@ export class InformationOverlay extends PIXI.Container
 
     #scale = 1;
 
-    #targetObjects = null;
+    #targetObject = null;
+    #spacecrafts = [];
 
     constructor()
     {
@@ -52,51 +53,67 @@ export class InformationOverlay extends PIXI.Container
         this.forc = new InformationField("force");
         this.angV = new InformationField("angular vel");
 
-        this.targetFrame = new PIXI.Container();
-        this.targetFrame.static = true;
-        this.square = new PIXI.Graphics();
-        this.square.lineStyle(1, 0x04db29); // товщина лінії, колір
-        this.square.drawRect(0, 0, 30, 30);
-        this.square.static = true;
-        this.square.pivot.set(15, 15);
-        this.targetName = new PIXI.Text("N/A", {
-            fill: 0x04db29,
-            fontSize: 12
-        });
-        this.targetName.anchor.set(0, 0.5);
-        this.targetName.x = this.square.height / 2 + 10;
-        this.targetName.y = 0;
-        this.targetFrame.addChild(this.targetName, this.square);
+        // -------------
+
+        this.indicatorsContainer = new PIXI.Container();
+        this.indicatorsContainer.static = true;
+
+        for (let i = 0; i < 10; i++)
+        {
+            let indicator = new PIXI.Container();
+            
+            let frame = new PIXI.Graphics();
+            frame.lineStyle(1, 0x04db29); // товщина лінії, колір
+            frame.drawRect(0, 0, 30, 30);
+            frame.static = true;
+            frame.pivot.set(15, 15);
+            let scName = new PIXI.Text("N/A", {
+                fill: 0x04db29,
+                fontSize: 12
+            });
+            scName.anchor.set(0, 0.5);
+            scName.x = frame.height / 2 + 10;
+            scName.y = 0;
+
+            indicator.addChild(frame, scName);
+            this.indicatorsContainer.addChild(indicator);
+        }
+
+        this.addChild(this.indicatorsContainer)
+        
+        // -------------
 
         this.gravPoint = PIXI.Sprite.from("../assets/images/surfArrow.png");
         this.gravPoint.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
         this.gravPoint.scale.set(1/5)
         this.gravPoint.pivot.set(this.gravPoint.width / 2, this.gravPoint.height / 2)
         this.gravPoint.position.set(CENTER_X, CENTER_Y);
-        this.gravPoint.static = true
+        this.gravPoint.static = true;
+        this.addChild(this.gravPoint)
+        
+        // -------------
 
-        this.targetPointer = new PIXI.Container();
+        this.targetInfoContainer = new PIXI.Container();
+        this.targetInfoContainer.static = true;
+        this.targetPointer = PIXI.Sprite.from("../assets/images/arrow-up.svg");
+        this.targetPointer.anchor.set(0.5);
+        this.targetPointer.x = 0;
+        this.targetPointer.y = 0;
         this.targetPointer.static = true;
-        this.targetArrow = PIXI.Sprite.from("../assets/images/arrow-up.svg");
-        this.targetArrow.anchor.set(0.5);
-        this.targetArrow.x = 0;
-        this.targetArrow.y = 0;
-        this.targetArrow.static = true;
 
-        this.pointerInfo = new PIXI.Text("test", {
+        this.targetInfo = new PIXI.Text("test", {
             fill: 0x04db29,
             fontSize: 17
         });
-        this.pointerInfo.anchor.set(0, 0.5);
-        this.pointerInfo.x = this.targetArrow.width / 2 + 30;
-        this.pointerInfo.y = 0;
-        this.pointerInfo.static = true;
+        this.targetInfo.anchor.set(0, 0.5);
+        this.targetInfo.x = this.targetPointer.width / 2 + 30;
+        this.targetInfo.y = 0;
+        this.targetInfo.static = true;
 
-        this.targetPointer.addChild(this.targetArrow);
-        this.targetPointer.addChild(this.pointerInfo);
-
-        this.addChild(this.targetPointer)
-        this.addChild(this.gravPoint)
+        this.targetInfoContainer.addChild(this.targetPointer);
+        this.targetInfoContainer.addChild(this.targetInfo);
+        this.addChild(this.targetInfoContainer)
+        // -------------
 
         this.addChild(
             this.name,
@@ -109,7 +126,6 @@ export class InformationOverlay extends PIXI.Container
             this.mass,
             this.forc,
             this.angV,
-            this.targetFrame
         );
 
         this.#layoutVertical();
@@ -149,19 +165,22 @@ export class InformationOverlay extends PIXI.Container
         this.angV.valueText.text = (this.#focusObject.physical[0].angularVelocity * 60 * 180 / Math.PI).toFixed(4) + " deg/s";
         //---------------
 
-        let x = this.#targetObjects.abstract.position.x - this.#focusObject.abstract.position.x
-        let y = this.#targetObjects.abstract.position.y - this.#focusObject.abstract.position.y
+        // console.log(this.#targetObject)
+        // console.log(this.#focusObject)
+
+        let x = this.#targetObject.abstract.position.x - this.#focusObject.abstract.position.x
+        let y = this.#targetObject.abstract.position.y - this.#focusObject.abstract.position.y
 
         let dis = Math.hypot(x, y);
 
-        let vx = this.#focusObject.abstract.velocity.x - this.#targetObjects.abstract.velocity.x;
-        let vy = this.#focusObject.abstract.velocity.y - this.#targetObjects.abstract.velocity.y;
-
-        this.pointerInfo.text = dis.toFixed(2) + " m\n" + Math.abs(vx).toFixed(2) + " m/s\n" + Math.abs(vy).toFixed(2) + " m/s";
+        let vx = this.#focusObject.abstract.velocity.x - this.#targetObject.abstract.velocity.x;
+        let vy = this.#focusObject.abstract.velocity.y - this.#targetObject.abstract.velocity.y;
 
         let target = this.normalizeAndAngle(x, y, 250)
-        this.targetPointer.position.set(CENTER_X + target.unit.x, CENTER_Y + target.unit.y)
-        this.targetArrow.rotation = target.angle
+        this.targetInfo.text = dis.toFixed(2) + " m\n" + Math.abs(vx).toFixed(2) + " m/s\n" + Math.abs(vy).toFixed(2) + " m/s";
+        this.targetPointer.rotation = target.angle
+
+        this.targetInfoContainer.position.set(CENTER_X + target.unit.x, CENTER_Y + target.unit.y)
         //---------------
 
         let gravPoint = this.normalizeAndAngle(-this.#focusObject.abstract.position.x, -this.#focusObject.abstract.position.y, 100)
@@ -169,10 +188,19 @@ export class InformationOverlay extends PIXI.Container
         this.gravPoint.rotation = gravPoint.angle
         //---------------
 
-        this.targetFrame.x = CENTER_X + x * this.#scale;
-        this.targetFrame.y = CENTER_Y + y * this.#scale;
+        for (let i = 0; i < this.#spacecrafts.length && i < 10; i++)
+        {
+            let indicator = this.indicatorsContainer.children[i];
+            const spacecraft = this.#spacecrafts[i];
 
-        //console.log(this.square.x + " " + this.square.y)
+            let x = spacecraft.abstract.position.x - this.#focusObject.abstract.position.x
+            let y = spacecraft.abstract.position.y - this.#focusObject.abstract.position.y
+
+            indicator.x = CENTER_X + x * this.#scale;
+            indicator.y = CENTER_Y + y * this.#scale;
+        }
+        //this.targetInfo.x = CENTER_X + x * this.#scale;
+        //this.targetInfo.y = CENTER_Y + y * this.#scale;
     }
 
     normalizeAndAngle(x, y, r = 250)
@@ -206,14 +234,35 @@ export class InformationOverlay extends PIXI.Container
 
     setTargetObject(newObject)
     {
-        this.#targetObjects = newObject;
-        this.targetName.text = this.#targetObjects.name
+        this.#targetObject = newObject;
     }
 
     setVisibleFrame(enable, scale)
     {
-        console.log(enable + " " + scale)
+        this.indicatorsContainer.visible = enable;
         this.#scale = scale * 10;
-        this.targetFrame.visible = enable;
+    }
+
+    updateSpacecrafts(spacecrafts)
+    {
+        this.#spacecrafts = spacecrafts;
+
+        for (let i = 0; i < this.indicatorsContainer.children.length; i++)
+        {
+            const sc = this.#spacecrafts[i];
+            const indicator = this.indicatorsContainer.children[i];
+
+            if (sc !== undefined)
+            {       
+                indicator.children[1].text = sc.name;
+                indicator.visible = true;
+            }
+            else
+            {
+                indicator.visible = false;
+            }
+        }
+
+        console.log(this.indicatorsContainer.children)
     }
 }
