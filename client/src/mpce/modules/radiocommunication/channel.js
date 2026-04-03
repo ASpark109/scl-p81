@@ -1,10 +1,11 @@
 export class Channel
 {
     #receivers = [];
+    #freq = null;
 
-    constructor()
+    constructor(freq)
     {
-
+        this.#freq = freq;
     }
 
     addReceiver(receiver)
@@ -24,6 +25,7 @@ export class Channel
 
     sendSignal(signal, position, bitRate)
     {
+        console.log(signal)
         for (let receiver of this.#receivers)
         {
             let recPos = receiver.position();
@@ -32,26 +34,36 @@ export class Channel
             let dis = Math.sqrt(x*x + y*y);
             let t = dis / 299792458;
 
-            //console.log(dis + " " + t)
-
             setTimeout(()=>{
-                receiver.signalReceived(signal[0]);
+                // повідомлення наразі відправляється цілим пакетом а не по частинах
 
-                let counter = 1;
-                const send = setInterval(() => {
-                    if (counter <= signal.length - 1)
-                    {
-                        receiver.signalReceived(signal[counter]);
-                        counter++;
-                    }
-                    else
-                    {
-                        clearInterval(send);
-                    }
-                }, 1000 / bitRate);
+                const eventName = "onSignalReceived";
+                let iframe = receiver.iframe();
+
+                if (iframe)
+                {
+                    iframe.current?.contentWindow.postMessage(
+                        { type: "eventMessage", eventName, data: signal},
+                    "*");
+                }
+
+                // receiver.signalReceived(signal[0]);
+
+                // let counter = 1;
+                // const send = setInterval(() => {
+                //     if (counter <= signal.length - 1)
+                //     {
+                //         receiver.signalReceived(signal[counter]);
+                //         counter++;
+                //     }
+                //     else
+                //     {
+                //         clearInterval(send);
+                //     }
+                // }, 1000 / bitRate);
 
                 window.parent.postMessage(
-                { type: "ground-communication-system", signal, bitRate},
+                { type: "ground-communication-system", signal, freq: this.#freq, bitRate},
                 "*");
 
             }, t * 1000);

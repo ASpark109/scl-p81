@@ -79,9 +79,9 @@ export class Transmitter
         // фактична потужність може бути меншою за затребувану, в такому разі напевно треба додавати шум в сигнал
         // або автоматично зменшувати бітрейт
 
-        setTimeout(() => {
-            this._electricalDevice.setPower(this.#minPower);
-        }, msg.length * 1000 / this.#bitRate);
+        // setTimeout(() => {
+        //     this._electricalDevice.setPower(this.#minPower);
+        // }, msg.length * 1000 / this.#bitRate);
 
         return true;
     }

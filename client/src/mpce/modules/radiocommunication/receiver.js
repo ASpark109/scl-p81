@@ -1,4 +1,5 @@
 import { ElectricalDevice } from "../electricaldevice";
+import { UserInteractionInterface } from "../../userinteractioninterface";
 
 export class Receiver
 {
@@ -22,6 +23,9 @@ export class Receiver
         this.#absObj = absObj;
 
         this._electricalDevice = new ElectricalDevice();
+        this._iframe = UserInteractionInterface.getIframeWithId(absObj.id, null);
+
+        console.log(this._iframe)
 
         this.setCarrierFreq(this.#minCarrierFreq);
     }
@@ -34,16 +38,6 @@ export class Receiver
     setOnSignal(func)
     {
         this.onSignalReceived = func;
-    }
-
-    signalReceived(signal)
-    {
-        this.#signalsStorage.push(signal);
-    }
-
-    signalsStorage()
-    {
-        return this.#signalsStorage;
     }
 
     status()
@@ -75,6 +69,12 @@ export class Receiver
     }
 
     // =============== SIGNAL HUB ===============
+
+    iframe()
+    {
+        console.log(this._iframe)
+        return this._iframe;
+    }
 
     position()
     {
