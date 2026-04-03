@@ -139,7 +139,7 @@ export class SystemControllModel
             // 1. Власні властивості
             for (const key of Object.keys(obj))
             {
-                if (key === "_electricalDevice")
+                if (key.startsWith("_"))
                     continue;
                 
                 const value = obj[key];
