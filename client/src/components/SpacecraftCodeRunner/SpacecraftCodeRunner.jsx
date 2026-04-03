@@ -71,6 +71,9 @@ function SpacecraftCodeRunner({code,
                                         isError = true
                                         return arg.stack;
                                     }
+                                    else if (arg instanceof Uint8Array) {
+                                        return Array.from(arg).join(", ");
+                                    }
                                     else if (typeof arg === "object") {
                                         return JSON.stringify(arg, null, 2);
                                     }
@@ -142,7 +145,7 @@ function SpacecraftCodeRunner({code,
                                 this.#commands.push(cmd);
                             }
 
-                            showAllCommands()
+                            allCommands()
                             {
                                 return this.#commands.map(f => f.name);
                             }
@@ -267,7 +270,6 @@ function SpacecraftCodeRunner({code,
                                     result[key] = transformMethods(val);
                                 }
                             }
-
                             return result;
                         }
 

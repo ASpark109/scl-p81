@@ -89,18 +89,21 @@ export default function CommandInterface({isVisible, mode}) {
     }
 
     const handleSend = () => {
-        if (text.trim() !== "")
+        const lines = text.split("\n");
+        const newCall = lines[lines.length - 1].trim();
+        if (newCall !== "")
         {
-            const lines = text.split("\n");
-            const newCall = lines[lines.length - 1];
             parseCall(newCall);
-
             setCallsHistory(prevCalls => {
                 if (prevCalls[prevCalls.length - 1] === newCall)
                     return [...prevCalls];
 
                 return [...prevCalls, newCall]
             });
+        }
+        else if (newCall === "")
+        {
+            setText(text => text + "\n");
         }
     };
 
@@ -150,6 +153,15 @@ export default function CommandInterface({isVisible, mode}) {
                 lastCommandFromHistory(nextCounter);
 
                 return nextCounter;
+            });
+            break;
+        case "Backspace":
+            e.preventDefault();
+            setText(text => {
+                if (text.at(-1) !== "\n") {
+                    return text.slice(0, -1);
+                }
+                return text;
             });
             break;
         }
