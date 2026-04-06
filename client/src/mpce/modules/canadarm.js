@@ -27,7 +27,7 @@ export class Canadarm
                         physicalModel.bodies.find(item => item.name === "canadarm3"),
                         physicalModel.bodies.find(item => item.name === "canadarm4")];
         
-        this.#joints = joints.map(joint => ({joint: joint, direction: 0, angle: 0}));
+        this.#joints = joints.map(joint => ({joint: joint, direction: 0, angle: 0, vel: 0}));
 
         ModuleBase.updateList.push(this.#update.bind(this));
     }
@@ -36,23 +36,12 @@ export class Canadarm
     {
         if (this.#isEnabled)
         {
-            for (let joint of this.#joints)
-            {
-                if (joint.direction === 1)
-                {
-                    joint.angle += this.#directions.get(1)
 
-                }
-                else if (joint.direction === -1)
-                {
-                    joint.angle += this.#directions.get(-1)
-                }
-            }
         }
 
-        Matter.Body.setAngle(this.#joints[1].joint, this.#joints[1].angle);
-        Matter.Body.setAngle(this.#joints[2].joint, this.#joints[1].angle + this.#joints[2].angle);
-        Matter.Body.setAngle(this.#joints[3].joint, this.#joints[1].angle + this.#joints[2].angle + this.#joints[3].angle);
+        Matter.Body.setAngularVelocity(this.#joints[1].joint, this.#joints[0].joint.angularVelocity + this.#joints[1].vel);
+        Matter.Body.setAngularVelocity(this.#joints[2].joint, this.#joints[1].joint.angularVelocity + this.#joints[2].vel);
+        Matter.Body.setAngularVelocity(this.#joints[3].joint, this.#joints[2].joint.angularVelocity + + this.#joints[3].vel);
     }
 
     // ================ interface ================
@@ -61,7 +50,7 @@ export class Canadarm
     {
         if (index >= 0 && index < this.#joints.length && this.#directions.has(direction))
         {
-            this.#joints[index].direction = direction;
+            this.#joints[index].vel = this.#directions.get(direction);
         }
     }
 
@@ -69,8 +58,10 @@ export class Canadarm
     {
         if (index >= 1 && index < this.#joints.length)
         {
-            if (this.#joints[index].direction !== 0)
-                this.#joints[index].direction = 0;
+            if (this.#joints[index].vel !== 0)
+            {
+                this.#joints[index].vel = 0;
+            }
         }
     }
 
