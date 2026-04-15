@@ -7,14 +7,14 @@ import Matter from 'matter-js';
 export class SpaceCraftBuilder{
 
     #currentId = 0;
-    #numberOfObjects = 0;
-
     //#configurableBuilder = null
 
-    constructor(numberOfObjects)
+    constructor(mode)
     {
-        this.#numberOfObjects = numberOfObjects
-
+        if (mode === "rt")
+        {
+            this.#currentId++;
+        }
     }
 
     buildSpaceCraft(confName)
@@ -29,14 +29,15 @@ export class SpaceCraftBuilder{
         let conf = Configurationsfactory.getConfiguration(confName, "spaceCraftData");
 
         // нащо для кожного апарату створювати новий ConfigurableBuilder? Який смисл?
-        let builder = new ConfigurableBuilder(this.#getNewId(), conf, this.#numberOfObjects);
+        let builder = new ConfigurableBuilder(this.#getNewId(), conf);
 
         return builder.build();
     }
 
     #getNewId()
     {
-        return this.#currentId++;
+        this.#currentId += 2
+        return this.#currentId;
     }
 }
 
@@ -44,16 +45,14 @@ export class SpaceCraftBuilder{
 
 class ConfigurableBuilder
 {
-    constructor(id, conf, numberOfObjects)
+    constructor(id, conf)
     {
         this.#id = id;
         this.#conf = conf;
-        this.#numberOfObjects = numberOfObjects;
     }
 
     #id = null;
     #conf = null;
-    #numberOfObjects = 0;
     #bodies = [];
     #constraints = [];
 
@@ -104,7 +103,7 @@ class ConfigurableBuilder
                                                 friction: 1,
                                                 frictionAir: 0,
                                                 isSensor: conf.isSensor,
-                                                mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1, // Kg -> T
+                                                mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1000000000000000, // Kg -> T
                                                 dockId: conf.isDockingPort ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 docDir: conf.isDockingPort ? conf.docDir : null,
@@ -113,8 +112,10 @@ class ConfigurableBuilder
                                                 name: conf.name,
                                                 type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
-                                                imageDev: conf.image_dev,
-                                                imageMain: conf.image_main,
+                                                isVisualPart: conf.isVisualPart,
+                                                imageDev: conf.isVisualPart ? conf.image_dev : null,
+                                                imageMain: conf.isVisualPart ? conf.image_main : null,
+                                                zIndex: conf.zIndex ? conf.zIndex : 0
                                             });
 
         return part;
@@ -173,8 +174,6 @@ class ConfigurableBuilder
 
         const verticesToString = conf.vertices.map(v => `${v.x} ${v.y}`).join("  ");
 
-        console.log(verticesToString)
-
         const vertices = Matter.Vertices.fromPath(verticesToString);
         let part = Matter.Bodies.fromVertices(0, 0, vertices,
                                             {
@@ -191,10 +190,12 @@ class ConfigurableBuilder
                                                 name: conf.name,
                                                 type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
-                                                imageDev: conf.image_dev,
-                                                imageMain: conf.image_main,
+                                                isVisualPart: conf.isVisualPart,
+                                                imageDev: conf.isVisualPart ? conf.image_dev : null,
+                                                imageMain: conf.isVisualPart ? conf.image_main : null,
+                                                zIndex: conf.zIndex ? conf.zIndex : 0
                                             });
-
+        
         return part;
     }
 }
