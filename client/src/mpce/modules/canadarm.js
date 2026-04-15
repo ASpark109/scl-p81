@@ -29,6 +29,10 @@ export class Canadarm
         
         this.#joints = joints.map(joint => ({joint: joint, direction: 0, angle: 0, vel: 0}));
 
+        this.#lock(1)
+        this.#lock(2)
+        this.#lock(3)
+
         ModuleBase.updateList.push(this.#update.bind(this));
     }
 
@@ -50,6 +54,7 @@ export class Canadarm
     {
         if (index >= 0 && index < this.#joints.length && this.#directions.has(direction))
         {
+            this.#unlock(index)
             this.#joints[index].vel = this.#directions.get(direction);
         }
     }
@@ -61,11 +66,15 @@ export class Canadarm
             if (this.#joints[index].vel !== 0)
             {
                 this.#joints[index].vel = 0;
+
+                setTimeout(() => {
+                    this.#lock(index)
+                }, 1000);
             }
         }
     }
 
-    lock(index)
+    #lock(index)
     {
         if (index >= 1 && index <= 3)
         {
@@ -88,7 +97,7 @@ export class Canadarm
         }
     }
 
-    unlock(index)
+    #unlock(index)
     {
         let constraint = this.#physicalModel.constraints.find(item => item.index === index);
         Matter.Composite.remove(this.#physicalModel, constraint);
