@@ -50,7 +50,7 @@ export class VisualisationBase
         0xDB7A00,
     ]
 
-    constructor()
+    constructor(mode)
     {
         this.application = null;
         this.components = [];
@@ -67,6 +67,7 @@ export class VisualisationBase
         this.displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
         this.currentScale = 0;
         this.orbitUpdateCounter = 0;
+        this.mode = mode;
 
         this.SystemStateMonitor = null;
             
@@ -79,6 +80,8 @@ export class VisualisationBase
     {
         falcon9fs: falcon9fs,
         falcon9leg: falcon9leg,
+        // falcon9fsDev: falcon9fsDev,
+
         rocketIcon: satellite,
         planet: planet,
         dockingPort: dockingPort,
@@ -199,17 +202,18 @@ export class VisualisationBase
         //this.addGalaxies(this.application, 10);
     }
 
-    initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView, mode)
+    initialize(container, pixiSpaceCraftsSystemStateContainer, isMapView)
     {
         this.application = new PIXI.Application({
             width: DISPLAY_WIDTH,
             height: DISPLAY_HEIGHT,
-            backgroundColor: 0x020D19,
+            backgroundColor: 0x0b1522,
             antialias: true,
             resolution: window.devicePixelRatio || 1,
             });
 
         this.test = new PIXI.Container();
+        this.test.sortableChildren = true;
         this.application.stage.addChild(this.test);
 
         this.informationOverlay = new InformationOverlay()
@@ -235,7 +239,7 @@ export class VisualisationBase
         this.application.stage.addChild(this.#orbits)
         this.application.stage.addChild(this.#scIcons)
 
-        // if (mode === "rt")
+        // if (this.mode === "rt")
         {
             this.#createBackground();
         }
@@ -289,26 +293,47 @@ export class VisualisationBase
         return new Promise((resolve) => {
             if (item.type == "spacecraft")
             {
-                let object = []
+                const visualEffectsContainer = new VisualEffectsContainer(item.Name, this.mode);
+                visualEffectsContainer.sortableChildren = true;
+
+                let spacecraftVisualParts = [];
+                let spacecraftPhysicalParts = [];
 
                 for (const body of composite.bodies)
                 {
-                    let rectangle = PIXI.Sprite.from(this.images[body.imageDev]);
+                    if (body.isVisualPart)
+                    {
+                        const imageMap = {
+                            dev: body.imageDev,
+                            rt: body.imageMain
+                        };
 
-                    rectangle.anchor.set(0.5, 0.5);
+                        let visualPart = PIXI.Sprite.from(imageMap["rt"]);
 
-                    //! Напевно треба зробити мап щоб могти скривати спрайти
-                    object.push(rectangle);
+                        visualPart.anchor.set(0.5, 0.5);
+                        visualPart.scale.set(0.1);
+                        visualPart.zIndex = body.zIndex ? body.zIndex : 0;
+                        
+                        if (body.name === "stage")
+                        {
+                            visualPart.scId  = item.Name;
+                        }
+                        else
+                        {
+                            visualPart.scId  = null;
+                        }
+
+                        //! Напевно треба зробити мап щоб могти скривати спрайти
+                        spacecraftVisualParts.push(visualPart);
+                        spacecraftPhysicalParts.push(body)
+
+                        visualEffectsContainer.addChild(visualPart)
+                    }
                 }
 
                 let icon = PIXI.Sprite.from(this.images["rocketIcon"])
                 icon.anchor.set(0.5, 0.5);
                 icon.visible = false;
-
-                let icont = PIXI.Sprite.from('../assets/images/satellite.png')
-                icont.scale.set(0.2, 0.2);
-                icont.anchor.set(0.5, 0.5);
-                
 
                 const absInfo = new PIXI.Container();
 
@@ -329,27 +354,28 @@ export class VisualisationBase
                 absInfo.addChild(circle)
                 absInfo.addChild(spacecraftName)
 
-                this.#scIcons.addChild(absInfo)
-
-                const visualEffectsContainer = new VisualEffectsContainer(item.Name);
+                this.#scIcons.addChild(absInfo);
 
                 let obj = {
-                    "visual": object,
+                    "visual": spacecraftVisualParts,
                     "visualEffects": visualEffectsContainer,
                     "visualAbstruct": icon,
                     "info": absInfo,
-                    "physical": composite.bodies,
+                    "physical": spacecraftPhysicalParts,
                     "abstract": abstract,
                     "mountingPoint": composite.mountingPoint, //На скільки я зараз розумію це поле буде оновлюватися при стиковці/розстиковці апаратів
                     "id": composite.id,
                     "name": item.displayName
                 }
 
-                this.test.addChild(...object);
+                // for (const sprite of spacecraftVisualParts) {
+                //     visualEffectsContainer.addChild(sprite);
+                // }
+                
                 this.components.push(obj);
-
                 this.SystemStateMonitor.addObject(item.Name, composite.id)
 
+                console.log(visualEffectsContainer)
                 this.test.addChild(visualEffectsContainer);
 
                 resolve(obj);
@@ -359,22 +385,21 @@ export class VisualisationBase
                 const radiusPx = Math.max(2, Math.round(item.Radius * this.metersPerPixelAbstruct));
                 const outerRadius = Math.round(radiusPx * 1.03);
 
-                let cnv = this.craateGradientCanvas(outerRadius, radiusPx);
-
-                const atmosphereTex = PIXI.Texture.from(cnv);
-                const atmosphere = new PIXI.Sprite(atmosphereTex);
-                atmosphere.anchor.set(0.5);
-                atmosphere.x = 0;
-                atmosphere.y = 0;
+                // let cnv = this.craateGradientCanvas(outerRadius, radiusPx);
 
                 const circle = new PIXI.Graphics();
-                circle.beginFill(0x011591);
+                
+                circle.beginFill(0x4ec3ff, 0.4);
+                circle.drawCircle(0, 0, radiusPx + 5);
+
+                circle.lineStyle(1, 0x3a9aff);
+                circle.beginFill(0x00467b);
                 circle.drawCircle(0, 0, radiusPx);
                 circle.endFill();
 
                 const planetContainer = new PIXI.Container();
-                planetContainer.addChild(atmosphere);
                 planetContainer.addChild(circle);
+                planetContainer.zIndex = 999;
 
                 let obj = {
                     "visual": planetContainer,
@@ -709,7 +734,15 @@ export class VisualisationBase
         }
 
         this.updateOrbits()
-        console.log(this.currentScale)
+    }
+
+    setInteriorView()
+    {
+        let b = this.test.children.find(item => item.spaceCraftName === this.components[0].visual[0].scId)
+        
+        let temp = this.components[0].visual[0].zIndex;
+        this.components[0].visual[0].zIndex = b.zIndex;
+        b.zIndex = temp; 
     }
 
     stop()
