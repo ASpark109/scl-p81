@@ -8,6 +8,7 @@ import EditorPanelButtonGroup from '../EditorPanelButtonGroup/EditorPanelButtonG
 import { FiMinus } from "react-icons/fi";
 import { FiPlus } from "react-icons/fi";
 import { LuOrbit } from "react-icons/lu";
+import { BsLayersHalf } from "react-icons/bs";
 
 const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled, onFocusObjectChanged, onTargetObjectChanged}) => {
 
@@ -16,8 +17,8 @@ const FunctionalDisplayObjectAreaPanel = ({onClick, scale, isMapViewEnabled, onF
             <button className="panel-button">
                 <span>button1</span>
             </button>
-            <button className="panel-button">
-                <span>button2</span>
+            <button className="panel-button" onClick={() => onClick("interior")}>
+                <BsLayersHalf className="icon" />
             </button>
             <button className="panel-button" onClick={() => onClick("info")}>
                 <span>info</span>

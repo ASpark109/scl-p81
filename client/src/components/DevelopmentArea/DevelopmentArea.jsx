@@ -131,6 +131,9 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 		case "info":
 			environmentRef.current.setInfoOverlayVisible();
 			break;
+		case "interior":
+			environmentRef.current.interiorView();
+			break
 		}
 	}
 

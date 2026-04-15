@@ -40,7 +40,7 @@ export class EnvironmentSubSystem
             return false;
         }
 
-        this.#mVisualisationBase = new VisualisationBase();
+        this.#mVisualisationBase = new VisualisationBase(this.mode);
 
         if (this.#mVisualisationBase == null)
         {
@@ -174,5 +174,10 @@ export class EnvironmentSubSystem
     setInfoOverlayVisible()
     {
         this.#mVisualisationBase.setOverlayInfoVisible();
+    }
+
+    interiorView()
+    {
+        this.#mVisualisationBase.setInteriorView();
     }
 }
