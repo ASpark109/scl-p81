@@ -152,7 +152,7 @@ export function build_harmony_module(physicalModel, abstructModel, visualEffects
 
     // *** ECLSS ***
 
-    let eclss = new ECLSS();
+    let eclss = new ECLSS(visualEffects);
     
     // *** ECLSS ***
 

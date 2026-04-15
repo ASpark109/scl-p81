@@ -1,12 +1,75 @@
+class CLS // Crew Lighting System
+{
+    #visualEffects = null;
+    #isEnabled = false;
+    #currentLightMode = null;
+
+    constructor(visualEffects)
+    {
+        this.#visualEffects = visualEffects;
+        this.#visualEffects.setVisible("interiorLightDark", true);
+    }
+
+    setLightMode(mode)
+    {
+        if (this.#isEnabled)
+        {
+            switch(mode)
+            {
+            case "blue":
+                this.#visualEffects.setVisible(this.#currentLightMode, false);
+                this.#visualEffects.setVisible("interiorLightBlue", true);
+                this.#currentLightMode = "interiorLightBlue";
+                break;
+            case "green":
+                this.#visualEffects.setVisible(this.#currentLightMode, false);
+                this.#visualEffects.setVisible("interiorLightGreen", true);
+                this.#currentLightMode = "interiorLightGreen";
+                break;
+            case "purple":
+                this.#visualEffects.setVisible(this.#currentLightMode, false);
+                this.#visualEffects.setVisible("interiorLightPurple", true);
+                this.#currentLightMode = "interiorLightPurple";
+                break;
+            case "red":
+                this.#visualEffects.setVisible(this.#currentLightMode, false);
+                this.#visualEffects.setVisible("interiorLightRed", true);
+                this.#currentLightMode = "interiorLightRed";
+                break;
+            }
+        }
+    }
+
+    enable()
+    {
+        if (!this.#isEnabled)
+        {
+            this.#isEnabled = true;
+            this.#visualEffects.setVisible("interiorLightDark", false);
+        }
+    }
+
+    disable()
+    {
+        if (this.#isEnabled)
+        {
+            this.#isEnabled = false;
+            this.#visualEffects.setVisible(this.#currentLightMode, false);
+            this.#visualEffects.setVisible("interiorLightDark", true);
+        }
+    }
+}
+
 export class ECLSS
 {
     #temperature = 21.6;
     #pressure = 101.3;
     #humidity = 43.8;
 
-    constructor()
+    constructor(visualEffects = null)
     {
-
+        if (visualEffects)
+            this.CLS = new CLS(visualEffects);
     }
 
     info()
