@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { FaLeaf } from 'react-icons/fa';
 
 const CENTER_X = 2300 / 3;
 const CENTER_Y = 1170 / 2;
@@ -165,27 +166,28 @@ export class InformationOverlay extends PIXI.Container
         this.angV.valueText.text = (this.#focusObject.physical[0].angularVelocity * 60 * 180 / Math.PI).toFixed(4) + " deg/s";
         //---------------
 
-        // console.log(this.#targetObject)
-        // console.log(this.#focusObject)
+        if (this.#targetObject)
+        {
+            let x = this.#targetObject.abstract.position.x - this.#focusObject.abstract.position.x
+            let y = this.#targetObject.abstract.position.y - this.#focusObject.abstract.position.y
 
-        let x = this.#targetObject.abstract.position.x - this.#focusObject.abstract.position.x
-        let y = this.#targetObject.abstract.position.y - this.#focusObject.abstract.position.y
+            let dis = Math.hypot(x, y);
 
-        let dis = Math.hypot(x, y);
+            let vx = this.#focusObject.abstract.velocity.x - this.#targetObject.abstract.velocity.x;
+            let vy = this.#focusObject.abstract.velocity.y - this.#targetObject.abstract.velocity.y;
 
-        let vx = this.#focusObject.abstract.velocity.x - this.#targetObject.abstract.velocity.x;
-        let vy = this.#focusObject.abstract.velocity.y - this.#targetObject.abstract.velocity.y;
+            let target = this.normalizeAndAngle(x, y, 250)
+            this.targetInfo.text = dis.toFixed(2) + " m\n" + Math.abs(vx).toFixed(2) + " m/s\n" + Math.abs(vy).toFixed(2) + " m/s";
+            this.targetPointer.rotation = target.angle
 
-        let target = this.normalizeAndAngle(x, y, 250)
-        this.targetInfo.text = dis.toFixed(2) + " m\n" + Math.abs(vx).toFixed(2) + " m/s\n" + Math.abs(vy).toFixed(2) + " m/s";
-        this.targetPointer.rotation = target.angle
-
-        this.targetInfoContainer.position.set(CENTER_X + target.unit.x, CENTER_Y + target.unit.y)
+            this.targetInfoContainer.position.set(CENTER_X + target.unit.x, CENTER_Y + target.unit.y)
+        }
         //---------------
 
         let gravPoint = this.normalizeAndAngle(-this.#focusObject.abstract.position.x, -this.#focusObject.abstract.position.y, 100)
         this.gravPoint.position.set(CENTER_X + gravPoint.unit.x, CENTER_Y + gravPoint.unit.y)
         this.gravPoint.rotation = gravPoint.angle
+        
         //---------------
 
         for (let i = 0; i < this.#spacecrafts.length && i < 10; i++)
@@ -235,6 +237,15 @@ export class InformationOverlay extends PIXI.Container
     setTargetObject(newObject)
     {
         this.#targetObject = newObject;
+
+        if (!this.#targetObject)
+        {
+            this.targetInfoContainer.visible = false;
+        }
+        else
+        {
+            this.targetInfoContainer.visible = true;
+        }
     }
 
     setVisibleFrame(enable, scale)
