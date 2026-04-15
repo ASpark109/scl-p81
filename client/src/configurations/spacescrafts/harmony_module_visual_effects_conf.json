@@ -3,48 +3,36 @@
     [
         {
             "id": "rcsThrusterAL1",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -36, "y": -22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -32, "y": -22},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": -90
         },
         {
-            "id": "rcsThrusterBL1",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -36, "y": -22},
-            "center": {"x": 0, "y": 0.5},
-            "scale": {"x": 0.1, "y": 0.1},
-            "angle": 90
-        },
-        {
             "id": "rcsThrusterCL1",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -36, "y": -22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -33, "y": -20},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 180
         },
         {
-            "id": "rcsThrusterAL2",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -36, "y": 22},
-            "center": {"x": 0, "y": 0.5},
-            "scale": {"x": 0.1, "y": 0.1},
-            "angle": -90
-        },
-        {
             "id": "rcsThrusterBL2",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -36, "y": 22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -32, "y": 22},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 90
         },
         {
             "id": "rcsThrusterCL2",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -36, "y": 22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -33, "y": 20},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 180
@@ -57,51 +45,116 @@
 
         {
             "id": "rcsThrusterAR1",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 36, "y": -22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 29, "y": -22},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": -90
         },
         {
-            "id": "rcsThrusterBR1",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 36, "y": -22},
-            "center": {"x": 0, "y": 0.5},
-            "scale": {"x": 0.1, "y": 0.1},
-            "angle": 90
-        },
-        {
             "id": "rcsThrusterCR1",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 36, "y": -22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 31, "y": -20},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 0
         },
         {
-            "id": "rcsThrusterAR2",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 36, "y": 22},
-            "center": {"x": 0, "y": 0.5},
-            "scale": {"x": 0.1, "y": 0.1},
-            "angle": -90
-        },
-        {
             "id": "rcsThrusterBR2",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 36, "y": 22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 29, "y": 22},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 90
         },
         {
             "id": "rcsThrusterCR2",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 36, "y": 22},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 31, "y": 20},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 0
+        },
+
+        {
+            "id": "solarPanelL",
+            "pathRt": "../assets/images/rt/solarPanelL.svg",
+            "pathDev": "../assets/images/dev/solarPanelL.svg",
+            "position": {"x": -21, "y": -24.5},
+            "center": {"x": 1, "y": 0.5},
+            "scale": {"x":0.07, "y": 0.05},
+            "visible": true,
+            "angle": 90
+        },
+
+        {
+            "id": "interior",
+            "pathRt": "../assets/images/rt/harmonyModule_interior.svg",
+            "position": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": true,
+            "angle": 0,
+            "zIndex": 100
+        },
+
+        {
+            "id": "interiorLightDark",
+            "pathRt": "../assets/images/rt/harmonyModule_interior_dark.svg",
+            "position": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0,
+            "zIndex": 101
+        },
+
+        {
+            "id": "interiorLightBlue",
+            "pathRt": "../assets/images/rt/harmonyModule_interior_blue.svg",
+            "position": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0,
+            "zIndex": 101
+        },
+
+        {
+            "id": "interiorLightGreen",
+            "pathRt": "../assets/images/rt/harmonyModule_interior_green.svg",
+            "position": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0,
+            "zIndex": 101
+        },
+
+        {
+            "id": "interiorLightPurple",
+            "pathRt": "../assets/images/rt/harmonyModule_interior_purple.svg",
+            "position": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0,
+            "zIndex": 101
+        },
+
+        {
+            "id": "interiorLightRed",
+            "pathRt": "../assets/images/rt/harmonyModule_interior_red.svg",
+            "position": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0,
+            "zIndex": 101
         }
     ]
 }

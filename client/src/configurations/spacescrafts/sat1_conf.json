@@ -7,8 +7,9 @@
             "name": "stage",
             "master": true,
             "objectType": "rectangle",
-            "image_dev": "sat1",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/sat1.svg",
+            "image_main": "../assets/images/rt/sat1.svg",
 
             "componentMass": 4000,
             "fuelMass": 0,
@@ -34,16 +35,16 @@
                 [
                     {
                         "id": "lRCR",
-                        "position": {"x": -15, "y": 0},
-                        "thrust": 10,
+                        "position": {"x": -14, "y": 0},
+                        "thrust": 200,
                         "direction": "left",
                         "fuel": 10
                     },
 
                     {
                         "id": "rRCR",
-                        "position": {"x": 15, "y": 0},
-                        "thrust": 10,
+                        "position": {"x": 14, "y": 0},
+                        "thrust": 200,
                         "direction": "right",
                         "fuel": 10
                     }
@@ -107,7 +108,8 @@
             "name": "leftSolarPanel",
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "satSp",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -132,7 +134,8 @@
             "name": "rightSolarPanel",
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "satSp",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,

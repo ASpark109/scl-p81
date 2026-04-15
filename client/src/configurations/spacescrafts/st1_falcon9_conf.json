@@ -7,8 +7,9 @@
             "name": "stage",
             "master": true,
             "objectType": "rectangle",
-            "image_dev": "falcon9fs",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/falcon9_st1.svg",
+            "image_main": "../assets/images/rt/falcon9_st1.svg",
 
             "componentMass": 25000,
 
@@ -65,14 +66,14 @@
                 [
                     {
                         "id": "lRCR",
-                        "position": {"x": -20, "y": -150},
+                        "position": {"x": -20, "y": -170},
                         "thrust": 5000,
                         "direction": "left",
                         "fuel": 10
                     },
                     {
                         "id": "rRCR",
-                        "position": {"x": 20, "y": -150},
+                        "position": {"x": 20, "y": -170},
                         "thrust": 5000,
                         "direction": "right",
                         "fuel": 10
@@ -164,8 +165,9 @@
             "name": "leftLeg",
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "falcon9leg",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/falcon9_legL.svg",
+            "image_main": "../assets/images/rt/falcon9_legL.svg",
 
             "mass": 0.1,
 
@@ -178,7 +180,7 @@
             "initPos":
             {
                 "x": -30,
-                "y": 190
+                "y": 170
             },
 
             "isStatic": false,
@@ -189,8 +191,9 @@
             "name": "rightLeg",
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "falcon9leg",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/falcon9_legR.svg",
+            "image_main": "../assets/images/rt/falcon9_legR.svg",
 
             "mass": 0.1,
 
@@ -201,7 +204,7 @@
 
             "initPos":{
                 "x": 30,
-                "y": 190
+                "y": 170
             },
 
             "isStatic": false,
@@ -215,7 +218,7 @@
             "bodyA": "stage",
             "bodyB": "leftLeg",
 
-            "pointA": {"x": -25, "y": 235},
+            "pointA": {"x": -25, "y": 215},
             "pointB": {"x": 5, "y": 45},
 
             "lenght": 0,
@@ -235,7 +238,7 @@
             "bodyA": "stage",
             "bodyB": "leftLeg",
 
-            "pointA": {"x": -20, "y": 190},
+            "pointA": {"x": -20, "y": 170},
             "pointB": {"x": 5, "y": -35},
 
             "lenght": 35,
@@ -255,7 +258,7 @@
             "bodyA": "stage",
             "bodyB": "rightLeg",
 
-            "pointA": {"x": 25, "y": 235},
+            "pointA": {"x": 25, "y": 215},
             "pointB": {"x": -5, "y": 45},
 
             "length": 0,
@@ -275,7 +278,7 @@
             "bodyA": "stage",
             "bodyB": "rightLeg",
 
-            "pointA": {"x": 20, "y": 190},
+            "pointA": {"x": 20, "y": 170},
             "pointB": {"x": -5, "y": -35},
 
             "length": 35.5,
@@ -294,7 +297,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,

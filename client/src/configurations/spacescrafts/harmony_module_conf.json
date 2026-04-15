@@ -7,8 +7,10 @@
             "name": "stage",
             "master": true,
             "objectType": "rectangle",
-            "image_dev": "harmonyModule",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/harmonyModule.svg",
+            "image_main": "../assets/images/rt/harmonyModule.svg",
+            "zIndex": 10,
 
             "componentMass": 14300,
             "fuelMass": 0,
@@ -74,32 +76,32 @@
                 [
                     {
                         "id": "lRCR1",
-                        "position": {"x": -36, "y": -22},
-                        "thrust": 1000,
+                        "position": {"x": -32, "y": -20},
+                        "thrust": 300,
                         "direction": "left",
                         "count": 1,
                         "fuel": 10
                     },
                     {
                         "id": "lRCR2",
-                        "position": {"x": -36, "y": 22},
-                        "thrust": 1000,
+                        "position": {"x": -32, "y": 20},
+                        "thrust": 300,
                         "direction": "left",
                         "count": 2,
                         "fuel": 10
                     },
                     {
                         "id": "rRCR1",
-                        "position": {"x": 36, "y": -22},
-                        "thrust": 1000,
+                        "position": {"x": 29, "y": -20},
+                        "thrust": 300,
                         "direction": "right",
                         "count": 1,
                         "fuel": 10
                     },
                     {
                         "id": "rRCR2",
-                        "position": {"x": 36, "y": 22},
-                        "thrust": 1000,
+                        "position": {"x": 29, "y": 20},
+                        "thrust": 300,
                         "direction": "right",
                         "count": 2,
                         "fuel": 10
@@ -160,7 +162,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -170,7 +173,7 @@
             },
 
             "initPos":{
-                "x": 36,
+                "x": 32,
                 "y": 0
             },
 
@@ -241,7 +244,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -251,7 +255,7 @@
             },
 
             "initPos":{
-                "x": -36,
+                "x": -32,
                 "y": 0
             },
 
@@ -322,7 +326,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -333,7 +338,7 @@
 
             "initPos":{
                 "x": 0,
-                "y": 22
+                "y": 18
             },
 
             "docDir": "down",
@@ -403,10 +408,12 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "canadarm1",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/canadarm1.svg",
+            "image_main": "../assets/images/rt/canadarm1.svg",
+            "zIndex": 96,
 
-            "mass": 0.05,
+            "mass": 0.01,
 
             "dimensions":{
                 "width": 10,
@@ -429,10 +436,12 @@
             "name": "canadarm2",
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "canadarm2",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/canadarm2.svg",
+            "image_main": "../assets/images/rt/canadarm2.svg",
+            "zIndex": 97,
 
-            "mass": 0.05,
+            "mass": 0.01,
 
             "dimensions":{
                 "width": 60,
@@ -453,10 +462,12 @@
             "name": "canadarm3",
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "canadarm3",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/canadarm3.svg",
+            "image_main": "../assets/images/rt/canadarm3.svg",
+            "zIndex": 98,
 
-            "mass": 0.05,
+            "mass": 0.01,
 
             "dimensions":{
                 "width": 60,
@@ -479,10 +490,12 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "canadarm4",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/canadarm4.svg",
+            "image_main": "../assets/images/rt/canadarm4.svg",
+            "zIndex": 99,
 
-            "mass": 0.05,
+            "mass": 0.01,
 
             "dimensions":{
                 "width": 20,

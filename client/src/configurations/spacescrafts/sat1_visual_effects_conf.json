@@ -3,8 +3,9 @@
     [
         {
             "id": "rcsThrusterAL",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -15, "y": -15},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -14, "y": -15},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.1, "y": 0.1},
             "visible": false,
@@ -12,8 +13,9 @@
         },
         {
             "id": "rcsThrusterBL",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -15, "y": 15},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -14, "y": 15},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.1, "y": 0.1},
             "visible": false,
@@ -21,8 +23,9 @@
         },
         {
             "id": "rcsThrusterCL",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": -15, "y": 0},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -14, "y": 0},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.1, "y": 0.1},
             "visible": false,
@@ -30,8 +33,9 @@
         },
         {
             "id": "rcsThrusterAR",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 15, "y": -15},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 14, "y": -15},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.1, "y": 0.1},
             "visible": false,
@@ -39,8 +43,9 @@
         },
         {
             "id": "rcsThrusterBR",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 15, "y": 15},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 14, "y": 15},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.1, "y": 0.1},
             "visible": false,
@@ -48,8 +53,9 @@
         },
         {
             "id": "rcsThrusterCR",
-            "path": "../assets/images/rcs.png",
-            "position": {"x": 15, "y": 0},
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 14, "y": 0},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.1, "y": 0.1},
             "visible": false,
@@ -57,8 +63,9 @@
         },
         {
             "id": "solarPanelL",
-            "path": "../assets/images/solarPanel1L.png",
-            "position": {"x": -18, "y": 0},
+            "pathRt": "../assets/images/rt/solarPanelL.svg",
+            "pathDev": "../assets/images/dev/solarPanelL.svg",
+            "position": {"x": -18.5, "y": 0},
             "center": {"x": 1, "y": 0.5},
             "scale": {"x":0.001, "y": 0.1},
             "visible": true,
@@ -66,11 +73,39 @@
         },
         {
             "id": "solarPanelR",
-            "path": "../assets/images/solarPanel1R.png",
-            "position": {"x": 18, "y": 0},
+            "pathRt": "../assets/images/rt/solarPanelL.svg",
+            "pathDev": "../assets/images/dev/solarPanelL.svg",
+            "position": {"x": 18.5, "y": 0},
             "center": {"x": 0, "y": 0.5},
             "scale": {"x":0.001, "y": 0.1},
             "visible": true,
+            "angle": 0
+        },
+        {
+            "id": "blueIndicator",
+            "pathRt": "../assets/images/rt/blueIndicator.svg",
+            "position": {"x": -9.6, "y": -10.7},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0
+        },
+        {
+            "id": "greenIndicator",
+            "pathRt": "../assets/images/rt/greenIndicator.svg",
+            "position": {"x": -8.5, "y": -10.7},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0
+        },
+        {
+            "id": "redIndicator",
+            "pathRt": "../assets/images/rt/redIndicator.svg",
+            "position": {"x": -7.3, "y": -10.7},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x":0.1, "y": 0.1},
+            "visible": false,
             "angle": 0
         }
     ]

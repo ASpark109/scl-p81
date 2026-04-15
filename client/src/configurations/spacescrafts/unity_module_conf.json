@@ -7,8 +7,10 @@
             "name": "stage",
             "master": true,
             "objectType": "rectangle",
-            "image_dev": "unityModule",
-            "image_main": "",
+            "isVisualPart": true,
+            "image_dev": "../assets/images/dev/unityModule.svg",
+            "image_main": "../assets/images/rt/unityModule.svg",
+            "zIndex": 91,
 
             "componentMass": 11600,
             "fuelMass": 0,
@@ -112,7 +114,8 @@
             "isDockingPort": true,
             "objectType": "rectangle",
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -122,7 +125,7 @@
             },
 
             "initPos":{
-                "x": 27,
+                "x": 23,
                 "y": 0
             },
 
@@ -193,7 +196,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -203,7 +207,7 @@
             },
 
             "initPos":{
-                "x": -27,
+                "x": -23,
                 "y": 0
             },
 
@@ -274,7 +278,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -285,7 +290,7 @@
 
             "initPos":{
                 "x": 0,
-                "y": 22
+                "y": 20
             },
 
             "docDir": "down",
@@ -355,7 +360,8 @@
             "objectType": "rectangle",
             "isDockingPort": true,
             "master": false,
-            "image_dev": "dockingPort",
+            "isVisualPart": false,
+            "image_dev": "",
             "image_main": "",
 
             "mass": 0.1,
@@ -366,7 +372,7 @@
 
             "initPos":{
                 "x": 0,
-                "y": -22
+                "y": -21
             },
 
             "docDir": "up",
