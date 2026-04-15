@@ -11,7 +11,7 @@ export class DockingOperator
     #mDockingSpacecrafts = [];
 
     #mDemp = 0.5; // винести в константи, або конфігурацію
-    #mStif = 0.004
+    #mStif = 0.001
 
     #mode = null;
 
@@ -67,20 +67,20 @@ export class DockingOperator
         switch (first.docDir)
         {
         case "up":
-            localPoint1_1 = {x:-10, y:-5}
-            localPoint2_1 = {x:10, y:-5}
+            localPoint1_1 = {x:-10, y:-6}
+            localPoint2_1 = {x:10, y:-6}
             break;
         case "right":
-            localPoint1_1 = {x:5, y:-10}
-            localPoint2_1 = {x:5, y:10}
+            localPoint1_1 = {x:6, y:-10}
+            localPoint2_1 = {x:6, y:10}
             break;
         case "down":
-            localPoint1_1 = {x:-10, y:5}
-            localPoint2_1 = {x:10, y:5}
+            localPoint1_1 = {x:-10, y:6}
+            localPoint2_1 = {x:10, y:6}
             break;
         case "left":
-            localPoint1_1 = {x:-5, y:-10}
-            localPoint2_1 = {x:-5, y:10}
+            localPoint1_1 = {x:-6, y:-10}
+            localPoint2_1 = {x:-6, y:10}
             break;
         }
 
@@ -90,20 +90,20 @@ export class DockingOperator
         switch (second.docDir)
         {
         case "up":
-            localPoint1_2 = {x:-10, y:-5}
-            localPoint2_2 = {x:10, y:-5}
+            localPoint1_2 = {x:-10, y:-6}
+            localPoint2_2 = {x:10, y:-6}
             break;
         case "right":
-            localPoint1_2 = {x:5, y:-10}
-            localPoint2_2 = {x:5, y:10}
+            localPoint1_2 = {x:6, y:-10}
+            localPoint2_2 = {x:6, y:10}
             break;
         case "down":
-            localPoint1_2 = {x:-10, y:5}
-            localPoint2_2 = {x:10, y:5}
+            localPoint1_2 = {x:-10, y:6}
+            localPoint2_2 = {x:10, y:6}
             break;
         case "left":
-            localPoint1_2 = {x:-5, y:-10}
-            localPoint2_2 = {x:-5, y:10}
+            localPoint1_2 = {x:-6, y:-10}
+            localPoint2_2 = {x:-6, y:10}
             break;
         }
 
@@ -126,9 +126,6 @@ export class DockingOperator
             x2:  (localPoint2_2.x * cos2 - localPoint2_2.y * sin2),
             y2:  (localPoint2_2.x * sin2 + localPoint2_2.y * cos2)
         };
-
-        console.log(Math.hypot(worldPoint1.x1 - worldPoint2.x1, worldPoint1.y1 - worldPoint2.y1))
-        console.log(Math.hypot(worldPoint1.x2 - worldPoint2.x2, worldPoint1.y2 - worldPoint2.y2))
 
         let pair1 = {
             A: {x: worldPoint1.x1, y: worldPoint1.y1},
@@ -191,9 +188,7 @@ export class DockingOperator
         };
         
         this.#mDockingSpacecrafts.push(newConnection);
-        Matter.Composite.add(this.#mInteractionWorld, [dockConstraint1, dockConstraint2]);
-
-        //console.log(this.#mDockingSpacecrafts)
+        Matter.Composite.add(this.#mInteractionWorld, [dockConstraint1, dockConstraint2]); // це треба додават до конкретного композиту космічного апарату
 
         SignalSlotDispatcher.emit("updateNearbyObjects", null);
 
@@ -204,29 +199,52 @@ export class DockingOperator
 
             const iframe1 = UserInteractionInterface.getIframeWithId(first.dockId.parent, this.#mode);
             const iframe2 = UserInteractionInterface.getIframeWithId(second.dockId.parent, this.#mode);
+
+            const displayName1 = UserInteractionInterface.getSpacecraftDisplayName(first.dockId.parent, this.#mode);
+            const displayName2 = UserInteractionInterface.getSpacecraftDisplayName(second.dockId.parent, this.#mode);
             
-            const eventName = "docking"
+            const eventName = "docking";
 
             iframe1.current?.contentWindow.postMessage(
-            { type: "eventMessage", eventName, data: {portId: first.dockId.dock}},
+            { type: "eventMessage", eventName, data: {portId: first.dockId.dock, spacecraftName: displayName2}},
             "*");
             iframe2.current?.contentWindow.postMessage(
-            { type: "eventMessage", eventName, data: {portId: first.dockId.dock}},
+            { type: "eventMessage", eventName, data: {portId: second.dockId.dock, spacecraftName: displayName1}},
             "*");
 
-        }, 3000)
+        }, 4000)
     }
 
     dockingFinalizing(dockConstraint1, dockConstraint2)
     {
-        dockConstraint1.stiffness = 1;
-        dockConstraint2.stiffness = 1;
+        dockConstraint1.damping = 1;
+        dockConstraint2.damping = 1;
+
+        dockConstraint1.stiffness = 0.05;
+        dockConstraint2.stiffness = 0.05;
+
+        // let counter = 0;
+        // let stif = 0;
+
+        // const i = setInterval(() => {
+            
+        //     stif += 0.05
+
+        //     dockConstraint1.stiffness = stif;
+        //     dockConstraint2.stiffness = stif;
+
+        //     counter += 1;
+        //     if (stif >= 0.6)
+        //     {
+        //         dockConstraint1.damping = 1;
+        //         dockConstraint2.damping = 1;
+        //         clearInterval(i);
+        //     }
+        // }, 200)
     } 
 
     doUndock(spaceCraftId, portId)
     {
-        //console.log("sc -> " + spaceCraftId + "\nport -> " + portId);
-        
         const connection = this.#mDockingSpacecrafts.find(c =>
             (c.scA === spaceCraftId && c.portA === portId) ||
             (c.scB === spaceCraftId && c.portB === portId)
@@ -241,25 +259,17 @@ export class DockingOperator
         const connection1 = this.#mInteractionWorld.constraints.find(constraint => constraint.id === connection.connectionId1);
         const connection2 = this.#mInteractionWorld.constraints.find(constraint => constraint.id === connection.connectionId2);
 
-        let departure = Matter.Constraint.create({
-            bodyA: connection1.bodyA,
-            bodyB: connection1.bodyB,
-
-            pointA: {x: 0, y: 0},
-            pointB: {x: 0, y: 0},
-
-            length: 80,
-
-            stiffness: 0.0005,
-            damping: 0.8
-        });
-
         Matter.Composite.remove(this.#mInteractionWorld, [connection1, connection2]);
-        Matter.Composite.add(this.#mInteractionWorld, [departure]);
+    
+        // Here we are trying to determine which spacecraft needs to be notified
+        // that the spacecraft it was docked to has initiated undocking
+        const sc = connection.scA === spaceCraftId ? {p: connection.scB, d: connection.portB} : {p: connection.scA, d: connection.portA};
 
-        setTimeout(() => {
-            Matter.Composite.remove(this.#mInteractionWorld, [departure]);
-        }, 200);
+        const iframe = UserInteractionInterface.getIframeWithId(sc.p, this.#mode);
+        const eventName = "requestSeparation"
+        iframe.current?.contentWindow.postMessage(
+        { type: "eventMessage", eventName, data: {portId: sc.d}},
+        "*");
 
         const index = this.#mDockingSpacecrafts.indexOf(connection);
         this.#mDockingSpacecrafts.splice(index, 1);
