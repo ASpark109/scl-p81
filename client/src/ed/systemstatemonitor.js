@@ -8,7 +8,7 @@ import { UnityModuleMonitor } from './unitymodulemonitor';
 import { DragonMonitor } from './dragonmonitor';
 
 const DISPLAY_WIDTH = 2000;
-const DISPLAY_HEIGHT = 1170;
+const DISPLAY_HEIGHT = 1570;
 
 export class SystemStateMonitor
 {
@@ -88,14 +88,19 @@ export class SystemStateMonitor
                 break;
         }
 
+        this.systemStateContainer.addChild(newMonitor);
+
         let totalWidth = this.systemStateContainer.children.reduce((sum, child) => sum + child.width + 30, 0);
 
-        newMonitor.x = 20 + totalWidth;
-        newMonitor.y = 70;
+        const col = ((this.systemStateContainer.children.length - 1) % 3) * 550
+        const row = Math.floor((this.systemStateContainer.children.length - 1) / 3) * 950;
+
+        console.log(col)
+
+        newMonitor.x = 20 + col;
+        newMonitor.y = 70 + row;
 
         newMonitor.id = id;
-
-        this.systemStateContainer.addChild(newMonitor);
     }
 
     setInterfaceForId(id, i)
