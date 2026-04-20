@@ -16,7 +16,7 @@
 .right-panel-live {
     height: 100%;
     width: 100%;
-    overflow: auto;
+    overflow-y: auto;
     background-color: transparent;;
     display: flex;
     flex-direction: column;

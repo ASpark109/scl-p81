@@ -14,6 +14,7 @@ const LiveDisplayArea = ({pixiContainer,
                           mode}) => {
 
     const [userCodeList, setCodeList] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     const data = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT1")
     
@@ -37,12 +38,14 @@ const LiveDisplayArea = ({pixiContainer,
                 const spacecraft = initConf[i];
                 const filename = `${spacecraft.displayName}.txt`;
 
+                // console.log(filename)
+
                 const code = await getFileByName(filename);
+
                 codes[spacecraft.displayName] = code || `// ${spacecraft.displayName}\n // not found`;
             }
-
-            // console.log(codes)
             setCodeList(codes);
+            setIsLoading(false);
         };
 
         fetchSrcCode();
@@ -68,7 +71,7 @@ const LiveDisplayArea = ({pixiContainer,
                     </div>
                 </SplitPane>
                 {
-                    initConf.map((spaceCraft) => (
+                    !isLoading && initConf.map((spaceCraft) => (
                         <SpacecraftCodeRunner key={spaceCraft.displayName}
                                             code={userCodeList[spaceCraft.displayName]}
                                             spaceCraftName={spaceCraft.displayName}
