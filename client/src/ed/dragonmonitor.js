@@ -30,6 +30,15 @@ export class DragonMonitor extends PIXI.Container
 
         this.#config = configuration;
 
+        
+        const mask = new PIXI.Graphics();
+        mask.beginFill(0xffffff);
+        mask.drawRect(0, -70, this.#config.mainFrameDimensions.x, this.#config.mainFrameDimensions.y + 100);
+        mask.endFill();
+        
+        this.mask = mask;
+        this.addChild(mask);
+
         this.#createMainPage();
         this.#createRPOPage();
         this.#createNavigationButtons();
@@ -232,7 +241,7 @@ export class DragonMonitor extends PIXI.Container
         monitor.x = this.#config.mainFrameDimensions.x / 2;
         monitor.y = this.#config.mainFrameDimensions.y / 2;
 
-        // this.#updateList.set("proximityRadar", monitor);
+        this.#updateList.set("proximityRadar", monitor);
 
         // ******
         rpoPageContainer.visible = false;

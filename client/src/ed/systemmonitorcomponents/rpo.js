@@ -16,8 +16,13 @@ export class RPO extends PIXI.Container
     #prActive = false;
     #lrfActive = false;
 
+    #mode = null;
+
     #proxSchem = null;
     #lrfSchem = null;
+
+    #scaleLRF = 15;
+    #scalePR = 1;
 
     constructor(conf)
     {
@@ -28,11 +33,20 @@ export class RPO extends PIXI.Container
         this.pivot.set(this.#conf.dimensions.x / 2, this.#conf.dimensions.y / 2)
 
         this.addChild(this.#proximityRadarDetected);
+        this.addChild(this.#laserRangeFinderDetectedObj);
 
         this.#create();
         this.#createSchem();
         this.#createInfoPanel();
 
+        const mask = new PIXI.Graphics();
+        mask.beginFill(0xffffff);
+        mask.drawRect(0, -60, this.#conf.dimensions.x, this.#conf.dimensions.y + 60); // межі видимості
+        mask.endFill();
+
+        this.mask = mask;
+        this.addChild(mask);
+        
         this.#setMode("PR");
     }
 
@@ -57,14 +71,14 @@ export class RPO extends PIXI.Container
         // ----------------
 
         const spaceCraft = new PIXI.Graphics();
-
+        spaceCraft.pivot.set(3, 3);
         spaceCraft.lineStyle(1, styles.green, 1);
-        spaceCraft.drawRect(0, 0,  20, 20);
-        spaceCraft.pivot.set(10, 10); // центр прямокутника
+        spaceCraft.drawRect(0, 0,  6, 6);
         spaceCraft.position.set(RPOMonitor.width / 2, RPOMonitor.height / 2);        
 
         this.addChild(RPOMonitor);
         this.addChild(titel);
+
         this.addChild(spaceCraft);
     }
 
@@ -81,7 +95,7 @@ export class RPO extends PIXI.Container
         this.addChild(this.#proxSchem);
 
         this.#lrfSchem = new PIXI.Graphics();
-        this.#lrfSchem.lineStyle(1, 0x003005); // товщина, колір
+        this.#lrfSchem.lineStyle(0.5, 0x002203); // товщина, колір
 
         for (let i = 0; i < this.#conf.dimensions.x / 25 - 1; i++)
         {
@@ -104,7 +118,7 @@ export class RPO extends PIXI.Container
         infoPanel.x = 0;
         infoPanel.y = -20;
 
-        this.#scaleText= new PIXI.Text("scale: 10km", {
+        this.#scaleText = new PIXI.Text("scale: 10km", {
             fill: 0x00ff66,
             fontSize: 16,
             fontFamily: 'B612 Mono, monospace',
@@ -177,6 +191,15 @@ export class RPO extends PIXI.Container
         scalePlus.eventMode = 'static';
         scalePlus.on('pointerdown', () => {
 
+            console.log(this.#prActive + " " + this.#lrfActive)
+            if (this.#mode === "PR")
+            {
+                this.#scalePR += 0.5;
+            }
+            else if (this.#mode === "LRF")
+            {
+                this.#scaleLRF += 2;
+            }
         });
 
         infoPanel.addChild(scalePlus);
@@ -193,7 +216,15 @@ export class RPO extends PIXI.Container
 
         scaleMinus.eventMode = 'static';
         scaleMinus.on('pointerdown', () => {
-
+            console.log(this.#prActive + " " + this.#lrfActive)
+            if (this.#mode === "PR")
+            {
+                this.#scalePR -= 0.5;
+            }
+            else if (this.#mode === "LRF")
+            {
+                this.#scaleLRF -= 2;
+            }
         });
 
         infoPanel.addChild(scaleMinus);
@@ -211,12 +242,20 @@ export class RPO extends PIXI.Container
                 this.#lrfSchem.visible = false;
 
                 this.#proximityRadarDetected.visible = true;
+                this.#laserRangeFinderDetectedObj.visible = false;
+
+                this.#mode = mode;
+
                 break;
             case "LRF":
                 this.#proxSchem.visible = false;
                 this.#lrfSchem.visible = true;
 
                 this.#proximityRadarDetected.visible = false;
+                this.#laserRangeFinderDetectedObj.visible = true;
+
+                this.#mode = mode;
+
                 break;
             default:
                 break;
@@ -225,9 +264,7 @@ export class RPO extends PIXI.Container
 
     #processProximityRadarData(data)
     {
-        const diff = data.length - this.#proximityRadarDetected.children.length;
-
-        console.log(diff)
+        const diff = data.length - (this.#proximityRadarDetected.children.length);
 
         if (diff > 0)
         {
@@ -235,8 +272,9 @@ export class RPO extends PIXI.Container
             {
                 let obj = new PIXI.Graphics();
 
-                obj.lineStyle(1, styles.blue, 1);
+                obj.beginFill(styles.blue);
                 obj.drawRect(0, 0, 6, 6);
+                obj.endFill();
                 obj.pivot.set(3, 3);
 
                 this.#proximityRadarDetected.addChild(obj);
@@ -247,10 +285,9 @@ export class RPO extends PIXI.Container
         {
             if (i < data.length)
             {
-                console.log(data)
                 this.#proximityRadarDetected.children[i].visible = true;
-                this.#proximityRadarDetected.children[i].x = this.#conf.dimensions.x / 2 + data[i].x;
-                this.#proximityRadarDetected.children[i].y = this.#conf.dimensions.y / 2 + data[i].y;
+                this.#proximityRadarDetected.children[i].x = (this.#conf.dimensions.x / 2) * 1 + data[i].x * this.#scalePR;
+                this.#proximityRadarDetected.children[i].y = (this.#conf.dimensions.y / 2) * 1 + data[i].y * 3;
             }
             else
             {
@@ -261,7 +298,49 @@ export class RPO extends PIXI.Container
 
     #processLaserRangeFinderDetectedData(data)
     {
-        //console.log(data)
+        this.#laserRangeFinderDetectedObj.removeChildren();
+
+        let obj = new PIXI.Graphics();
+        
+        for (const item of data)
+        {
+            const v = item[0];
+
+            obj.lineStyle(1, styles.blue, 1);
+
+            obj.moveTo(this.#conf.dimensions.x / 2 + v[0].x * this.#scaleLRF, this.#conf.dimensions.y / 2 + v[0].y * this.#scaleLRF);
+
+            for (let i = 1; i < v.length; i++)
+            {
+                obj.lineTo((this.#conf.dimensions.x / 2 + v[i].x * this.#scaleLRF),
+                           (this.#conf.dimensions.y / 2 + v[i].y * this.#scaleLRF));
+            }
+
+            obj.lineTo((this.#conf.dimensions.x / 2 + v[0].x * this.#scaleLRF),
+                           (this.#conf.dimensions.y / 2 + v[0].y * this.#scaleLRF));
+
+            for (let i = 1; i < item.length; i++)
+            {
+                let dock = new PIXI.Graphics();
+
+                dock.beginFill(styles.yellow); // червоний
+                dock.drawRect(0, 0, 8, 8);
+                dock.endFill();
+
+                dock.pivot.set(4, 4);
+
+                dock.position.set(
+                    this.#conf.dimensions.x / 2 + item[i].x * this.#scaleLRF,
+                    this.#conf.dimensions.y / 2 + item[i].y * this.#scaleLRF
+                );
+                
+                dock.rotation = item[i].angle;
+
+                this.#laserRangeFinderDetectedObj.addChild(dock);
+            }
+        }
+
+        this.#laserRangeFinderDetectedObj.addChild(obj);
     }
 
     update(info)

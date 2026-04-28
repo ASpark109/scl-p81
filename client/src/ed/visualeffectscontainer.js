@@ -64,7 +64,7 @@ export class VisualEffectsContainer extends PIXI.Container
                 animation.scale.set(item.scale.x, item.scale.y);
                 animation.visible = item.visible;
                 animation.zIndex = item.zIndex ? item.zIndex : 0;
-                animation.play();
+                item.play ? animation.play() : animation.stop();
 
                 this.addChild(animation);
             }
@@ -79,6 +79,23 @@ export class VisualEffectsContainer extends PIXI.Container
         {
             effect.visible = visible;
         }
+    }
+
+    setVisualAndPlay(id, visible, play)
+    {
+        const effect = this.getChildByName(id);
+
+        if (effect)
+        {
+            effect.visible = visible;
+            play ? effect.play() : effect.stop();
+        }
+    }
+
+    setEffectAngle(id, rotation)
+    {
+        const effect = this.getChildByName(id);
+        effect.rotation = rotation * Math.PI / 180;
     }
 
     setVisibleForMs(id, visible, timeout)

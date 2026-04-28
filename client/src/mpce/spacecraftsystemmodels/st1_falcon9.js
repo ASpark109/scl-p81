@@ -165,7 +165,8 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
                                                                                  engineConf.parameters,
                                                                                  i,
                                                                                  (id, vec) => {engineForceSink.updatePhysState(id, vec)},
-                                                                                 (id, vec) => {engineForceSink.updateAbsState(id, vec)})));
+                                                                                 (id, vec) => {engineForceSink.updateAbsState(id, vec)})),
+                                                                                 visualEffects);
 
     let engineBlock = new EngineBlock(engines);
 

@@ -21,8 +21,6 @@ export class Tank
         this.FillLevelSensor = new Sensor(() => {
             return this.#fuelWeight;
         });
-        // console.log(this.#physical.inertia)
-        // Matter.Body.setInertia(this.#physical, this.#physical.inertia * 1.27);
     }
 
     #update()
@@ -50,9 +48,6 @@ export class Tank
             this.#fuelWeight -= weight;
             
             Matter.Body.setMass(this.#physical, this.#physical.mass - weight / 1000);
-
-          
-          
 
             return true;
         }

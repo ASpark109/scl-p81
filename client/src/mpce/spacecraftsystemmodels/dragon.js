@@ -1,7 +1,7 @@
 import { PneumaticActuator } from "../modules/pneumaticactuator.js";
 import { RCSBlock } from "../modules/rcsblock.js";
 import { Tank } from "../modules/tank.js";
-import { Engine } from "../modules/engine.js";
+import { EngineType1 } from "../modules/engineType1.js";
 import { Pump } from "../modules/pump.js";
 import { ElectricalPowerSystem } from "../modules/electricalpowersystem.js";
 import { SolarPanel } from "../modules/solarpanel.js";
@@ -22,6 +22,8 @@ class System
     constructor(rcs,
                 electricalPowerSystem,
                 radioCommunication,
+                fuelSystem,
+                mainEngine,
                 dockingSystem,
                 rpo,
                 tcs,
@@ -31,6 +33,8 @@ class System
         this.RCS = rcs;
         this.PowerSupplySystem = electricalPowerSystem;
         this.RadioCommunication = radioCommunication;
+        this.FuelSystem = fuelSystem;
+        this.Engines = mainEngine;
         this.DockingSystem = dockingSystem;
         this.RPO = rpo;
         this.TCS = tcs;
@@ -72,6 +76,22 @@ class RPO
     {
         this.ProximityRadar = proximityRadar;
         this.LaserRangeFinder = laserRangeFinder;
+    }
+}
+
+class FuelSystem
+{
+    constructor(tank)
+    {
+        this.Tank = tank;
+    }
+}
+
+class MainEngine
+{
+    constructor(engine)
+    {
+        this.Engine = engine
     }
 }
 
@@ -119,6 +139,29 @@ export function build_dragon(physicalModel, abstructModel, visualEffects, signal
 
     // *** Electrical Power System ***
 
+    // *** Engines / Fuel System ***
+
+    let tankConf = conf.parts.find(item => item.name === "stage").fuelSystem;
+    let tank = new Tank(tankConf.fuelTank, abstructModel, rocketBody);
+
+    let engineConf = conf.parts.find(item => item.name === "stage").engines;
+
+    let engineForceSink = new EnginesForceSink(rocketBody, abstructModel, 1, render);
+
+    let engines = Array.from({ length: engineConf.count }, (e, i) => (new EngineType1(rocketBody,
+                                                                                      abstructModel,
+                                                                                      engineConf.parameters,
+                                                                                      i,
+                                                                                      tank,
+                                                                                      (id, vec) => {engineForceSink.updatePhysState(id, vec)},
+                                                                                      (id, vec) => {engineForceSink.updateAbsState(id, vec)},
+                                                                                      visualEffects)));
+
+    let fuelSystem = new FuelSystem(tank);
+    let mainEngine = new MainEngine(engines);
+
+    // *** Engines / Fuel System ***
+
     // *** Docking Ports ***
 
     let dockingConf = conf.parts.find(item => item.name === "stage").dockingSystem;
@@ -162,6 +205,8 @@ export function build_dragon(physicalModel, abstructModel, visualEffects, signal
     let spaceCraft = new System(rcs,
                                 electricalPowerSystem,
                                 rc,
+                                fuelSystem,
+                                mainEngine,
                                 dockingSystem,
                                 rpo,
                                 tcs,
