@@ -1,4 +1,4 @@
-export const saveCode = async (code, filename) => {
+export const saveCode = async (project, code, filename) => {
     try
     {
         const response = await fetch("/usersrc/save", {
@@ -6,7 +6,7 @@ export const saveCode = async (code, filename) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ code, filename })
+            body: JSON.stringify({ project, code, filename })
         });
 
         const data = await response.json();
@@ -58,10 +58,10 @@ export const submitCode = async (code, filename) => {
     }
 };
 
-export const getFileNamesList = async () => {
+export const getFileNamesList = async (project = null) => {
     try
     {
-        const response = await fetch("/usersrc/filenames");
+        const response = await fetch(`/usersrc/filenames?project=${encodeURIComponent(project)}`);
         if (!response.ok) {
             throw new Error(`error: status ${response.status}`);
         }
@@ -76,11 +76,11 @@ export const getFileNamesList = async () => {
     }
 };
 
-export const getFileByName = async (filename, mode) => {
+export const getFileByName = async (filename, project, mode) => {
     try
     {
         const fileStatus = mode === "dev" ? "saved" : "submitted";
-        const response = await fetch(`/usersrc/getfile?filename=${encodeURIComponent(filename)}&fileStatus=${encodeURIComponent(fileStatus)}`);
+        const response = await fetch(`/usersrc/getfile?filename=${encodeURIComponent(filename)}&project=${encodeURIComponent(project)}&fileStatus=${encodeURIComponent(fileStatus)}`);
         if (!response.ok)
             throw new Error("Unable to retrieve file");
         

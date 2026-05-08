@@ -27,3 +27,7 @@ src/mpce/deviceelements.json
 node_modules
 /server/saved
 /server/submitted
+/server/testconfigs
+client/src/lines.py
+client/src/lines.py
+client/src/lines.py
