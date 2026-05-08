@@ -54,6 +54,42 @@
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.1, "y": 0.1},
             "angle": 0
+        },
+        {
+            "id": "thrustFlameR",
+            "isAnimation": true,
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": -16, "y": 4},
+            "center": {"x": 0.5, "y": 0},
+            "scale": {"x": 0.03, "y": 0.03},
+            "visible": false,
+            "play": false,
+            "angle": 12,
+            "sprites": [
+                "../assets/images/flameSprites1/flame1.svg",
+                "../assets/images/flameSprites1/flame2.svg",
+                "../assets/images/flameSprites1/flame3.svg",
+                "../assets/images/flameSprites1/flame4.svg"
+            ]
+        },
+        {
+            "id": "thrustFlameL",
+            "isAnimation": true,
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 16, "y": 4},
+            "center": {"x": 0.5, "y": 0},
+            "scale": {"x": 0.03, "y": 0.03},
+            "visible": false,
+            "play": false,
+            "angle": -12,
+            "sprites": [
+                "../assets/images/flameSprites1/flame1.svg",
+                "../assets/images/flameSprites1/flame2.svg",
+                "../assets/images/flameSprites1/flame3.svg",
+                "../assets/images/flameSprites1/flame4.svg"
+            ]
         }
     ]
 }

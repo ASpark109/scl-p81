@@ -158,15 +158,15 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
 
     let engineConf = conf.parts.find(item => item.name === "stage").engines;
 
-    let engineForceSink = new EnginesForceSink(rocketBody, abstructModel, 3, render);
+    let engineForceSink = new EnginesForceSink(rocketBody, abstructModel, 9, render);
 
     let engines = Array.from({ length: engineConf.count }, (e, i) => (new Engine(rocketBody,
                                                                                  abstructModel,
                                                                                  engineConf.parameters,
                                                                                  i,
                                                                                  (id, vec) => {engineForceSink.updatePhysState(id, vec)},
-                                                                                 (id, vec) => {engineForceSink.updateAbsState(id, vec)})),
-                                                                                 visualEffects);
+                                                                                 (id, vec) => {engineForceSink.updateAbsState(id, vec)},
+                                                                                 visualEffects)));
 
     let engineBlock = new EngineBlock(engines);
 
@@ -277,7 +277,9 @@ export function buildSt1_falcon9(physicalModel, abstructModel, visualEffects, si
         let statusInfo = [];
         for (let engine of spaceCraft.EngineBlock.Engine)
         {
-            statusInfo.push(engine.isActive())
+            statusInfo.push({
+                isActive: engine.isActive(),
+                thrust: engine.thrust()});
         }
         return statusInfo;
     });

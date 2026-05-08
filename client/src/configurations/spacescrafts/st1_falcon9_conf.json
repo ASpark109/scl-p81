@@ -34,30 +34,31 @@
                 "parameters":
                 {
                     "id": "eng",
-                    "maxThrust": 84500,
-                    "inclination": 70
+                    "maxThrust": 845000,
+                    "inclination": 5
                 }
             },
 
-            "fuelMass": 390000,
+            "fuelMass": 30000,
             "fuelSystem":
             {
                 "fuelTank":
                 {
-                    "maxCapacity": 110000,
-                    "capacity": 110000
+                    "maxCapacity": 8100,
+                    "capacity": 8100
                 },
                 "oxidiserTank":
                 {
-                    "maxCapacity": 280000,
-                    "capacity": 280000
+                    "maxCapacity": 21900,
+                    "capacity": 21900
                 } 
             },
 
             "turboPump":
             {
-                "maxRP1PerSec": 680,
-                "maxLOXPerSec": 1750
+                "maxFuelFlowPerSec": 270,
+                "LOXRatio": 0.73,
+                "RP1Ratio": 0.27 
             },
 
             "rcs":

@@ -9,16 +9,14 @@ const __dirname = path.dirname(__filename);
 const SAVE_DIR = path.join(__dirname, "../saved");
 const SUBMIT_DIR = path.join(__dirname, "../submitted");
 
-// if (!fs.existsSync(SAVE_DIR)) fs.mkdirSync(SAVE_DIR, { recursive: true });
-
 export const saveCodeFileWithName = (req, res) => {
-    const { code, filename } = req.body;
+    const { project, code, filename } = req.body;
 
-    if (!code || !filename) {
-        return res.status(400).json({ error: "Code or filename not provided" });
+    if (!project || !code || !filename) {
+        return res.status(400).json({ error: "Project, code or filename not provided" });
     }
 
-    const filePath = path.join(SAVE_DIR, filename);
+    const filePath = path.join(SAVE_DIR, project, filename);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: "File does not exist, cannot overwrite" });
@@ -64,7 +62,11 @@ export const createNewFile = (req, res) => {
 };
 
 export const getListOfFileNames = (req, res) => {
-    fs.readdir(SAVE_DIR, (err, files) => {
+    const {project} = req.query;
+
+    const dirPath = project === null ? SAVE_DIR : path.join(SAVE_DIR, project);
+
+    fs.readdir(dirPath, (err, files) => {
         if (err)
             return res.status(500).json({ error: "Failed to get list of filenames" });
         const fileNamesWithoutExt = files.map(file => path.parse(file).name)
@@ -75,16 +77,26 @@ export const getListOfFileNames = (req, res) => {
 };
 
 export const getCodeFileWithName = (req, res) => {
-    const {filename, fileStatus} = req.query;
-    const dir = fileStatus === "saved" ? SAVE_DIR :
-                fileStatus === "submitted" ? SUBMIT_DIR : null;
-
-    const filePath = path.join(dir, filename);
+    const {filename, project, fileStatus} = req.query;
+    
+    let filePath;
+    
+    switch (fileStatus) {
+        case "saved":
+            filePath = path.join(SAVE_DIR, project, filename);
+            break;
+        case "submitted":
+            filePath = path.join(SUBMIT_DIR, filename);
+            break;
+        default:
+            return res.status(400).json({ error: "Invalid fileStatus" });
+    }
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: "File cannot be found or does not exist" });
     }
 
     const code = fs.readFileSync(filePath, "utf-8");
+
     res.json({ code });
 };

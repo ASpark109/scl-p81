@@ -6,12 +6,12 @@ import {AiFillCaretRight} from "react-icons/ai";
 import {FaSquare} from "react-icons/fa";
 import EditorPanelButtonGroup from '../EditorPanelButtonGroup/EditorPanelButtonGroup';
 
-const FunctionalEditorPanel = ({onSpacecraftSelected}) => {
+const FunctionalEditorPanel = ({onSpacecraftSelected, project}) => {
 
     return (
         <div className='functionalPanel'>
             <div className='rightContentBlock'>
-                <EditorPanelButtonGroup onSelectChange={onSpacecraftSelected} className="testBtn"></EditorPanelButtonGroup>
+                <EditorPanelButtonGroup onSelectChange={onSpacecraftSelected} project={project}></EditorPanelButtonGroup>
             </div>
         </div>
         

@@ -6,7 +6,9 @@ import DevelopmentArea from './components/DevelopmentArea/DevelopmentArea';
 import CommandInterface from './components/CommandInterface/CommandInterface';
 import GroundComSystem from './components/GroundComSystem/GroundComSystem';
 import LiveMonitor from './components/LiveMonitor/LiveMonitor';
+
 import { engineUpdater } from "./mpce/engineupdater";
+import { getTestConfig } from './api/testEnvConfigs';
 
 function App() {
   
@@ -17,6 +19,8 @@ function App() {
     const [isGCSVisible, setIsGCSVisible] = useState(false);
     const [activeView, setActiveView] = useState("dev");
     const [submitCounter, setSubmitCounter] = useState(0);
+    const [configuraion, setConfiguration] = useState(null);
+    const [codeEditorInitConf, setCodeEditorInitConf] = useState([]);
 
     const handleTrigger = (btnType) => {
         switch (btnType)
@@ -54,30 +58,80 @@ function App() {
         }
     };
 
+    const params = new URLSearchParams(window.location.search);
+    const arg = params.get("arg") || "test_conf_1";
+
+    const reloadWithNewEnvironment = (newArg) => {
+        window.location.href = `/?arg=${newArg}`;
+    };
+
     useEffect(() => {
 
         engineUpdater.start();
 
     }, []);
+
+    useEffect(() => {
+        const fetchConfig = async () => {
+            const conf = await getTestConfig(arg + ".json");
+            setConfiguration(conf);
+
+            console.log(conf)
+
+            const codeEditorInitConf = {
+                list:[
+                    ...conf.spaceCrafts.map(item => ({
+                        Name: item.Name,
+                        displayName: item.displayName
+                    })),
+                    ...conf.groundCommunicationSystem.map(item => ({
+                        Name: item.Name,
+                        displayName: item.displayName
+                }))],
+                project: conf.project};
+
+            console.log(codeEditorInitConf)
+
+            setCodeEditorInitConf(codeEditorInitConf);
+        };
+
+        fetchConfig();
+    }, []);
   
     return (
         <div className="AppRoot">
-            <Navbar onButtonClick={handleTrigger} isProgramRunning={isProgramRunning} isCMDVisible={isCMDVisible}/>
-            
-            <div style={{ display: activeView === "dev" ? "block" : "none" }}>
-                <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter} saveTrigger={saveCounter} submitTrigger={submitCounter} mode={"dev"}/>
-            </div>
+            {configuraion && codeEditorInitConf ? (
+                <>
+                    <Navbar onButtonClick={handleTrigger}
+                            isProgramRunning={isProgramRunning}
+                            isCMDVisible={isCMDVisible}
+                            onNewEnvConfigurationSelected={reloadWithNewEnvironment}
+                            selectedConfig={arg}/>
+                    
+                    <div style={{ display: activeView === "dev" ? "block" : "none" }}>
+                        <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter} saveTrigger={saveCounter} submitTrigger={submitCounter} conf={configuraion} codeEditorConf={codeEditorInitConf} mode={"dev"}/>
+                    </div>
 
-            {/* <div style={{ display: activeView === 2 ? "block" : "none" }}>
-                <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter} saveTrigger={saveCounter}/>
-            </div> */}
+                    <div style={{ display: activeView === "rt" ? "block" : "none" }}>
+                        <LiveMonitor mode={"rt"} conf={configuraion}/>
+                    </div>
 
-            {/* <div style={{ display: activeView === "rt" ? "block" : "none" }}>
-                <LiveMonitor mode={"rt"}/>
-            </div> */}
-
-            <CommandInterface isVisible={isCMDVisible} mode={activeView}></CommandInterface>
-            <GroundComSystem isVisible={isGCSVisible} mode={activeView}></GroundComSystem>
+                    <CommandInterface isVisible={isCMDVisible} mode={activeView} spaceCrafts={configuraion.spaceCrafts}></CommandInterface>
+                    <GroundComSystem isVisible={isGCSVisible} mode={activeView}></GroundComSystem>
+                </>
+            ) : (
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: "100vh",
+                    color: "#00ff00",
+                    padding: "20px",
+                    fontSize: "18px"
+                }}>
+                    Loading configuration...
+                </div>
+            )}
         </div>
     );
 }

@@ -6,11 +6,11 @@ export class TurboPump
     #RP1TankConnection = null;
     #LOXTankConnection = null;
     
-    #fuelFlowLOX = 0;
-    #fuelFlowRP1 = 0;
+    #totalFuelFlow = 0;
 
-    #MAXRP1PerSec = 0; // max throttle (100%)
-    #MAXLOXPerSec = 0; // max throttle (100%)
+    #maxFuelFlowPerSec = 0; // max throttle (100%)
+    #LOXRatio = 0;
+    #RP1Ratio = 0;
 
     #isEnabled = false;
 
@@ -20,18 +20,23 @@ export class TurboPump
         this.#RP1TankConnection = rp1Connection;
         this.#LOXTankConnection = loxConnection;
 
-        this.#MAXRP1PerSec = conf.maxRP1PerSec;
-        this.#MAXLOXPerSec = conf.maxLOXPerSec;
+        this.#maxFuelFlowPerSec = conf.maxFuelFlowPerSec;
+
+        this.#LOXRatio = conf.LOXRatio;
+        this.#RP1Ratio = conf.RP1Ratio;
 
         ModuleBase.updateList.push(this.#update.bind(this));
     }
 
     #update()
     {
+        //console.log(this.#engines.reduce((sum, engine) => sum + engine._fuelFlow(), 0))
         if (this.#isEnabled)
         {
-            if (!this.#LOXTankConnection.removeFuel(this.#fuelFlowLOX / 60) ||
-                !this.#RP1TankConnection.removeFuel(this.#fuelFlowRP1 / 60))
+            this.#totalFuelFlow = Math.floor(this.#engines.reduce((sum, engine) => sum + engine._fuelFlow(), 0));
+            
+            if (!this.#LOXTankConnection.removeFuel(this.#totalFuelFlow * this.#LOXRatio / 60) ||
+                !this.#RP1TankConnection.removeFuel(this.#totalFuelFlow * this.#RP1Ratio / 60))
             {
                 this.#updateEnginesState(0)
                 this.#isEnabled = false;
@@ -43,26 +48,24 @@ export class TurboPump
     {
         for(let engine of this.#engines)
         {
-            // Доробити в майбутньому щоб паливо витрачалося тільки на активні двигуни
-            engine._setFuelFlow(fuelFlow / 9)
+            engine._setFuelFlow(fuelFlow)
         }
     }
 
-    setValveThrottle(newValveThrottle)
+    setValveThrottle(newValveThrottle, engineId)
     {
-        if (!newValveThrottle)
+        if ((newValveThrottle < 0 || newValveThrottle > 100) || !this.#engines[engineId])
             return;
         
-        const newValue = Math.min(100, Math.max(40, newValveThrottle));
+        const newValue = newValveThrottle === 0 ? 0 : Math.min(100, Math.max(40, newValveThrottle));
 
-        this.#fuelFlowRP1 = this.#MAXRP1PerSec * newValue / 100;
-        this.#fuelFlowLOX = this.#MAXLOXPerSec * newValue / 100;
+        const fuelFlow = this.#maxFuelFlowPerSec * newValue / 100;
 
-        //console.log("Set Valve Throttle: " + this.#fuelFlowRP1 + " : " + this.#fuelFlowLOX)
+        console.log("Set Valve Throttle: " + fuelFlow + " eng:" + engineId);
 
         if (this.#isEnabled)
         {
-            this.#updateEnginesState(this.#fuelFlowRP1 + this.#fuelFlowLOX);
+            this.#engines[engineId]._setFuelFlow(fuelFlow);
         }
     }
 
@@ -70,8 +73,7 @@ export class TurboPump
     {
         return {
             active: this.#isEnabled,
-            flowRP1: this.#fuelFlowRP1,
-            flowLOX: this.#fuelFlowLOX
+            flow: this.#totalFuelFlow,
         };
     }
 
@@ -79,9 +81,7 @@ export class TurboPump
     {
         if (!this.#isEnabled)
         {
-            //console.log("Trubopump enabled")
             this.#isEnabled = true;
-            this.#updateEnginesState(this.#fuelFlowRP1 + this.#fuelFlowLOX);
         }
     }
 
@@ -89,7 +89,6 @@ export class TurboPump
     {
         if (this.#isEnabled)
         {
-            //console.log("Trubopump disabled")
             this.#isEnabled = false;
             this.#updateEnginesState(0);
         }

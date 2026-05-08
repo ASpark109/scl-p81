@@ -45,6 +45,7 @@ export class Tank
     {
         if (this.#fuelWeight > 0)
         {
+            // console.log(this.#fuelWeight)
             this.#fuelWeight -= weight;
             
             Matter.Body.setMass(this.#physical, this.#physical.mass - weight / 1000);

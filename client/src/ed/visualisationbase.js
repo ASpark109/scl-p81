@@ -239,7 +239,7 @@ export class VisualisationBase
         this.application.stage.addChild(this.#orbits)
         this.application.stage.addChild(this.#scIcons)
 
-        // if (this.mode === "rt")
+        if (this.mode === "rt")
         {
             this.#createBackground();
         }
@@ -265,13 +265,9 @@ export class VisualisationBase
         pos.x = n.x;
         pos.y = n.y;
 
-        const rect = new PIXI.Graphics();
-
-        rect.beginFill(0x003B0B);
-        rect.drawRect(-400, -0.25, 900, 300); // центр у (0,0)
-        rect.endFill();
-
-        rect.scale.set(100, 100);
+        const rect = PIXI.Sprite.from("../assets/images/rt/background.svg");
+        rect.anchor.set(0.5, 0.5);
+        rect.scale.set(15, 55);
 
         rect.position.set(
             (object.position.x - pos.x) * 10,
@@ -279,8 +275,8 @@ export class VisualisationBase
         );
 
         rect.rotation = radians;
-        this.environmentComponents[0].physical = rect;
-        this.test.addChild(rect);
+
+        this.test.addChildAt(rect, 0);
     }
 
     objectsDistancing(data)
@@ -308,7 +304,7 @@ export class VisualisationBase
                             rt: body.imageMain
                         };
 
-                        let visualPart = PIXI.Sprite.from(imageMap["rt"]);
+                        let visualPart = PIXI.Sprite.from(imageMap[this.mode]);
 
                         visualPart.anchor.set(0.5, 0.5);
                         visualPart.scale.set(0.1);
@@ -376,7 +372,7 @@ export class VisualisationBase
                 this.SystemStateMonitor.addObject(item.Name, composite.id)
 
                 console.log(visualEffectsContainer)
-                this.test.addChild(visualEffectsContainer);
+                this.test.addChild(visualEffectsContainer); 
 
                 resolve(obj);
             }
@@ -689,6 +685,8 @@ export class VisualisationBase
 
             this.#orbits.visible = false;
             this.updateFunc = this.updateFunctionPhysical;
+
+            console.log(this.test.children)
         }
 
         // this.test.x += (DISPLAY_WIDTH/2 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x);

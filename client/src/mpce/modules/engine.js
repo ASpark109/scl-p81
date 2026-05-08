@@ -15,7 +15,9 @@ export class Engine
     #fuelFlow = 0;
     #currentInclination = 0;
 
-    constructor(rocketBody, abstructModel, conf, engId, physCallback, absCallback)
+    #visualEffect = null;
+
+    constructor(rocketBody, abstructModel, conf, engId, physCallback, absCallback, visualEffect)
     {
         this.#id = engId; // "eng" + endId
         this.#maxThrust = conf.maxThrust;
@@ -26,6 +28,8 @@ export class Engine
 
         this.#updateStatePhysCallback = physCallback;
         this.#updateStateAbsCallback = absCallback;
+
+        this.#visualEffect = visualEffect;
     }
 
     #updateState()
@@ -36,35 +40,31 @@ export class Engine
 
     #updateForceInter()
     {
-        console.log(this.#thrust)
         let engineForce = this.#isActive ? AC * this.#thrust : 0;
-
-        //console.log((acceleration * this.#body.mass * 1000) + " " + this.#thrust)
 
         let forceVecX = Math.cos(this.#currentInclination * Math.PI / 180) * engineForce;
         let forceVecY = Math.sin(this.#currentInclination * Math.PI / 180) * engineForce;
 
-        console.log(forceVecX / AC + " " + forceVecY / AC + " " + engineForce);
+        //console.log(forceVecX / AC + " " + forceVecY / AC + " " + engineForce);
 
-        this.#updateStatePhysCallback(this.#id, {x: forceVecX, y: forceVecY / 5}); // ділим на 5 бо ракета дуже швидко розручується
+        this.#updateStatePhysCallback(this.#id, {x: forceVecX, y: forceVecY / 1}); // ділим на 5 бо ракета дуже швидко розручується
     }
 
     #updateForceAbs()
     {
         let f = this.#isActive ? this.#thrust : 0;
-        let angle = 90 - this.#body.angle * 180 / Math.PI;
-        let forceV = {x: Math.cos(angle * Math.PI / 180) * f,
-                                     y: -Math.sin(angle * Math.PI / 180) * f}
+        let forceV = {x: Math.cos(this.#currentInclination * Math.PI / 180) * f,
+                      y: -Math.sin(this.#currentInclination * Math.PI / 180) * f}
         
-        //console.log(forceV)
-        this.#updateStateAbsCallback(this.#id, forceV);
+        console.log(forceV)
+        
+        this.#updateStateAbsCallback(this.#id, {x: forceV.x, y: forceV.y});
     }
 
     // ================ interface ================
 
     _setFuelFlow(flow)
     {
-        //console.log("FLOW FOR ENGINE: " + flow)
         if (flow === this.#fuelFlow)
         {
             return;
@@ -75,14 +75,19 @@ export class Engine
         {
             this.#thrust = 0;
             this.#isActive = false;
+            this.#visualEffect.setVisualAndPlay("thrustFlame", false, false);
         }
         else
         {
             this.#thrust = this.#fuelFlow * this.#maxThrust / 270;
-            //console.log(this.#thrust + " OOOOO ")
         }
         
         this.#updateState()
+    }
+
+    _fuelFlow()
+    {
+        return this.#fuelFlow;
     }
 
     setInclination(newInclination)
@@ -91,7 +96,14 @@ export class Engine
         {
             this.#currentInclination = newInclination;
             this.#updateState()
+
+            this.#visualEffect.setEffectAngle("thrustFlame", newInclination);
         }
+    }
+
+    thrust()
+    {
+        return Math.floor(this.#thrust / this.#maxThrust * 100);
     }
 
     inclination()
@@ -102,11 +114,17 @@ export class Engine
 
     start()
     {
+        console.log("want to start engine")
         if (this.#fuelFlow > 100)
         {
-            //console.log("engine is started")
+            console.log("engine is started")
             this.#isActive = true;
+            this.#visualEffect.setVisualAndPlay("thrustFlame", true, true);
             this.#updateState()
+        }
+        else
+        {
+            console.log("fuel flow is too low: " + this.#fuelFlow);
         }
     }
 

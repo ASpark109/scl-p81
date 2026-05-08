@@ -8,10 +8,23 @@ import {
 } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <BrowserRouter>
-    <Routes>
-      <Route path = "/" element = {<App />}></Route>
-    </Routes>
-  </BrowserRouter>
-);
+
+const doRender = () => {
+  root.render(
+    <BrowserRouter>
+      <Routes>
+        <Route path = "/" element = {<App />}></Route>
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    doRender();
+  }).catch(() => {
+    doRender();
+  });
+} else {
+  doRender();
+}

@@ -6,7 +6,7 @@ import FunctionalDisplayObjectAreaPanel from "../FunctionalDisplayObjectAreaPane
 import LiveDisplayArea from "../LiveDisplayArea/LiveDisplayArea";
 import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
 
-export default function LiveMonitor({mode})
+export default function LiveMonitor({mode, conf})
 {
     const [scale, setScale] = useState({scale: 1});
     const [isMapViewEnabled, setViewMode] = useState(false);
@@ -23,7 +23,6 @@ export default function LiveMonitor({mode})
 
     function initializeEnvironment()
     {
-        const conf = "TEST_ENVIRONMENT1";
         let environment = new EnvironmentSubSystem(conf, mode)
 
         if (!environment.initialize(pixiContainer,
@@ -47,12 +46,6 @@ export default function LiveMonitor({mode})
 
         initializeEnvironment();
 
-        // const fetchFiles = async () => {
-        //     const files = await getFileNamesList();
-        //     console.log("Файли:", files);
-        // };
-        // fetchFiles();
-
         return () => {
             if (environmentRef.current)
             {
@@ -60,10 +53,6 @@ export default function LiveMonitor({mode})
             }
         };
     }, []);
-
-    // const handleOutput = (msg) => {
-	// 	OutputWindow.receiveLog(msg);
-	// };
 
 	const handleClick = (buttonType) => {
 		switch (buttonType)
@@ -77,12 +66,25 @@ export default function LiveMonitor({mode})
 		case "viewMode":
 			setViewMode(!isMapViewEnabled);
 			break;
+		case "orbits":
+			environmentRef.current.setOrbitsVisible();
+			break;
+		case "info":
+			environmentRef.current.setInfoOverlayVisible();
+			break;
+		case "interior":
+			environmentRef.current.interiorView();
+			break
 		}
 	}
 
-	const handleNewSelectedSpacecraft = (item) =>
+    const handleNewFocusObject = (newObject) =>
 	{
-		setCurrentSpacecraft(item);
+		environmentRef.current.onSetFocusObj(newObject)
+	}
+	const handleNewTargetObject = (newObject) =>
+	{
+		environmentRef.current.onSetTargetObject(newObject)
 	}
 
     useEffect(() => {
@@ -102,10 +104,13 @@ export default function LiveMonitor({mode})
     return (
         <div className="liveViewContainer">
             <div className="displayobjectfuncpanel">
-                <FunctionalDisplayObjectAreaPanel onClick = {handleClick}
-                                                    scale = {scale.scale}
-                                                    isMapViewEnabled = {isMapViewEnabled}>
-                </FunctionalDisplayObjectAreaPanel>
+					<FunctionalDisplayObjectAreaPanel onClick = {handleClick}
+													  scale = {scale.scale}
+													  isMapViewEnabled = {isMapViewEnabled}
+													  onFocusObjectChanged = {handleNewFocusObject}
+													  onTargetObjectChanged = {handleNewTargetObject}
+                                                      project={conf.project}>
+					</FunctionalDisplayObjectAreaPanel>
             </div>
             <div className="DisplayObjectAreaLiveMonitor">
                 <LiveDisplayArea scale = {scale}

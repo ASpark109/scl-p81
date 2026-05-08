@@ -10,6 +10,7 @@ function SpacecraftCodeRunner({code,
                                isEnvInit,
                                saveTrigger,
                                submitTrigger,
+                               project,
                                currentSpacecraft,
                                mode}) {
     const iframeRef = useRef();
@@ -19,7 +20,7 @@ function SpacecraftCodeRunner({code,
         if (spaceCraftName === currentSpacecraft)
         {
             const handleSave = async () => {
-                const data = await saveCode(code, `${spaceCraftName}.txt`);
+                const data = await saveCode(project, code, `${spaceCraftName}.txt`);
                 console.log(`Saved: ${spaceCraftName}`, data);
             };
 
@@ -42,6 +43,7 @@ function SpacecraftCodeRunner({code,
     {
         if(codeRunTrigger)
         {
+            console.log("AAAAAAAAAAAAAAAA " + mode)
             handleRunCode();
         }
         else
@@ -365,7 +367,7 @@ function SpacecraftCodeRunner({code,
                 {
                     iframeRef.current.contentWindow.postMessage({ type: "set-interface", payload: config},
                                                                 "*");
-                    console.log("Інтерфейс відправлено в iframe " + spaceCraftName);
+                    console.log("Інтерфейс відправлено в iframe " + spaceCraftName + " " + mode);
                 }
             }}
         />

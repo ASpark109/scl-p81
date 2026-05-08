@@ -41,25 +41,16 @@ export class TurboPump extends PIXI.Container
             align: "center"
         });
         this.state.y = titel.y + 20;
-        this.state.x = 5;
+        this.state.x = 10;
 
-        this.flowRP1 = new PIXI.Text("RP1 flow: 210 kg/s", {
+        this.flow = new PIXI.Text("RP1 flow: 210 kg/s", {
             fontFamily: "B612 Mono, monospace",
             fontSize: styles.fontSizeDefault,
             fill: styles.blue,
             align: "center"
         });
-        this.flowRP1.y = this.state.y + 20;
-        this.flowRP1.x = 5;
-
-        this.flowLOX = new PIXI.Text("LOX flow: 210 kg/s", {
-            fontFamily: "B612 Mono, monospace",
-            fontSize: styles.fontSizeDefault,
-            fill: styles.blue,
-            align: "center"
-        });
-        this.flowLOX.y = this.flowRP1.y + 20;
-        this.flowLOX.x = 5;
+        this.flow.y = this.state.y + 20;
+        this.flow.x = 10;
 
         // ----------------
 
@@ -67,14 +58,12 @@ export class TurboPump extends PIXI.Container
 
         this.addChild(titel);
         this.addChild(this.state);
-        this.addChild(this.flowRP1);
-        this.addChild(this.flowLOX);
+        this.addChild(this.flow);
     }
 
     update(info)
     {
-        this.state.text = "active: " + info.active;
-        this.flowRP1.text = "RP: " + info.flowRP1 + " kg/s";
-        this.flowLOX.text = "LOX: " + info.flowLOX + " kg/s";
+        this.state.text = "Active: " + info.active;
+        this.flow.text = "Flow: " + info.flow + " kg/s";
     }
 }

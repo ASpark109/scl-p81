@@ -78,11 +78,12 @@ export class EnginesForceSink
 
     #update()
     {
-        if (this.#abstract.isClose)
+        // if (this.#abstract.isClose)
         {
             this.#applyForceInter();
         }
-        else
+        
+        if (!this.#abstract.isClose)
         {
             this.#applyForceAbs();
         }
@@ -111,7 +112,12 @@ export class EnginesForceSink
     
     #applyForceAbs()
     {
-        this.#abstract.setVectorForId(this.#id, this.#forceAbsV);
+        let angle = 90 - this.#physical.angle * 180 / Math.PI;
+
+        let forceV = {x: this.#forceAbsV.x * Math.cos(angle * Math.PI / 180) - this.#forceAbsV.y * Math.sin(angle * Math.PI / 180),
+                      y: -(this.#forceAbsV.x * Math.sin(angle * Math.PI / 180) + this.#forceAbsV.y * Math.cos(angle * Math.PI / 180))};
+
+        this.#abstract.setVectorForId(this.#id, forceV);
     }
 
     updatePhysState(engineId, forceV)
@@ -138,10 +144,8 @@ export class EnginesForceSink
     {
         if (this.#enginesAbs[engineId] !== undefined)
         {
-            //console.log(forceV)
             this.#enginesAbs[engineId] = forceV;
-            //console.log(this.#enginesAbs)
-
+                  
             this.#forceAbsV = this.#enginesAbs.reduce(
                 (acc, { x, y }) => {
                     acc.x += x;
@@ -150,8 +154,6 @@ export class EnginesForceSink
                 },
                 { x: 0, y: 0 }
             );
-
-            //console.log(this.#forceAbsV.x + " " + this.#forceAbsV.y + " <<<<<<<<<<<<<<<")
         }
     }
 }

@@ -17,13 +17,14 @@ export class EnvironmentSubSystem
 
     constructor(configuration, mode)
     {
-        this.#mConfiguration = Configurationsfactory.getConfiguration(configuration);
+        this.#mConfiguration = configuration//Configurationsfactory.getConfiguration(configuration);
         this.displayApp = null;
         this.mode = mode;
     }
 
     initialize(container, pixiSpaceCraftsSystemStateContainer, containerM, matterContainerPhys, isMapView)
     {   
+
         this.#mPhysicalEnvironmentModel = new PhysicalEnvironmentModel(this.#mConfiguration, this.mode);
 
         if (this.#mPhysicalEnvironmentModel == null)

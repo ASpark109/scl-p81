@@ -61,12 +61,33 @@ export class UserInteractionInterface
             this.#spaceCraftIdsRt.set(id, displayName);
     }
 
+    static getSpacecraftDisplayName(id, mode)
+    {
+        if (mode === "dev")
+            return this.#spaceCraftIdsDev.get(id);
+        else if (mode === "rt")
+            return this.#spaceCraftIdsRt.get(id);
+    }
+
     static getIframeWithId(id, mode)
     {
         if (mode === "dev")
             return this.#iframesDev.get(this.#spaceCraftIdsDev.get(id));
         else if (mode === "rt")
             return this.#iframesRt.get(this.#spaceCraftIdsRt.get(id));
+        else if (mode === null)
+        {
+            let a = this.#spaceCraftIdsDev.has(id);
+            let b = this.#spaceCraftIdsRt.has(id);
+
+            if (a && b)
+            {
+                console.log("2 identical IDs in Dev and Rt: " + id);
+                return null;
+            }
+
+            return a ? this.#iframesDev.get(this.#spaceCraftIdsDev.get(id)) : this.#iframesRt.get(this.#spaceCraftIdsRt.get(id));
+        }
 
         return null;
     }

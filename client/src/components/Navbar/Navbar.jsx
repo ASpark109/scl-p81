@@ -16,25 +16,28 @@ import { BiReset } from "react-icons/bi";
 import { HiOutlineCommandLine } from "react-icons/hi2";
 import { FiSave } from "react-icons/fi";
 
-const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
-    const [time, setTime] = useState("");
+import { Configurationsfactory } from "../../mpce/configurationsfactory";
+import { getTestEnvConfigNames } from "../../api/testEnvConfigs";
+
+import DropDownList from '../DropDownList/DropDownList';
+import Clock from '../Clock/Clock';
+
+const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible, onNewEnvConfigurationSelected, selectedConfig}) => {
+    const [environmentsList, setEnvironments] = useState([]);
 
     useEffect(() => {
-    function updateClock() {
-      const now = new Date();
+            const fetchFiles = async () => {
+            const configNames = await getTestEnvConfigNames();
+            setEnvironments(configNames);
 
-      const hours = String(now.getUTCHours()).padStart(2, "0");
-      const minutes = String(now.getUTCMinutes()).padStart(2, "0");
-      const seconds = String(now.getUTCSeconds()).padStart(2, "0");
+            console.log(configNames)
+        };
+        fetchFiles();
+    }, []);
 
-      setTime(`${hours}:${minutes}:${seconds} UTC`);
-    }
-
-    updateClock(); // одразу
-    const interval = setInterval(updateClock, 1000);
-
-    return () => clearInterval(interval); // важливо
-  }, []);
+    const handleEnvSelectChange = (data) => {
+        onNewEnvConfigurationSelected(data)
+    };
 
   return (
     <nav className='navbar'>
@@ -56,7 +59,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                         <ImStop2 className="icon" id="stop-btn"/>
                         <span>Stop</span>
                     </button>
-                    <button className="main-panel-button" onClick={() => onButtonClick("reset")}>
+                    <button className="main-panel-button" onClick={() =>  window.location.reload()/*onButtonClick("reset")*/}>
                         <BiReset className="icon" id="res-btn"/>
                         <span>Reset</span>
                     </button>
@@ -101,7 +104,7 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                     </div>
 
                 <div style={{ color: "#00ff00", fontFamily: "'Orbitron', 'Courier New', monospace", fontSize: "15px", marginLeft: "50px"}}>
-                    {time}
+                    <Clock />
                 </div>
 
                 </div>
@@ -118,6 +121,11 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible}) => {
                 <button className="avatar-button">
                     <img id="img" src="/image.png" alt="Profile"/>
                 </button> */}
+                <div className='dropdownConfig'>
+                    <DropDownList environmentsList={environmentsList}
+                                  onSelectChange={handleEnvSelectChange}
+                                  selectedConfig={selectedConfig}></DropDownList>
+                </div>
                 <button className="right-panel-button discuss">
                     <span>Discuss</span>
                 </button>                 

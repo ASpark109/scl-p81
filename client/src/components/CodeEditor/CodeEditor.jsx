@@ -15,6 +15,7 @@ const CodeEditorWindow = ({ initCode = "",
 							isEnvInit,
 							saveTrigger,
 							submitTrigger,
+							project,
 							mode}) => 
 {
   	const [userCodeList, setCodeList] = useState(() => {
@@ -35,12 +36,12 @@ const CodeEditorWindow = ({ initCode = "",
 		const fetchSrcCode = async () => {
 			const codes = {};
 
-			for (let i = 0; i < initConf.length; i++)
+			for (let i = 0; i < initConf.list.length; i++)
 			{
-				const spacecraft = initConf[i];
+				const spacecraft = initConf.list[i];
 				const filename = `${spacecraft.displayName}.txt`;
 
-				const code = await getFileByName(filename, mode);
+				const code = await getFileByName(filename, initConf.project, mode);
 				codes[spacecraft.displayName] = code || `// ${spacecraft.displayName}\n // not found`;
 			}
 
@@ -84,7 +85,7 @@ const CodeEditorWindow = ({ initCode = "",
 				</Editor>
 			</div>
 			{
-				initConf.map((spaceCraft) => (
+				initConf.list.map((spaceCraft) => (
 					<SpacecraftCodeRunner key={spaceCraft.displayName}
 										  code={userCodeList[spaceCraft.displayName]}
 										  spaceCraftName={spaceCraft.displayName}
@@ -93,6 +94,7 @@ const CodeEditorWindow = ({ initCode = "",
 										  isEnvInit={isEnvInit}
 										  saveTrigger={saveTrigger}
 										  submitTrigger={submitTrigger}
+										  project={project}
 										  currentSpacecraft={currentSpacecraft}
 										  mode={mode}>
 					</SpacecraftCodeRunner>

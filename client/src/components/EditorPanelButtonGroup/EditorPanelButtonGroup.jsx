@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import "./EditorPanelButtonGroup.css"
 
@@ -9,15 +9,16 @@ import { getFileNamesList } from "../../api/userSrcCode";
 
 import { IoIosCheckmark } from "react-icons/io";
 
-const EditorPanelButtonGroup = ({ onSelectChange }) => {
+const EditorPanelButtonGroup = ({ onSelectChange, project}) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState(null);
     const [spacecraftNames, setSpacecraftNames] = useState([]);
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         const fetchFiles = async () => {
-            const files = await getFileNamesList();
+            const files = await getFileNamesList(project);
             setSpacecraftNames(files);
 
             if (files.length > 0)
@@ -29,8 +30,28 @@ const EditorPanelButtonGroup = ({ onSelectChange }) => {
         fetchFiles();
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
+            ) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+        };
+    }, []);
+
     return (
-    <div className="dropdown">
+    <div className="dropdown" ref={dropdownRef}>
         <button className="dropbtn" onClick={() => {setIsOpen(!isOpen)}}>
             <span>{selected}</span>
         </button>

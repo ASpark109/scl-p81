@@ -11,20 +11,7 @@ import { EnvironmentSubSystem } from "../../mpce/environmentsubsystem"
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
 import { getFileNamesList } from '../../api/userSrcCode';
 
-const data = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT")
-
-const initConf = [
-	...data.spaceCrafts.map(item => ({
-		Name: item.Name,
-		displayName: item.displayName
-	})),
-	...data.groundCommunicationSystem.map(item => ({
-		Name: item.Name,
-		displayName: item.displayName
-	}))
-];
-
-const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mode}) => {
+const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, conf, codeEditorConf, mode}) => {
 
 	const [scale, setScale] = useState({scale: 1});
 	const [isMapViewEnabled, setViewMode] = useState(false);
@@ -41,7 +28,6 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 
 	function initializeEnvironment()
 	{
-        const conf = "TEST_ENVIRONMENT";
         let environment = new EnvironmentSubSystem(conf, mode)
 
         if (!environment.initialize(pixiContainer,
@@ -65,6 +51,8 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 
 		initializeEnvironment();
 
+		console.log(codeEditorConf)
+
         // const handleClick = (e) => {
         //     console.log("Click at:", e.clientX, e.clientY);
         // };
@@ -75,12 +63,6 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, mo
 
         // container.addEventListener("click", handleClick);
         // container.addEventListener("wheel", handleWheel);
-
-		const fetchFiles = async () => {
-    		const files = await getFileNamesList();
-   			console.log("Файли:", files);
-  		};
-  		fetchFiles();
 
         return () => {
             if (environmentRef.current)
@@ -167,7 +149,8 @@ return (
 													  scale = {scale.scale}
 													  isMapViewEnabled = {isMapViewEnabled}
 													  onFocusObjectChanged = {handleNewFocusObject}
-													  onTargetObjectChanged = {handleNewTargetObject}>
+													  onTargetObjectChanged = {handleNewTargetObject}
+													  project={conf.project}>
 					</FunctionalDisplayObjectAreaPanel>
  				</div>
 				<div className="DisplayObjectArea">
@@ -185,7 +168,7 @@ return (
 				<SplitPane split="horizontal" defaultSize="50%" allowResize={true}>
 					<div className='upper-panel'>
 						<div className="editPanel">
-							<FunctionalEditorPanel onSpacecraftSelected={(item)=>{handleNewSelectedSpacecraft(item)}}/>
+							<FunctionalEditorPanel onSpacecraftSelected={(item)=>{handleNewSelectedSpacecraft(item)}} project={conf.project}/>
 						</div>
 						<div className="editor">
 							<CodeEditorWindow
@@ -194,10 +177,11 @@ return (
 								theme={"vs-dark"}
 								trigger={trigger}
 								currentSpacecraft={currentSpacecraft}
-								initConf={initConf}
+								initConf={codeEditorConf}
 								isEnvInit={isEnvInitialized}
 								saveTrigger={saveTrigger}
 								submitTrigger={submitTrigger}
+								project={conf.project}
 								mode={mode}>
 							</CodeEditorWindow>
 						</div>

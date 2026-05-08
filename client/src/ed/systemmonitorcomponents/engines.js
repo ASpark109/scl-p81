@@ -40,11 +40,11 @@ export class Engines extends PIXI.Container
             let state = new PIXI.Text("Eng 1: false", {
                 fontFamily: "B612 Mono, monospace",
                 fontSize: styles.fontSizeDefault,
-                fill: styles.blue,
+                fill: styles.yellow,
                 align: "center"
             });
 
-            state.x = 20;
+            state.x = 10;
             state.y = titel.y + (i+1) * 20;
 
             this.addChild(state)
@@ -60,7 +60,7 @@ export class Engines extends PIXI.Container
     {
         for (let i = 0; i < this.#engines.length; i++)
         {
-            this.#engines[i].text = "Eng" + i + ": " + info[i];
+            this.#engines[i].text = "Eng" + i + ": " + info[i].isActive + " " + info[i].thrust + "%";
         }
     }
 }

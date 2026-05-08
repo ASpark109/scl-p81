@@ -6,7 +6,7 @@ import CMDCombobox from "./CMDCombobox/CMDCombobox";
 import { Configurationsfactory } from "../../mpce/configurationsfactory";
 import { UserInteractionInterface } from "../../mpce/userinteractioninterface";
 
-export default function CommandInterface({isVisible, mode}) {
+export default function CommandInterface({isVisible, mode, spaceCrafts}) {
     const [text, setText] = useState("");
     const [historyCounter, setHistoryCounter] = useState(-1);
     const [callsHistory, setCallsHistory] = useState([]);
@@ -45,10 +45,10 @@ export default function CommandInterface({isVisible, mode}) {
         return () => window.removeEventListener("message", listener);
     });
 
-    const spacecraftNames = Configurationsfactory.getConfiguration("TEST_ENVIRONMENT").spaceCrafts
-        .filter(item => item.isManned == true)
-        .map(item => item.displayName)
-        .sort();
+    const spacecraftNames = spaceCrafts
+                                .filter(item => item.isManned == true)
+                                .map(item => item.displayName)
+                                .sort();
 
     function handleInternalCommand(str)
     {

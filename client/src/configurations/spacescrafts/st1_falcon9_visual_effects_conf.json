@@ -54,6 +54,24 @@
             "center": {"x": 0, "y": 0.5},
             "scale": {"x": 0.4, "y": 0.3},
             "angle": 0
+        },
+        {
+            "id": "thrustFlame",
+            "isAnimation": true,
+            "pathRt": "../assets/images/rcsRt.svg",
+            "pathDev": "../assets/images/rcsDev.svg",
+            "position": {"x": 0, "y": 240},
+            "center": {"x": 0.5, "y": 0},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "play": false,
+            "angle": 0,
+            "sprites": [
+                "../assets/images/flameSprites/flame1.svg",
+                "../assets/images/flameSprites/flame2.svg",
+                "../assets/images/flameSprites/flame3.svg",
+                "../assets/images/flameSprites/flame4.svg"
+            ]
         }
     ]
 }
