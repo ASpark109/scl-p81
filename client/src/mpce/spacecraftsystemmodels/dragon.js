@@ -115,8 +115,21 @@ export function build_dragon(physicalModel, abstructModel, visualEffects, signal
 
     // *** Radio Communication ***
     
-    let t = new Transmitter(1, 1, 100, 1, 400, 200, abstructModel);
-    let r = new Receiver(1, 1, 1, 1, abstructModel);
+    let radioConf = conf.parts.find(item => item.name === "stage").radioCommunication;
+
+    let t = new Transmitter(radioConf.transmitter.maxCarrierFrequency,
+                            radioConf.transmitter.minCarrierFrequency,
+                            radioConf.transmitter.maxBitRate,
+                            radioConf.transmitter.minBitRate,
+                            radioConf.transmitter.maxPower,
+                            radioConf.transmitter.maxPower,
+                            abstructModel);
+    let r = new Receiver(radioConf.receiver.maxCarrierFrequency,
+                         radioConf.receiver.minCarrierFrequency,
+                         radioConf.receiver.maxPower,
+                         radioConf.receiver.minPower,
+                         abstructModel);
+                         
     let rc = new RadioCommunication(t, r);
 
     signalHub.registerRadioModule(t);

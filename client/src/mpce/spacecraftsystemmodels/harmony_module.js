@@ -71,8 +71,9 @@ class DockingSystem
 
 class RPO
 {
-    constructor(laserRangeFinder)
+    constructor(proximityRadar, laserRangeFinder)
     {
+        this.ProximityRadar = proximityRadar;
         this.LaserRangeFinder = laserRangeFinder;
     }
 }
@@ -80,8 +81,6 @@ class RPO
 export function build_harmony_module(physicalModel, abstructModel, visualEffects, signalHub, conf, render)
 {
     // *** shared objects ***
-
-    console.log(physicalModel)
 
     // *** RCS System ***
 
@@ -138,9 +137,11 @@ export function build_harmony_module(physicalModel, abstructModel, visualEffects
     // *** Rendezvous and Proximity Operations system ***
 
     let rpoConf = conf.parts.find(item => item.name === "stage").rpo;
+
+    let proximityRadar = new ProximityRadar(rpoConf.proximityRadar, abstructModel);
     let laserRangeFinder = new LaserRangeFinder(rpoConf.laserRangeFinder, physicalModel);
 
-    let rpo = new RPO(laserRangeFinder); 
+    let rpo = new RPO(proximityRadar, laserRangeFinder); 
 
     // *** Rendezvous and Proximity Operations system ***
 

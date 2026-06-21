@@ -15,6 +15,7 @@ import { EnginesForceSink } from "../modules/enginesforcesink.js";
 import { TurboPump } from "../modules/turbopump.js";
 import { ECLSS } from "../modules/eclss.js";
 import { Navigation } from "../modules/navigation.js";
+import { Lighting } from "../modules/lighting.js";
 
 class System
 {
@@ -23,7 +24,8 @@ class System
                 dockingSystem,
                 rpo,
                 eclss,
-                nav)
+                nav,
+                lighting)
     {
         this.PowerSupplySystem = electricalPowerSystem;
         this.RadioCommunication = radioCommunication;
@@ -31,6 +33,7 @@ class System
         this.RPO = rpo;
         this.ECLSS = eclss;
         this.Navigation = nav;
+        this.LightingSystem = lighting;
     }
 }
 
@@ -67,8 +70,21 @@ export function build_unity_module(physicalModel, abstructModel, visualEffects, 
 
     // *** Radio Communication ***
         
-    let t = new Transmitter(1, 1, 100, 1, 400, 200, abstructModel);
-    let r = new Receiver(1, 1, 1, 1, abstructModel);
+    let radioConf = conf.parts.find(item => item.name === "stage").radioCommunication;
+
+    let t = new Transmitter(radioConf.transmitter.maxCarrierFrequency,
+                            radioConf.transmitter.minCarrierFrequency,
+                            radioConf.transmitter.maxBitRate,
+                            radioConf.transmitter.minBitRate,
+                            radioConf.transmitter.maxPower,
+                            radioConf.transmitter.maxPower,
+                            abstructModel);
+    let r = new Receiver(radioConf.receiver.maxCarrierFrequency,
+                         radioConf.receiver.minCarrierFrequency,
+                         radioConf.receiver.maxPower,
+                         radioConf.receiver.minPower,
+                         abstructModel);
+                         
     let rc = new RadioCommunication(t, r);
 
     signalHub.registerRadioModule(t);
@@ -123,13 +139,20 @@ export function build_unity_module(physicalModel, abstructModel, visualEffects, 
     let nav = new Navigation(abstructModel, rocketBody);
 
     // *** Navigation ***
+    
+    // *** Lighting ***
+
+    let lighting = new Lighting(visualEffects);
+
+    // *** Lighting ***
 
     let spaceCraft = new System(electricalPowerSystem,
                                 rc,
                                 dockingSystem,
                                 rpo,
                                 eclss,
-                                nav); // не забудь розширити System
+                                nav,
+                                lighting); // не забудь розширити System
 
     let monitorInter = new Map();
 
