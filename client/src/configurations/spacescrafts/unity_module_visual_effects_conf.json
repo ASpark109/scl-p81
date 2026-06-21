@@ -1,6 +1,35 @@
 {
     "effects":
     [
-
+        {
+            "id": "positionLightsR",
+            "pathRt": "../assets/images/rt/positionLightsUnityR.svg",
+            "pathDev": "../assets/images/rt/positionLightsUnityR.svg",
+            "position": {"x": 23.5, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0
+        },
+        {
+            "id": "dockingPortLight1",
+            "pathRt": "../assets/images/rt/dockingPortLight1.svg",
+            "pathDev": "../assets/images/rt/dockingPortLight1.svg",
+            "position": {"x": 22, "y": -5},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0
+        },
+        {
+            "id": "dockingPortLight2",
+            "pathRt": "../assets/images/rt/dockingPortLight2.svg",
+            "pathDev": "../assets/images/rt/dockingPortLight2.svg",
+            "position": {"x": 22, "y": 5},
+            "center": {"x": 0, "y": 0.5},
+            "scale": {"x": 0.1, "y": 0.1},
+            "visible": false,
+            "angle": 0
+        }
     ]
 }

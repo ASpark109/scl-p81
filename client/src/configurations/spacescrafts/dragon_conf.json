@@ -73,15 +73,15 @@
                 [
                     {
                         "id": "lRCR",
-                        "position": {"x": -7.5, "y": 10},
-                        "thrust": 400,
+                        "position": {"x": -7.5, "y": 0},
+                        "thrust": 200,
                         "direction": "left",
                         "fuel": 10
                     },
                     {
                         "id": "rRCR",
-                        "position": {"x": 7.7, "y": 10},
-                        "thrust": 400,
+                        "position": {"x": 7.7, "y": 0},
+                        "thrust": 200,
                         "direction": "right",
                         "fuel": 10
                     }
@@ -98,20 +98,20 @@
             {
                 "transmitter":
                 {
-                    "maxCarrierFrequency": 0,
-                    "minCarrierFrequency": 0,
-                    "maxPower": 0,
-                    "minPower": 0,
-                    "maxBitRate": 0,
-                    "minBitRate": 0
+                    "minCarrierFrequency": 2100,
+                    "maxCarrierFrequency": 3500,
+                    "minPower": 100,
+                    "maxPower": 400,
+                    "minBitRate": 1,
+                    "maxBitRate": 5
                 },
 
                 "receiver":
                 {
-                    "maxCarrierFrequency": 0,
-                    "minCarrierFrequency": 0,
-                    "maxPower": 0,
-                    "minPower": 0
+                    "minCarrierFrequency": 2100,
+                    "maxCarrierFrequency": 3500,
+                    "minPower": 100,
+                    "maxPower": 300
                 }
             },
 
@@ -120,7 +120,7 @@
                 "proximityRadar":
                 {
                     "distance": 20000,
-                    "viewAngle": 40,
+                    "viewAngle": 270,
                     "maxP": 1000,
                     "minP": 200
                 },

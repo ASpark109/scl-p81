@@ -50,20 +50,20 @@
             {
                 "transmitter":
                 {
-                    "maxCarrierFrequency": 0,
-                    "minCarrierFrequency": 0,
-                    "maxPower": 0,
-                    "minPower": 0,
-                    "maxBitRate": 0,
-                    "minBitRate": 0
+                    "minCarrierFrequency": 2100,
+                    "maxCarrierFrequency": 3500,
+                    "minPower": 100,
+                    "maxPower": 400,
+                    "minBitRate": 1,
+                    "maxBitRate": 5
                 },
 
                 "receiver":
                 {
-                    "maxCarrierFrequency": 0,
-                    "minCarrierFrequency": 0,
-                    "maxPower": 0,
-                    "minPower": 0
+                    "minCarrierFrequency": 2100,
+                    "maxCarrierFrequency": 3500,
+                    "minPower": 100,
+                    "maxPower": 300
                 }
             },
 

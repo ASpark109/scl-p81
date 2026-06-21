@@ -120,7 +120,7 @@
                 "proximityRadar":
                 {
                     "distance": 20000,
-                    "viewAngle": 40,
+                    "viewAngle": 270,
                     "maxP": 1000,
                     "minP": 200
                 },
@@ -150,6 +150,10 @@
                     },
                     {
                         "id": 4,
+                        "type": ""
+                    },
+                    {
+                        "id": 5,
                         "type": ""
                     }
                 ]
@@ -444,13 +448,13 @@
             "mass": 0.01,
 
             "dimensions":{
-                "width": 60,
-                "height": 10
+                "width": 10,
+                "height": 60
             },
 
             "initPos":{
-                "x": 30,
-                "y": 40
+                "x": 0,
+                "y": 70
             },
 
             "isStatic": false,
@@ -470,13 +474,13 @@
             "mass": 0.01,
 
             "dimensions":{
-                "width": 60,
-                "height": 10
+                "width": 10,
+                "height": 60
             },
 
             "initPos":{
-                "x": 90,
-                "y": 40
+                "x": 0,
+                "y": 130
             },
 
             "isStatic": false,
@@ -498,16 +502,16 @@
             "mass": 0.01,
 
             "dimensions":{
-                "width": 20,
-                "height": 10
+                "width": 10,
+                "height": 20
             },
 
             "initPos":{
-                "x": 130,
-                "y": 40
+                "x": 0,
+                "y": 170
             },
 
-            "docDir": "right",
+            "docDir": "down",
 
             "isStatic": false,
             "friction": 0,
@@ -522,7 +526,7 @@
             "bodyB": "canadarm2",
 
             "pointA": {"x": 0, "y": 10},
-            "pointB": {"x": -30, "y": 0},
+            "pointB": {"x": 0, "y": -30},
 
             "visible": true,
 
@@ -539,8 +543,8 @@
             "bodyA": "canadarm2",
             "bodyB": "canadarm3",
 
-            "pointA": {"x": 30, "y": 0},
-            "pointB": {"x": -30, "y": 0},
+            "pointA": {"x": 0, "y": 30},
+            "pointB": {"x": 0, "y": -30},
 
             "visible": true,
 
@@ -557,8 +561,8 @@
             "bodyA": "canadarm3",
             "bodyB": "canadarm4",
 
-            "pointA": {"x": 30, "y": 0},
-            "pointB": {"x": -10, "y": 0},
+            "pointA": {"x": 0, "y": 30},
+            "pointB": {"x": 0, "y": -10},
 
             "visible": true,
 

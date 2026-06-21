@@ -154,7 +154,7 @@ export class HarmonyModuleMonitor extends PIXI.Container
         monitor.x = this.#config.mainFrameDimensions.x / 2;
         monitor.y = this.#config.mainFrameDimensions.y / 2;
 
-        //this.#updateList.set("proximityRadar", monitor);
+        this.#updateList.set("proximityRadar", monitor);
 
         // ******
         rpoPageContainer.visible = false;
