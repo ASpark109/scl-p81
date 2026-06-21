@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="6000"
+   height="2000"
+   viewBox="0 0 193.67629 64.558764"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="background.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.014142136"
+     inkscape:cx="-212.13203"
+     inkscape:cy="22768.838"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#a5eaff;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#004aff;stop-opacity:1;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient2"
+       x1="105.0731"
+       y1="214.01469"
+       x2="105.0731"
+       y2="20.340759"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0000121,0,0,0.24084712,-1.1662756e-4,38.08333)" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-8.2361145,-50.165546)">
+    <rect
+       style="opacity:1;fill:url(#linearGradient2);stroke:none;stroke-width:0.779087;stroke-linejoin:round"
+       id="rect1"
+       width="193.67628"
+       height="32.279381"
+       x="8.2361174"
+       y="50.165546" />
+    <rect
+       style="fill:#00550b;fill-opacity:1;stroke:none;stroke-width:0.779087;stroke-linejoin:round"
+       id="rect1-4"
+       width="193.67628"
+       height="32.279381"
+       x="8.2361145"
+       y="82.444931" />
+  </g>
+</svg>
