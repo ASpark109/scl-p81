@@ -15,11 +15,13 @@ export const saveCode = async (project, code, filename) => {
         {
             console.error("Error:", data.error);
             alert(`Помилка: ${data.error}`);
-            return;
+            return false;
         }
 
-        console.log("Success:", data.message);
+        // console.log("Success:", data.message);
         alert(`Файл успішно збережено`);
+
+        return true;
     }
     catch (err)
     {

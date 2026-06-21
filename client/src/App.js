@@ -59,7 +59,7 @@ function App() {
     };
 
     const params = new URLSearchParams(window.location.search);
-    const arg = params.get("arg") || "test_conf_1";
+    const arg = params.get("arg") || "project1";
 
     const reloadWithNewEnvironment = (newArg) => {
         window.location.href = `/?arg=${newArg}`;
@@ -76,8 +76,6 @@ function App() {
             const conf = await getTestConfig(arg + ".json");
             setConfiguration(conf);
 
-            console.log(conf)
-
             const codeEditorInitConf = {
                 list:[
                     ...conf.spaceCrafts.map(item => ({
@@ -89,8 +87,6 @@ function App() {
                         displayName: item.displayName
                 }))],
                 project: conf.project};
-
-            console.log(codeEditorInitConf)
 
             setCodeEditorInitConf(codeEditorInitConf);
         };
@@ -112,9 +108,9 @@ function App() {
                         <DevelopmentArea trigger={isProgramRunning} resetTrigger={resetCounter} saveTrigger={saveCounter} submitTrigger={submitCounter} conf={configuraion} codeEditorConf={codeEditorInitConf} mode={"dev"}/>
                     </div>
 
-                    <div style={{ display: activeView === "rt" ? "block" : "none" }}>
+                    {/* <div style={{ display: activeView === "rt" ? "block" : "none" }}>
                         <LiveMonitor mode={"rt"} conf={configuraion}/>
-                    </div>
+                    </div> */}
 
                     <CommandInterface isVisible={isCMDVisible} mode={activeView} spaceCrafts={configuraion.spaceCrafts}></CommandInterface>
                     <GroundComSystem isVisible={isGCSVisible} mode={activeView}></GroundComSystem>
