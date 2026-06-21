@@ -53,6 +53,7 @@ export class InformationOverlay extends PIXI.Container
         this.mass = new InformationField("mass");
         this.forc = new InformationField("force");
         this.angV = new InformationField("angular vel");
+        this.scAngle = new InformationField("angle");
 
         // -------------
 
@@ -127,6 +128,7 @@ export class InformationOverlay extends PIXI.Container
             this.mass,
             this.forc,
             this.angV,
+            this.scAngle
         );
 
         this.#layoutVertical();
@@ -156,14 +158,15 @@ export class InformationOverlay extends PIXI.Container
     {
         this.posX.valueText.text = this.#focusObject.abstract.position.x.toFixed(2) + " m"
         this.posY.valueText.text = this.#focusObject.abstract.position.y.toFixed(2) + " m"
-        this.velX.valueText.text = this.#focusObject.abstract.velocity.x.toFixed(2) + " m/s"
-        this.velY.valueText.text = this.#focusObject.abstract.velocity.y.toFixed(2) + " m/s"
+        this.velX.valueText.text = this.#focusObject.abstract.velocity.x.toFixed(5) + " m/s"
+        this.velY.valueText.text = this.#focusObject.abstract.velocity.y.toFixed(5) + " m/s"
         this.vel.valueText.text = Math.hypot(this.#focusObject.abstract.velocity.x,
                                                 this.#focusObject.abstract.velocity.y).toFixed(2) + " m/s";
         this.mass.valueText.text = Math.round(this.#focusObject.physical[0].mass * 1000) + " kg"
         this.forc.valueText.text = Math.hypot(this.#focusObject.abstract.force.x,
                                                 this.#focusObject.abstract.force.y).toFixed(2) + " H";
         this.angV.valueText.text = (this.#focusObject.physical[0].angularVelocity * 60 * 180 / Math.PI).toFixed(4) + " deg/s";
+        this.scAngle.valueText.text = ((((-this.#focusObject.physical[0].angle) % 360) + 360) % 360).toFixed(2) + " deg";
         //---------------
 
         if (this.#targetObject)
@@ -177,7 +180,7 @@ export class InformationOverlay extends PIXI.Container
             let vy = this.#focusObject.abstract.velocity.y - this.#targetObject.abstract.velocity.y;
 
             let target = this.normalizeAndAngle(x, y, 250)
-            this.targetInfo.text = dis.toFixed(2) + " m\n" + Math.abs(vx).toFixed(2) + " m/s\n" + Math.abs(vy).toFixed(2) + " m/s";
+            this.targetInfo.text = (dis/1000).toFixed(3) + " km\n" + Math.abs(vx).toFixed(2) + " m/s\n" + Math.abs(vy).toFixed(2) + " m/s";
             this.targetPointer.rotation = target.angle
 
             this.targetInfoContainer.position.set(CENTER_X + target.unit.x, CENTER_Y + target.unit.y)
@@ -228,9 +231,6 @@ export class InformationOverlay extends PIXI.Container
     setSpacecraft(newObj)
     {
         this.#focusObject = newObj
-
-        console.log(this.#focusObject)
-
         this.#updateData();
     }
 
@@ -273,7 +273,5 @@ export class InformationOverlay extends PIXI.Container
                 indicator.visible = false;
             }
         }
-
-        console.log(this.indicatorsContainer.children)
     }
 }
