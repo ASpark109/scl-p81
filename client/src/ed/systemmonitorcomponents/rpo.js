@@ -287,7 +287,7 @@ export class RPO extends PIXI.Container
             {
                 this.#proximityRadarDetected.children[i].visible = true;
                 this.#proximityRadarDetected.children[i].x = (this.#conf.dimensions.x / 2) * 1 + data[i].x * this.#scalePR;
-                this.#proximityRadarDetected.children[i].y = (this.#conf.dimensions.y / 2) * 1 + data[i].y * 3;
+                this.#proximityRadarDetected.children[i].y = (this.#conf.dimensions.y / 2) * 1 + data[i].y * this.#scalePR;
             }
             else
             {
@@ -301,10 +301,10 @@ export class RPO extends PIXI.Container
         this.#laserRangeFinderDetectedObj.removeChildren();
 
         let obj = new PIXI.Graphics();
-        
+
         for (const item of data)
         {
-            const v = item[0];
+            const v = item.main;
 
             obj.lineStyle(1, styles.blue, 1);
 
@@ -319,7 +319,7 @@ export class RPO extends PIXI.Container
             obj.lineTo((this.#conf.dimensions.x / 2 + v[0].x * this.#scaleLRF),
                            (this.#conf.dimensions.y / 2 + v[0].y * this.#scaleLRF));
 
-            for (let i = 1; i < item.length; i++)
+            for (let i = 0; i < item.dockPorts.length; i++)
             {
                 let dock = new PIXI.Graphics();
 
@@ -330,11 +330,11 @@ export class RPO extends PIXI.Container
                 dock.pivot.set(4, 4);
 
                 dock.position.set(
-                    this.#conf.dimensions.x / 2 + item[i].x * this.#scaleLRF,
-                    this.#conf.dimensions.y / 2 + item[i].y * this.#scaleLRF
+                    this.#conf.dimensions.x / 2 + item.dockPorts[i].x * this.#scaleLRF,
+                    this.#conf.dimensions.y / 2 + item.dockPorts[i].y * this.#scaleLRF
                 );
                 
-                dock.rotation = item[i].angle;
+                dock.rotation = item.dockPorts[i].angle;
 
                 this.#laserRangeFinderDetectedObj.addChild(dock);
             }

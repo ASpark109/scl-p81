@@ -371,7 +371,6 @@ export class VisualisationBase
                 this.components.push(obj);
                 this.SystemStateMonitor.addObject(item.Name, composite.id)
 
-                console.log(visualEffectsContainer)
                 this.test.addChild(visualEffectsContainer); 
 
                 resolve(obj);
@@ -685,8 +684,6 @@ export class VisualisationBase
 
             this.#orbits.visible = false;
             this.updateFunc = this.updateFunctionPhysical;
-
-            console.log(this.test.children)
         }
 
         // this.test.x += (DISPLAY_WIDTH/2 - this.components[0].visualAbstruct.x * this.test.scale.x - this.test.x);

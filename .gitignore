@@ -29,3 +29,4 @@ node_modules
 /server/submitted
 /server/testconfigs
 client/src/lines.py
+/client/src/userData

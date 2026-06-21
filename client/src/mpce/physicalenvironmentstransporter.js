@@ -38,6 +38,8 @@ export class PhysicalEnvironmentsTransporter
     {
         let master = physicalObject.bodies.find(item => item.master === true);
 
+        console.log("Master: " + master.displayName)
+
         if (master.type === "spacecraft")
         {
             let mountPoint = Matter.Composite.allConstraints(this.#mWorld)

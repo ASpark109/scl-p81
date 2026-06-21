@@ -88,7 +88,7 @@ export class AbstractEnvironmentModel
     #mSpacecrafts = [];
     #mDockedSpaceCrafts = [];
 
-    #deltaTime = 1; // 0.01666
+    #deltaTime = 0.01666
 
     #closeGroupCount = 0;
     #isGroupExists = false;
@@ -97,6 +97,15 @@ export class AbstractEnvironmentModel
     #callbacks = null;
 
     count = 0
+    
+    constructor()
+    {
+        // this.oldVel = 0
+        // setInterval(() => {
+        //             console.log(this.#mSpacecrafts[1].velocity.y - this.oldVel)
+        //             this.oldVel = this.#mSpacecrafts[1].velocity.y
+        // }, 1000)
+    }
 
     //: public
     addObject(conf, physicalObj)
@@ -199,7 +208,7 @@ export class AbstractEnvironmentModel
 
     calculateDistances1()
     {
-        const closeDis = 100;
+        const closeDis = 200;
 
         if (!this.#isGroupExists)
         {
@@ -348,6 +357,13 @@ export class AbstractEnvironmentModel
 
             const accX = ax + tx;
             const accY = ay + ty;
+
+            spacecraft.grav = {x: ax, y: ay};
+
+            // if (spacecraft.id === 2)
+            // {
+            //     console.log(Math.hypot(accX, accY) + " " + accX + " " + accY)
+            // }
 
             spacecraft.velocity.x += accX * this.#deltaTime;
             spacecraft.velocity.y += accY * this.#deltaTime;

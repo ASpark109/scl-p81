@@ -35,5 +35,5 @@ export const getTestEnvironmentConfig = (req, res) => {
 
     setTimeout(() => {
         res.json({ configData });
-    }, 1500)
+    }, 500)
 };
