@@ -43,7 +43,6 @@ function SpacecraftCodeRunner({code,
     {
         if(codeRunTrigger)
         {
-            console.log("AAAAAAAAAAAAAAAA " + mode)
             handleRunCode();
         }
         else
@@ -85,6 +84,147 @@ function SpacecraftCodeRunner({code,
                                 window.parent.postMessage({ type: "log", isError: isError, payload: formatted }, "*");
                             }
                         };
+                        class Vector2 {
+                            constructor(x = 0, y = 0) {
+                                this.x = x;
+                                this.y = y;
+                            }
+                            log()
+                            {
+                                console.log("vec -> " + this.x + " " + this.y)
+                            }
+
+                            // Копія
+                            clone() {
+                                return new Vector2(this.x, this.y);
+                            }
+
+                            // Додавання
+                            add(v) {
+                                return new Vector2(this.x + v.x, this.y + v.y);
+                            }
+
+                            // Віднімання
+                            sub(v) {
+                                return new Vector2(this.x - v.x, this.y - v.y);
+                            }
+
+                            // Множення на скаляр
+                            mul(s) {
+                                return new Vector2(this.x * s, this.y * s);
+                            }
+
+                            // Ділення на скаляр
+                            div(s) {
+                                return new Vector2(this.x / s, this.y / s);
+                            }
+
+                            // Скалярний добуток
+                            dot(v) {
+                                return this.x * v.x + this.y * v.y;
+                            }
+
+                            // Векторний добуток (z-компонента)
+                            cross(v) {
+                                return this.x * v.y - this.y * v.x;
+                            }
+
+                            // Довжина
+                            length() {
+                                return Math.hypot(this.x, this.y);
+                            }
+
+                            // Квадрат довжини
+                            lengthSq() {
+                                return this.x * this.x + this.y * this.y;
+                            }
+
+                            // Нормалізація
+                            normalize() {
+                                const len = this.length();
+
+                                if (len === 0) {
+                                    return new Vector2(0, 0);
+                                }
+
+                                return this.div(len);
+                            }
+
+                            // Відстань до іншого вектора
+                            distance(v) {
+                                return this.sub(v).length();
+                            }
+
+                            // Кут в радіанах
+                            angle() {
+                                return Math.atan2(this.y, this.x);
+                            }
+
+                            // Поворот
+                            rotate(deg) {
+                                const c = Math.cos(deg * Math.PI / 180);
+                                const s = Math.sin(deg * Math.PI / 180);
+
+                                return new Vector2(
+                                    this.x * c - this.y * s,
+                                    this.x * s + this.y * c
+                                );
+                            }
+
+                            // Лінійна інтерполяція
+                            lerp(v, t) {
+                                return new Vector2(
+                                    this.x + (v.x - this.x) * t,
+                                    this.y + (v.y - this.y) * t
+                                );
+                            }
+
+                            // Порівняння
+                            equals(v, eps = 1e-9) {
+                                return (
+                                    Math.abs(this.x - v.x) < eps &&
+                                    Math.abs(this.y - v.y) < eps
+                                );
+                            }
+
+                            // Перетворення в масив
+                            toArray() {
+                                return [this.x, this.y];
+                            }
+                            
+                            // ===== Статичні методи =====
+
+                            static zero() {
+                                return new Vector2(0, 0);
+                            }
+
+                            static one() {
+                                return new Vector2(1, 1);
+                            }
+
+                            static up() {
+                                return new Vector2(0, 1);
+                            }
+
+                            static down() {
+                                return new Vector2(0, -1);
+                            }
+
+                            static left() {
+                                return new Vector2(-1, 0);
+                            }
+
+                            static right() {
+                                return new Vector2(1, 0);
+                            }
+
+                            static fromAngle(rad, length = 1) {
+                                return new Vector2(
+                                    Math.cos(rad) * length,
+                                    Math.sin(rad) * length
+                                );
+                            }
+                        }
 
                         class CommandInterface
                         {
@@ -107,7 +247,7 @@ function SpacecraftCodeRunner({code,
 
                                         const { functionName, params, requestId } = event.data;
                                         
-                                        const cmd = this.#commands.find(f => f.name === functionName);
+                                        const cmd = this.#commands.find(c => c.name === functionName)?.fn;
                                         if (cmd)
                                         {
                                             try {
@@ -137,14 +277,9 @@ function SpacecraftCodeRunner({code,
                                 }, "*");  
                             }
 
-                            addCommand(cmd)
+                            addCommand(name, fn)
                             {
-                                if (typeof cmd !== "function")
-                                {
-                                    console.error("Not a function");
-                                    return;
-                                }
-                                this.#commands.push(cmd);
+                                this.#commands.push({ name, fn });
                             }
 
                             allCommands()
@@ -334,7 +469,12 @@ function SpacecraftCodeRunner({code,
                 // console.log("call-inter-method " + spaceCraftName)
                 try
                 {
-                    const result = model.get(messageId)(...args)
+                    let result = model.get(messageId)(...args);
+                    // if (result instanceof Promise)
+                    // {
+                    //     result = await result;
+                    // }
+
                     event.source?.postMessage(
                         { type: "interface-response", id: id, result },
                         "*"
@@ -367,7 +507,7 @@ function SpacecraftCodeRunner({code,
                 {
                     iframeRef.current.contentWindow.postMessage({ type: "set-interface", payload: config},
                                                                 "*");
-                    console.log("Інтерфейс відправлено в iframe " + spaceCraftName + " " + mode);
+                    //console.log("Інтерфейс відправлено в iframe " + spaceCraftName + " " + mode);
                 }
             }}
         />

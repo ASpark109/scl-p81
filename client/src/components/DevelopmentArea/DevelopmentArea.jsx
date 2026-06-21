@@ -51,8 +51,6 @@ const DevelopmentArea = ({ trigger, resetTrigger, saveTrigger, submitTrigger, co
 
 		initializeEnvironment();
 
-		console.log(codeEditorConf)
-
         // const handleClick = (e) => {
         //     console.log("Click at:", e.clientX, e.clientY);
         // };

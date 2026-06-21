@@ -55,18 +55,22 @@ export default function GroundComSystem({isVisible, mode}) {
 
             if (type === "ground-communication-system" && (freq === frequency || frequency === ""))
             {
-                let count = -1;
+                let count = 0;
 
                 const interval = setInterval(() => {
-                    
-                    setHexText(hexText => hexText + signal[count].toString(16).toUpperCase() + " ");
-                    setAsciiTextText(asciiText => asciiText + String.fromCharCode(signal[count]));
+                    if (!signal || count >= signal.length) {
+                        clearInterval(interval);
+                        return;
+                    }
+
+                    const value = signal[count];
+                    const hexValue = value.toString(16).toUpperCase().padStart(2, "0");
+                    const asciiValue = value === 0 ? "0" : String.fromCharCode(value);
+
+                    setHexText(hexText => hexText + hexValue + " ");
+                    setAsciiTextText(asciiText => asciiText + asciiValue);
 
                     count++;
-
-                    if (count == signal.length - 1) {
-                        clearInterval(interval);
-                    }
                 }, 50);
             }
         };

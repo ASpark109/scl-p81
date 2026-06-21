@@ -29,8 +29,6 @@ const Navbar = ({ onButtonClick, isProgramRunning, isCMDVisible, onNewEnvConfigu
             const fetchFiles = async () => {
             const configNames = await getTestEnvConfigNames();
             setEnvironments(configNames);
-
-            console.log(configNames)
         };
         fetchFiles();
     }, []);
