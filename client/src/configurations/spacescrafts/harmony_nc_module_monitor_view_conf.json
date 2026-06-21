@@ -1,0 +1,52 @@
+{
+    "mainFrameDimensions": {"x": 500, "y": 800},
+    "moduleDimensions": {"x": 360, "y": 220},
+
+    "powerSuplySystem": {
+        "name": "Power suply system",
+        "position": {"x": 250, "y": 0},
+        "dimensions": {"x": 400, "y": 55}
+    },
+
+    "radio": {
+        "position": {"x": 50, "y":45},
+        "dimensions": {"x": 170, "y": 210}
+    },
+
+    "dockingPorts": [
+        {
+            "position": {"x": 430, "y": 360},
+            "dimensions": {"x": 20, "y": 80},
+            "idPosition": {"x": 470, "y": 400, "r": -90}
+        },
+        {
+            "position": {"x": 50, "y": 360},
+            "dimensions": {"x": 20, "y": 80},
+            "idPosition": {"x": 30, "y": 400, "r": -90}
+        },
+        {
+            "position": {"x": 210, "y": 510},
+            "dimensions": {"x": 80, "y": 20},
+            "idPosition": {"x": 250, "y": 550, "r": 0}
+        }
+    ],
+
+    "ECLSS":
+    {
+        "position": {"x": 250, "y": 350},
+        "positionT": {"x": 180, "y": 370},
+        "positionP": {"x": 180, "y": 400},
+        "positionH": {"x": 180, "y": 430}
+    },
+
+    "rpoMonitor":
+    {
+        "dimensions": {"x": 450, "y": 700}
+    },
+
+    "telemetry":
+    {
+        "position": {"x": 280, "y":45},
+        "dimensions": {"x": 170, "y": 125}
+    }
+}

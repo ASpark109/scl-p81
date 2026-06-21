@@ -2,6 +2,7 @@
 import FALCON9_ST1 from "../configurations/spacescrafts/st1_falcon9_conf.json";
 import SAT1 from "../configurations/spacescrafts/sat1_conf.json";
 import HARMONY_MODULE from "../configurations/spacescrafts/harmony_module_conf.json";
+import HARMONY_NC_MODULE from "../configurations/spacescrafts/harmony_nc_module_conf.json";
 import UNITY_MODULE from "../configurations/spacescrafts/unity_module_conf.json";
 import DRAGON from "../configurations/spacescrafts/dragon_conf.json";
 
@@ -9,6 +10,7 @@ import DRAGON from "../configurations/spacescrafts/dragon_conf.json";
 import FALCON9_ST1_MONITOR from "../configurations/spacescrafts/st1_falcon9_monitor_view_conf.json";
 import SAT1_MONITOR from "../configurations/spacescrafts/sat1_monitor_view_conf.json";
 import HARMONY_MODULE_MONITOR from "../configurations/spacescrafts/harmony_module_monitor_view_conf.json";
+import HARMONY_NC_MODULE_MONITOR from "../configurations/spacescrafts/harmony_nc_module_monitor_view_conf.json";
 import UNITY_MODULE_MONITOR from "../configurations/spacescrafts/unity_module_monitor_view_conf.json";
 import DRAGON_MONITOR from "../configurations/spacescrafts/dragon_monitor_view_conf.json";
 
@@ -16,6 +18,7 @@ import DRAGON_MONITOR from "../configurations/spacescrafts/dragon_monitor_view_c
 import FALCON9_ST1_VISUAL from "../configurations/spacescrafts/st1_falcon9_visual_effects_conf.json";
 import SAT1_VISUAL from "../configurations/spacescrafts/sat1_visual_effects_conf.json";
 import HARMONY_MODULE_VISUAL from "../configurations/spacescrafts/harmony_module_visual_effects_conf.json";
+import HARMONY_NC_MODULE_VISUAL from "../configurations/spacescrafts/harmony_nc_module_visual_effects_conf.json";
 import UNITY_MODULE_VISUAL from "../configurations/spacescrafts/unity_module_visual_effects_conf.json";
 import DRAGON_VISUAL from "../configurations/spacescrafts/dragon_visual_effects_conf.json";
 
@@ -80,6 +83,14 @@ let configurations =
             spaceCraftData: HARMONY_MODULE,
             monitorDisplayData: HARMONY_MODULE_MONITOR,
             visualEffects: HARMONY_MODULE_VISUAL,
+            abstractSystemInterfaceData: null
+        },
+
+        HARMONY_NC_MODULE:
+        {
+            spaceCraftData: HARMONY_NC_MODULE,
+            monitorDisplayData: HARMONY_NC_MODULE_MONITOR,
+            visualEffects: HARMONY_NC_MODULE_VISUAL,
             abstractSystemInterfaceData: null
         },
 

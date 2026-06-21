@@ -6,6 +6,7 @@ import { Sat1Monitor } from './sat1monitor';
 import { HarmonyModuleMonitor } from './harmonymodulemonitor';
 import { UnityModuleMonitor } from './unitymodulemonitor';
 import { DragonMonitor } from './dragonmonitor';
+import { HarmonyNCModuleMonitor } from './harmonyNCmodulemonitor';
 
 const DISPLAY_WIDTH = 2000;
 const DISPLAY_HEIGHT = 1570;
@@ -50,7 +51,7 @@ export class SystemStateMonitor
 
         this.#runner = setInterval(() => {
             this.#update()
-        }, 500);
+        }, 200);
     }
 
     stop()
@@ -78,6 +79,9 @@ export class SystemStateMonitor
             case "HARMONY_MODULE":
                 newMonitor = new HarmonyModuleMonitor(configuration);
                 break;
+            case "HARMONY_NC_MODULE":
+                newMonitor = new HarmonyNCModuleMonitor(configuration);
+                break;
             case "UNITY_MODULE":
                 newMonitor = new UnityModuleMonitor(configuration);
                 break;
@@ -94,8 +98,6 @@ export class SystemStateMonitor
 
         const col = ((this.systemStateContainer.children.length - 1) % 3) * 550
         const row = Math.floor((this.systemStateContainer.children.length - 1) / 3) * 950;
-
-        console.log(col)
 
         newMonitor.x = 20 + col;
         newMonitor.y = 70 + row;
