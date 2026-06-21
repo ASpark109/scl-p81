@@ -25,14 +25,17 @@ export class Receiver
         this._electricalDevice = new ElectricalDevice();
         this._iframe = UserInteractionInterface.getIframeWithId(absObj.id, null);
 
-        console.log(this._iframe)
-
         this.setCarrierFreq(this.#minCarrierFreq);
     }
 
     setCarrierFreq(cf)
     {
         this.#carrierFreq = Math.max(this.#minCarrierFreq, Math.min(cf, this.#maxCarrierFreq));
+    }
+
+    frequency()
+    {
+        return this.#carrierFreq;
     }
 
     setOnSignal(func)

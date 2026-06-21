@@ -150,23 +150,82 @@ export class RCSBlock extends ModuleBase
             // console.log(this.#abstructModel.velocity.x)
         }, duration)
 
+        return true
+    }
+
+    #enableUnit(unit)
+    {
+        if (unit.isEnabled)
+        {
+            return;
+        }
+
+        unit.isEnabled = true;
+        this.#visualEffects.setVisible(unit.id, true);
+    }
+
+    #disableUnit(unit)
+    {
+        if (!unit.isEnabled)
+        {
+            return;
+        }
+
+        unit.isEnabled = false;
+        this.#visualEffects.setVisible(unit.id, false);
+        this.#abstructModel.setVectorForId(this.#id, {x: 0, y: 0});
+
         return true;
     }
 
     // ================ interface ================
 
-    activateUnitAFor(duration)
+    async activateUnitAFor(duration)
     {
-        return this.#activateUnit(this.#unitsState.A, duration);
+        return await this.#activateUnit(this.#unitsState.A, duration);
     }
 
-    activateUnitBFor(duration)
+    enableUnitA()
     {
-        return this.#activateUnit(this.#unitsState.B, duration);
+        return this.#enableUnit(this.#unitsState.A);
     }
 
-    activateUnitCFor(duration)
+    disableUnitA()
     {
-        return this.#activateUnit(this.#unitsState.C, duration);
+        return this.#disableUnit(this.#unitsState.A);
+    }
+
+    // ---
+
+    async activateUnitBFor(duration)
+    {
+        return await this.#activateUnit(this.#unitsState.B, duration);
+    }
+
+    enableUnitB()
+    {
+        return this.#enableUnit(this.#unitsState.B);
+    }
+
+    disableUnitB()
+    {
+        return this.#disableUnit(this.#unitsState.B);
+    }
+
+    // ---
+
+    async activateUnitCFor(duration)
+    {
+        return await this.#activateUnit(this.#unitsState.C, duration);
+    }
+
+    enableUnitC()
+    {
+        return this.#enableUnit(this.#unitsState.C);
+    }
+
+    disableUnitC()
+    {
+        return this.#disableUnit(this.#unitsState.C);
     }
 }

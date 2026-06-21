@@ -40,7 +40,7 @@ export class DockingOperator
 
                 this.doDock(pair.bodyA, pair.bodyB)
 
-                console.log("welcome!")
+                //console.log("welcome!")
             }
         }
 
@@ -61,8 +61,8 @@ export class DockingOperator
         let localPoint1_1;
         let localPoint2_1;
 
-        console.log(first.id + " " + second.id)
-        console.log(first.docDir + " " + second.docDir)
+        //console.log(first.id + " " + second.id)
+        //console.log(first.docDir + " " + second.docDir)
 
         switch (first.docDir)
         {
@@ -192,55 +192,61 @@ export class DockingOperator
 
         SignalSlotDispatcher.emit("updateNearbyObjects", null);
 
-        console.log("dock!");
+        //console.log("dock!");
 
-        setTimeout(() => {
-            this.dockingFinalizing(dockConstraint1, dockConstraint2)
-
-            const iframe1 = UserInteractionInterface.getIframeWithId(first.dockId.parent, this.#mode);
-            const iframe2 = UserInteractionInterface.getIframeWithId(second.dockId.parent, this.#mode);
-
-            const displayName1 = UserInteractionInterface.getSpacecraftDisplayName(first.dockId.parent, this.#mode);
-            const displayName2 = UserInteractionInterface.getSpacecraftDisplayName(second.dockId.parent, this.#mode);
+        setTimeout(() => {            
             
-            const eventName = "docking";
 
-            iframe1.current?.contentWindow.postMessage(
-            { type: "eventMessage", eventName, data: {portId: first.dockId.dock, spacecraftName: displayName2}},
-            "*");
-            iframe2.current?.contentWindow.postMessage(
-            { type: "eventMessage", eventName, data: {portId: second.dockId.dock, spacecraftName: displayName1}},
-            "*");
+            this.dockingFinalizing(dockConstraint1, dockConstraint2, first, second)
 
-        }, 4000)
+        }, 5000)
     }
 
-    dockingFinalizing(dockConstraint1, dockConstraint2)
+    dockingFinalizing(dockConstraint1, dockConstraint2, first, second)
     {
-        dockConstraint1.damping = 1;
-        dockConstraint2.damping = 1;
+        // dockConstraint1.damping = 1;
+        // dockConstraint2.damping = 1;
 
-        dockConstraint1.stiffness = 0.05;
-        dockConstraint2.stiffness = 0.05;
+        // dockConstraint1.stiffness = 0.3;
+        // dockConstraint2.stiffness = 0.3;
 
-        // let counter = 0;
-        // let stif = 0;
+        const eventName = "docking";
 
-        // const i = setInterval(() => {
+        const displayName1 = UserInteractionInterface.getSpacecraftDisplayName(first.dockId.parent, this.#mode);
+        const displayName2 = UserInteractionInterface.getSpacecraftDisplayName(second.dockId.parent, this.#mode);
+
+        const iframe1 = UserInteractionInterface.getIframeWithId(first.dockId.parent, this.#mode);
+        const iframe2 = UserInteractionInterface.getIframeWithId(second.dockId.parent, this.#mode);
+
+        let counter = 0;
+        let stif = 0;
+
+        const i = setInterval(() => {
             
-        //     stif += 0.05
+            stif += 0.01
+            
+            console.log("fin")
 
-        //     dockConstraint1.stiffness = stif;
-        //     dockConstraint2.stiffness = stif;
+            dockConstraint1.stiffness = stif;
+            dockConstraint2.stiffness = stif;
 
-        //     counter += 1;
-        //     if (stif >= 0.6)
-        //     {
-        //         dockConstraint1.damping = 1;
-        //         dockConstraint2.damping = 1;
-        //         clearInterval(i);
-        //     }
-        // }, 200)
+            counter += 1;
+            if (stif >= 0.3)
+            {
+                dockConstraint1.damping = 1;
+                dockConstraint2.damping = 1;
+                clearInterval(i);
+
+
+
+                iframe1.current?.contentWindow.postMessage(
+                { type: "eventMessage", eventName, data: {portId: first.dockId.dock, spacecraftName: displayName2}},
+                "*");
+                iframe2.current?.contentWindow.postMessage(
+                { type: "eventMessage", eventName, data: {portId: second.dockId.dock, spacecraftName: displayName1}},
+                "*");
+                }
+        }, 150)
     } 
 
     doUndock(spaceCraftId, portId)

@@ -18,9 +18,9 @@ export class Canadarm
         this.#physicalModel = physicalModel;
         this.#mainModule = physicalModel.bodies.find(item => item.name === "stage");
         
-        this.#directions.set(-1, -0.001);
+        this.#directions.set(-1, -0.0002);
         this.#directions.set(0, 0);
-        this.#directions.set(1, 0.001);
+        this.#directions.set(1, 0.0002);
 
         let joints = [physicalModel.bodies.find(item => item.name === "canadarm1"),
                         physicalModel.bodies.find(item => item.name === "canadarm2"),
@@ -45,33 +45,15 @@ export class Canadarm
 
         Matter.Body.setAngularVelocity(this.#joints[1].joint, this.#joints[0].joint.angularVelocity + this.#joints[1].vel);
         Matter.Body.setAngularVelocity(this.#joints[2].joint, this.#joints[1].joint.angularVelocity + this.#joints[2].vel);
-        Matter.Body.setAngularVelocity(this.#joints[3].joint, this.#joints[2].joint.angularVelocity + + this.#joints[3].vel);
+        Matter.Body.setAngularVelocity(this.#joints[3].joint, this.#joints[2].joint.angularVelocity + this.#joints[3].vel);
+
+        //console.log((this.#joints[3].joint.position.x - this.#joints[0].joint.position.x) + " " + (this.#joints[3].joint.position.y - this.#joints[0].joint.position.y))
     }
 
-    // ================ interface ================
-
-    moveJoint(index, direction)
+    matterToMathDeg(angle)
     {
-        if (index >= 0 && index < this.#joints.length && this.#directions.has(direction))
-        {
-            this.#unlock(index)
-            this.#joints[index].vel = this.#directions.get(direction);
-        }
-    }
-
-    stopJoint(index)
-    {
-        if (index >= 1 && index < this.#joints.length)
-        {
-            if (this.#joints[index].vel !== 0)
-            {
-                this.#joints[index].vel = 0;
-
-                setTimeout(() => {
-                    this.#lock(index)
-                }, 1000);
-            }
-        }
+        const deg = (angle * 180 / Math.PI);
+        return (((-deg + 270) % 360) + 360) % 360;
     }
 
     #lock(index)
@@ -103,11 +85,50 @@ export class Canadarm
         Matter.Composite.remove(this.#physicalModel, constraint);
     }
 
+    // ================ interface ================
+
+    moveJoint(index, direction)
+    {
+        if (index >= 1 && index < this.#joints.length && this.#directions.has(direction))
+        {
+            this.#unlock(index)
+            this.#joints[index].vel = this.#directions.get(direction);
+
+            //Matter.Body.setAngularVelocity(this.#joints[index].joint, this.#joints[index - 1].joint.angularVelocity + this.#joints[index].vel);
+        }
+    }
+
+    stopJoint(index)
+    {
+        if (index >= 1 && index < this.#joints.length)
+        {
+            if (this.#joints[index].vel !== 0)
+            {
+                this.#joints[index].vel = 0;
+
+                // Matter.Body.setAngularVelocity(this.#joints[index].joint, this.#joints[index - 1].joint.angularVelocity + this.#joints[index].vel);
+                
+                setTimeout(() => {
+                    this.#lock(index)
+                }, 100);
+            }
+        }
+    }
+
+    jointsAngle()
+    {
+        return {
+            theta2: this.matterToMathDeg(this.#joints[1].joint.angle),
+            theta3: this.matterToMathDeg(this.#joints[2].joint.angle),
+            theta4: this.matterToMathDeg(this.#joints[3].joint.angle)
+        };
+    }
+
     info()
     {
         return {
-            x: ((this.#joints[3].joint.position.x - this.#mainModule.position.x) / 10).toFixed(1),
-            y: ((this.#joints[3].joint.position.y - this.#mainModule.position.y) / 10).toFixed(1),
+            x: ((this.#joints[3].joint.position.x - this.#joints[0].joint.position.x) / 10).toFixed(1),
+            y: ((this.#joints[3].joint.position.y - this.#joints[0].joint.position.y) / 10).toFixed(1),
             active: this.#isEnabled
         }
     }

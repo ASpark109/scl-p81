@@ -49,8 +49,6 @@ export class VisualEffectsContainer extends PIXI.Container
             {
                 const textures = item.sprites.map((item) => {return PIXI.Texture.from(item)})
 
-                console.log(textures)
-
                 const animation = new PIXI.AnimatedSprite(textures);
 
                 animation.animationSpeed = 0.4;

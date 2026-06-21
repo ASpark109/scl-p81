@@ -25,7 +25,7 @@ export class Channel
 
     sendSignal(signal, position, bitRate)
     {
-        console.log(signal)
+        //console.log(signal)
         for (let receiver of this.#receivers)
         {
             let recPos = receiver.position();

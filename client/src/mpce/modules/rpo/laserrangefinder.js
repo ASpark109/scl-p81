@@ -31,6 +31,8 @@ export class LaserRangeFinder
         {
             this.#isEnabled = true;
         }
+
+        return false;
     }
 
     disable()
