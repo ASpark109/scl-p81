@@ -17,7 +17,7 @@ export class SpaceCraftBuilder{
         }
     }
 
-    buildSpaceCraft(confName)
+    buildSpaceCraft(confName, displayName)
     {
 
         if (!confName)
@@ -29,7 +29,7 @@ export class SpaceCraftBuilder{
         let conf = Configurationsfactory.getConfiguration(confName, "spaceCraftData");
 
         // нащо для кожного апарату створювати новий ConfigurableBuilder? Який смисл?
-        let builder = new ConfigurableBuilder(this.#getNewId(), conf);
+        let builder = new ConfigurableBuilder(this.#getNewId(), conf, displayName);
 
         return builder.build();
     }
@@ -45,14 +45,16 @@ export class SpaceCraftBuilder{
 
 class ConfigurableBuilder
 {
-    constructor(id, conf)
+    constructor(id, conf, displayName)
     {
         this.#id = id;
         this.#conf = conf;
+        this.#displayName = displayName;
     }
 
     #id = null;
     #conf = null;
+    #displayName;
     #bodies = [];
     #constraints = [];
 
@@ -112,6 +114,7 @@ class ConfigurableBuilder
                                                 name: conf.name,
                                                 type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
+                                                displayName: conf.master ? this.#displayName : null,
                                                 isVisualPart: conf.isVisualPart,
                                                 imageDev: conf.isVisualPart ? conf.image_dev : null,
                                                 imageMain: conf.isVisualPart ? conf.image_main : null,
@@ -171,7 +174,7 @@ class ConfigurableBuilder
     {
         if (!conf)
             return null;
-
+        
         const verticesToString = conf.vertices.map(v => `${v.x} ${v.y}`).join("  ");
 
         const vertices = Matter.Vertices.fromPath(verticesToString);
@@ -190,6 +193,7 @@ class ConfigurableBuilder
                                                 name: conf.name,
                                                 type: "spacecraft", // Шо це і нашо?
                                                 master: conf.master,
+                                                displayName: conf.master ? this.#displayName : null,
                                                 isVisualPart: conf.isVisualPart,
                                                 imageDev: conf.isVisualPart ? conf.image_dev : null,
                                                 imageMain: conf.isVisualPart ? conf.image_main : null,
