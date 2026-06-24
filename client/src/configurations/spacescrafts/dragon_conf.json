@@ -120,7 +120,7 @@
                 "proximityRadar":
                 {
                     "distance": 20000,
-                    "viewAngle": 270,
+                    "viewAngle": 350,
                     "maxP": 1000,
                     "minP": 200
                 },

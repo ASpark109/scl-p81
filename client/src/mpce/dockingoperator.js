@@ -199,7 +199,7 @@ export class DockingOperator
 
             this.dockingFinalizing(dockConstraint1, dockConstraint2, first, second)
 
-        }, 5000)
+        }, 7000)
     }
 
     dockingFinalizing(dockConstraint1, dockConstraint2, first, second)

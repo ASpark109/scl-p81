@@ -18,9 +18,9 @@ export class Canadarm
         this.#physicalModel = physicalModel;
         this.#mainModule = physicalModel.bodies.find(item => item.name === "stage");
         
-        this.#directions.set(-1, -0.0002);
+        this.#directions.set(-1, -0.0004);
         this.#directions.set(0, 0);
-        this.#directions.set(1, 0.0002);
+        this.#directions.set(1, 0.0004);
 
         let joints = [physicalModel.bodies.find(item => item.name === "canadarm1"),
                         physicalModel.bodies.find(item => item.name === "canadarm2"),
@@ -29,6 +29,7 @@ export class Canadarm
         
         this.#joints = joints.map(joint => ({joint: joint, direction: 0, angle: 0, vel: 0}));
 
+        this.#lock(0)
         this.#lock(1)
         this.#lock(2)
         this.#lock(3)
@@ -58,14 +59,15 @@ export class Canadarm
 
     #lock(index)
     {
-        if (index >= 1 && index <= 3)
+        if (index >= 0 && index <= 3)
         {
             let lock = Matter.Constraint.create({
                 bodyA: this.#joints[index].joint,
-                bodyB: this.#joints[index - 1].joint,
+                bodyB: (index === 1 || index === 0) ? this.#mainModule : this.#joints[index - 1].joint,
                 pointA: { x: 0, y: 0 },
                 pointB: { x: 0, y: 0 },
-                stiffness: 1,
+                stiffness: 0.8,
+                damping: 0.8,
                 index: index
             });
 

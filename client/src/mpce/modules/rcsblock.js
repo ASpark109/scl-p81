@@ -98,8 +98,8 @@ export class RCSBlock extends ModuleBase
         let forceX = this.#body.position.x + Math.cos(angle * Math.PI / 180) * this.#blockPositionVector;
         let forceY = this.#body.position.y - Math.sin(angle * Math.PI / 180) * this.#blockPositionVector;
 
-        let acceleration = this.#thrust / (this.#body.mass * 1000);
-        let engineForce = AC * acceleration * this.#body.mass * 1000;
+        let acceleration = this.#thrust / (this.#body.mass * 6000);
+        let engineForce = AC * acceleration * this.#body.mass * 6000;
 
         let forceVecX = Math.cos(forceAngle * Math.PI / 180) * engineForce;
         let forceVecY = -Math.sin(forceAngle * Math.PI / 180) * engineForce;

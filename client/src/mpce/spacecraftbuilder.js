@@ -105,7 +105,7 @@ class ConfigurableBuilder
                                                 friction: 1,
                                                 frictionAir: 0,
                                                 isSensor: conf.isSensor,
-                                                mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1000000000000000, // Kg -> T
+                                                mass: conf.master ? (conf.componentMass / 6000 + conf.fuelMass / 6000) : 0.1000000000000000, // Kg -> T
                                                 dockId: conf.isDockingPort ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 docDir: conf.isDockingPort ? conf.docDir : null,
@@ -184,7 +184,7 @@ class ConfigurableBuilder
                                                 friction: 1,
                                                 frictionAir: 0,
                                                 isSensor: conf.isSensor,
-                                                mass: conf.master ? (conf.componentMass / 1000 + conf.fuelMass / 1000) : 0.1, // Kg -> T
+                                                mass: conf.master ? (conf.componentMass / 6000 + conf.fuelMass / 6000) : 0.1, // Kg -> T
                                                 dockId: conf.isDockingPort ? {dock: conf.id, parent: this.#id} : null, // переписати потім, щоб воно не залежало від сенсора
                                                 // застаріло dockId береться від композиту, потрібно переписати так, щоб один композит міг мати багато докерів
                                                 docDir: conf.isDockingPort ? conf.docDir : null,

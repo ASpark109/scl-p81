@@ -162,11 +162,11 @@ export class InformationOverlay extends PIXI.Container
         this.velY.valueText.text = this.#focusObject.abstract.velocity.y.toFixed(5) + " m/s"
         this.vel.valueText.text = Math.hypot(this.#focusObject.abstract.velocity.x,
                                                 this.#focusObject.abstract.velocity.y).toFixed(2) + " m/s";
-        this.mass.valueText.text = Math.round(this.#focusObject.physical[0].mass * 1000) + " kg"
+        this.mass.valueText.text = Math.round(this.#focusObject.physical[0].mass * 6000) + " kg"
         this.forc.valueText.text = Math.hypot(this.#focusObject.abstract.force.x,
                                                 this.#focusObject.abstract.force.y).toFixed(2) + " H";
         this.angV.valueText.text = (this.#focusObject.physical[0].angularVelocity * 60 * 180 / Math.PI).toFixed(4) + " deg/s";
-        this.scAngle.valueText.text = ((((-this.#focusObject.physical[0].angle) % 360) + 360) % 360).toFixed(2) + " deg";
+        this.scAngle.valueText.text = ((((-this.#focusObject.physical[0].angle * 180 / Math.PI) % 360) + 360) % 360).toFixed(2) + " deg";
         //---------------
 
         if (this.#targetObject)

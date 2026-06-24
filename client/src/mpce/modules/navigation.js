@@ -16,7 +16,7 @@ export class Navigation
             // angl: this.#physicalModel.angle * 180 / Math.PI,
             alt: ((Math.hypot(this.#abstructModel.position.x, this.#abstructModel.position.y) - 6371000) / 1000).toFixed(2),
             angVel: (this.#physicalModel.angularVelocity * 60 * 180 / Math.PI).toFixed(1),
-            theta: (Math.atan2(this.#abstructModel.position.x, -this.#abstructModel.position.y) * 180 / Math.PI).toFixed(1)
+            theta: ((Math.atan2(-this.#abstructModel.position.y, this.#abstructModel.position.x) * 180 / Math.PI + 360) % 360).toFixed(2)
         };
     }
 
@@ -52,6 +52,6 @@ export class Navigation
 
     theta()
     {
-        return (Math.atan2(this.#abstructModel.position.x, -this.#abstructModel.position.y) * 180 / Math.PI).toFixed(1);
+        return ((Math.atan2(-this.#abstructModel.position.y, this.#abstructModel.position.x) * 180 / Math.PI + 360) % 360).toFixed(2);
     }
 }
