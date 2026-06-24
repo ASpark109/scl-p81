@@ -67,7 +67,7 @@ export class VisualisationBase
         this.displayAreaScaleConf = Configurationsfactory.getConfiguration("SCALE_DISPLAY_AREA");
         this.currentScale = 0;
         this.orbitUpdateCounter = 0;
-        this.mode = mode;
+        this.mode = "rt";
 
         this.SystemStateMonitor = null;
             
